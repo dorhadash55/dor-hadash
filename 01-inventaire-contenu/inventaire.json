@@ -1,0 +1,333 @@
+{
+  "site": "dor-hadash.com",
+  "extraction_date": "2026-07-19",
+  "extraction_method": "scraping des pages publiques + API REST WordPress publique (wp-json/wp/v2)",
+  "navigation": {
+    "main_menu": [
+      {
+        "label": "Accueil",
+        "url": "/"
+      },
+      {
+        "label": "Mission",
+        "url": "/mission/"
+      },
+      {
+        "label": "L'équipe",
+        "url": "/lequipe/"
+      },
+      {
+        "label": "Nos Villes",
+        "url": "/nos-villes/",
+        "children": [
+          {
+            "label": "Karmiel",
+            "url": "/karmiel/"
+          },
+          {
+            "label": "Haïfa",
+            "url": "/haifa/"
+          },
+          {
+            "label": "Jérusalem",
+            "url": "/jerusalem/"
+          },
+          {
+            "label": "Nof HaGalil",
+            "url": "/nof-hagalil/"
+          }
+        ]
+      },
+      {
+        "label": "Blog",
+        "url": "/blog/"
+      },
+      {
+        "label": "Nous Contacter",
+        "url": "/nous-contacter/"
+      }
+    ],
+    "orphan_pages": [
+      {
+        "label": "Inscription/Dons",
+        "url": "/inscription-dons/",
+        "note": "existe, non liée au menu, contenu vide"
+      }
+    ]
+  },
+  "pages": [
+    {
+      "title": "Accueil",
+      "url": "/",
+      "wp_id": 6,
+      "meta_description": null,
+      "h1_count": 6,
+      "content_file": "pages/home.md"
+    },
+    {
+      "title": "Mission",
+      "url": "/mission/",
+      "wp_id": 155,
+      "meta_description": null,
+      "h1_count": 2,
+      "content_file": "pages/mission.md"
+    },
+    {
+      "title": "L'équipe",
+      "url": "/lequipe/",
+      "wp_id": 157,
+      "meta_description": null,
+      "h1_count": 2,
+      "content_file": "pages/lequipe.md"
+    },
+    {
+      "title": "Nos Villes",
+      "url": "/nos-villes/",
+      "wp_id": 815,
+      "meta_description": null,
+      "h1_count": 1,
+      "content_file": "pages/nos-villes.md",
+      "note": "contenu quasi vide, sert juste de hub vers les 4 villes"
+    },
+    {
+      "title": "Karmiel",
+      "url": "/karmiel/",
+      "wp_id": 841,
+      "meta_description": null,
+      "h1_count": 2,
+      "content_file": "pages/karmiel.md"
+    },
+    {
+      "title": "Haïfa",
+      "url": "/haifa/",
+      "wp_id": 770,
+      "meta_description": null,
+      "h1_count": 2,
+      "content_file": "pages/haifa.md"
+    },
+    {
+      "title": "Jérusalem",
+      "url": "/jerusalem/",
+      "wp_id": 794,
+      "meta_description": null,
+      "h1_count": 2,
+      "content_file": "pages/jerusalem.md"
+    },
+    {
+      "title": "Nof HaGalil",
+      "url": "/nof-hagalil/",
+      "wp_id": 159,
+      "meta_description": null,
+      "h1_count": 2,
+      "content_file": "pages/nof-hagalil.md",
+      "note": "H1 actuel = 'le projet en cours' au lieu du nom de la ville (bug)"
+    },
+    {
+      "title": "Blog",
+      "url": "/blog/",
+      "wp_id": 161,
+      "meta_description": null,
+      "h1_count": 1,
+      "content_file": "pages/blog.md"
+    },
+    {
+      "title": "Nous Contacter",
+      "url": "/nous-contacter/",
+      "wp_id": 447,
+      "meta_description": null,
+      "h1_count": 1,
+      "content_file": "pages/nous-contacter.md"
+    },
+    {
+      "title": "Inscription/Dons",
+      "url": "/inscription-dons/",
+      "wp_id": 163,
+      "meta_description": null,
+      "h1_count": 0,
+      "content_file": "pages/inscription-dons.md",
+      "note": "page vide (section Divi sans contenu)"
+    }
+  ],
+  "blog_posts": [
+    {
+      "title": "Faire son Alya a Karmiel, un programme clef en main !!!",
+      "wp_id": 833,
+      "slug": "faire-son-alya-a-karmiel-un-programme-clef-en-main",
+      "current_url": "/2024/08/06/faire-son-alya-a-karmiel-un-programme-clef-en-main/",
+      "date": "2024-08-06",
+      "author": "Patricia Hassoun",
+      "content_file": "blog/post-karmiel-programme.md"
+    },
+    {
+      "title": "Nof HaGalil – Construire l'avenir ensemble en Galilée",
+      "wp_id": 882,
+      "slug": "nof-hagalil-construire-lavenir-ensemble-en-galilee",
+      "current_url": "/2025/09/15/nof-hagalil-construire-lavenir-ensemble-en-galilee/",
+      "date": "2025-09-15",
+      "author": "Patricia Hassoun",
+      "content_file": "blog/post-nof-hagalil-avenir.md"
+    },
+    {
+      "title": "Les astuces pour bien préparer votre déménagement à l'international",
+      "wp_id": 891,
+      "slug": "les-astuces-pour-bien-preparer-votre-demenagement-a-linternational",
+      "current_url": "/2025/10/12/les-astuces-pour-bien-preparer-votre-demenagement-a-linternational/",
+      "date": "2025-10-12",
+      "author": "Patricia Hassoun",
+      "content_file": "blog/post-demenagement.md"
+    },
+    {
+      "title": "Guide sur les taxes d'importation pour les nouveaux immigrants",
+      "wp_id": 894,
+      "slug": "guide-sur-les-taxes-dimportation-pour-les-nouveaux-immigrants",
+      "current_url": "/2025/10/22/guide-sur-les-taxes-dimportation-pour-les-nouveaux-immigrants/",
+      "date": "2025-10-22",
+      "author": "Patricia Hassoun",
+      "content_file": "blog/post-taxes-importation.md"
+    },
+    {
+      "title": "Chers parents olim : et si le système israélien avait raison ?",
+      "wp_id": 898,
+      "slug": "chers-parents-olim-et-si-le-systeme-israelien-avait-raison",
+      "current_url": "/2026/02/25/chers-parents-olim-et-si-le-systeme-israelien-avait-raison/",
+      "date": "2026-02-25",
+      "author": "Patricia Hassoun",
+      "content_file": "blog/post-parents-olim-systeme.md"
+    },
+    {
+      "title": "Nof HaGalil à l'aube d'un tournant historique : 16 milliards de shekels d'investissement et 10 000 nouveaux habitants attendus",
+      "wp_id": 905,
+      "slug": "nof-hagalil-a-laube-dun-tournant-historique-16-milliards-de-shekels-dinvestissement-et-10-000-nouveaux-habitants-attendus",
+      "current_url": "/2026/02/27/nof-hagalil-a-laube-dun-tournant-historique-16-milliards-de-shekels-dinvestissement-et-10-000-nouveaux-habitants-attendus/",
+      "date": "2026-02-27",
+      "author": "Patricia Hassoun",
+      "content_file": "blog/post-nof-hagalil-tournant.md"
+    },
+    {
+      "title": "Faire son Alya en famille : une aventure magnifique… qui se prépare",
+      "wp_id": 913,
+      "slug": "faire-son-alya-en-famille-une-aventure-magnifique-qui-se-prepare",
+      "current_url": "/2026/03/17/faire-son-alya-en-famille-une-aventure-magnifique-qui-se-prepare/",
+      "date": "2026-03-17",
+      "author": "Patricia Hassoun",
+      "content_file": "blog/post-alya-famille.md"
+    }
+  ],
+  "team": [
+    {
+      "name": "Patricia Hassoun",
+      "role": "Présidente",
+      "photo": "patricia-hassoun.png"
+    },
+    {
+      "name": "Eugène Slama",
+      "role": "Vice-Président — Commission financière, collecte de fonds",
+      "photo": "eugene-slama.png"
+    },
+    {
+      "name": "Rav Yoël Kling",
+      "role": "Commission Éthique et Éducation",
+      "photo": "rav-yoel-kling.png"
+    },
+    {
+      "name": "Maurice Hassoun",
+      "role": "Trésorier — Commission financière",
+      "photo": "maurice-hassoun.png"
+    },
+    {
+      "name": "Johann Habib",
+      "role": "Avocat — Commission Éthique et Éducation, Relations extérieures",
+      "photo": "johann-habib.png"
+    },
+    {
+      "name": "Guillaume Hassoun",
+      "role": "Commission communication",
+      "photo": "guillaume-hassoun.jpeg"
+    }
+  ],
+  "services_actuels": [
+    "Logement",
+    "Immersion",
+    "Éducation",
+    "Emploi"
+  ],
+  "contact": {
+    "email": "dorhadash5780@gmail.com",
+    "phones": {
+      "israel": [
+        "+972-52-226-3776",
+        "+972-54-692-8792"
+      ],
+      "france": [
+        "+33-1-86-98-19-43"
+      ]
+    },
+    "social": {
+      "facebook": "https://www.facebook.com/dorhadashisrael"
+    }
+  },
+  "contact_forms_existants": [
+    {
+      "location": "/nous-contacter/",
+      "fields": [
+        "Nom",
+        "Adresse e-mail",
+        "Téléphone",
+        "Message"
+      ],
+      "extra": "captcha mathématique simple (addition à 2 chiffres)"
+    },
+    {
+      "location": "/lequipe/ (et bas des pages villes)",
+      "fields": [
+        "Nom",
+        "Votre email",
+        "Téléphone",
+        "Pays de résidence actuel (France/Israël/Autre)",
+        "Message"
+      ],
+      "extra": "pas de captcha"
+    }
+  ],
+  "branding": {
+    "logo": "dh_logo_apr5780_1280x1280_website.png",
+    "logo_variant": "logoBlue.png",
+    "favicon": [
+      "cropped-favicon-32x32.png",
+      "cropped-favicon-192x192.png",
+      "cropped-favicon-180x180.png",
+      "cropped-favicon-270x270.png"
+    ],
+    "colors_hex": {
+      "#0038B8": "bleu principal (dominant)",
+      "#084C93": "bleu foncé secondaire",
+      "#2B87DA": "bleu clair / accent",
+      "#29C4A9": "vert turquoise / accent",
+      "#032D7A": "bleu très foncé",
+      "#ED4441": "rouge / corail (accent, CTA)",
+      "#1A1A1A": "texte foncé",
+      "#FFFFFF": "fond blanc",
+      "#233B4E": "variante ponctuelle",
+      "#2C55B7": "variante ponctuelle"
+    },
+    "fonts": [
+      "Roboto",
+      "Open Sans",
+      "Oswald",
+      "Didact Gothic"
+    ]
+  },
+  "seo_constats": {
+    "meta_description_presente": false,
+    "open_graph_tags": false,
+    "json_ld": false,
+    "h1_multiples_par_page": true,
+    "wp_plugin_seo_detecte": null
+  },
+  "video_temoignages_existants": false,
+  "cms": {
+    "platform": "WordPress 7.0.2",
+    "theme_builder": "Divi 4.14.7",
+    "seo_plugin": null
+  }
+}
