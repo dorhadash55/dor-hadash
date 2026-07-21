@@ -1,14 +1,14 @@
 import { useParams, Link, Navigate } from "react-router-dom";
 import SeoHead from "../components/SeoHead";
 import RichParagraph from "../components/RichParagraph";
-import { getPostBySlug } from "../content/blog";
+import { useBlogPost } from "../admin/hooks/useAdminContent";
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  const post = getPostBySlug(slug ?? "");
+  const post = useBlogPost(slug ?? "");
 
   if (!post) return <Navigate to="/blog" replace />;
 

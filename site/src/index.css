@@ -45,3 +45,113 @@ h1, h2, h3, h4 {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* ── Menu mobile ── */
+
+.mobile-menu-backdrop {
+  background: rgba(3, 45, 122, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.mobile-menu-backdrop-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-menu-panel {
+  transform: translateX(100%);
+  pointer-events: none;
+  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.mobile-menu-panel-open {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.mobile-menu-bg {
+  background:
+    radial-gradient(ellipse 80% 50% at 100% 0%, rgba(41, 196, 169, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 0% 100%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+    linear-gradient(155deg, #032d7a 0%, #0038b8 45%, #2b87da 100%);
+}
+
+.mobile-menu-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.mobile-menu-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-menu-nav {
+  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+
+.mobile-menu-footer {
+  background: linear-gradient(to top, rgba(3, 45, 122, 0.85) 0%, rgba(3, 45, 122, 0.4) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.mobile-menu-cta-primary {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+  color: #0038b8;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+
+.mobile-menu-icon {
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.85rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 100%);
+  color: #29c4a9;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset;
+}
+
+.mobile-menu-icon-active {
+  background: linear-gradient(135deg, rgba(0, 56, 184, 0.12) 0%, rgba(41, 196, 169, 0.15) 100%);
+  color: #0038b8;
+}
+
+.mobile-menu-accordion {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease;
+}
+
+.mobile-menu-accordion-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.mobile-menu-open .mobile-menu-item {
+  animation: mobileMenuIn 0.5s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes mobileMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

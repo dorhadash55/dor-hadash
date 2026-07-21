@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { blogPosts } from "../content/blog";
+import { useBlogPosts } from "../admin/hooks/useAdminContent";
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
 export default function BlogTeaser() {
+  const blogPosts = useBlogPosts();
   const latest = blogPosts.slice(0, 3);
 
   return (

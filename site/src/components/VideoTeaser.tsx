@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-import { videoTestimonials } from "../content/videos";
+import { useVideos } from "../admin/hooks/useAdminContent";
 import VideoCard from "./VideoCard";
 
 export default function VideoTeaser() {
+  const videoTestimonials = useVideos();
   const preview = videoTestimonials.slice(0, 3);
 
   return (

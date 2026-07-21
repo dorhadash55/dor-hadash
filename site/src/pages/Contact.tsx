@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from "react";
 import SeoHead from "../components/SeoHead";
 import PageBanner from "../components/PageBanner";
-import { siteInfo } from "../content/site";
+import { addContactSubmission } from "../admin/storage/contentStore";
+import { useSiteInfo } from "../content/useSiteContent";
 import { cities } from "../content/cities";
 
 const horizons = [
@@ -12,11 +13,21 @@ const horizons = [
 ];
 
 export default function Contact() {
+  const siteInfo = useSiteInfo();
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // TODO: brancher sur Firestore (collection contact_submissions) une fois Firebase configuré.
+    const form = new FormData(e.currentTarget);
+    addContactSubmission({
+      prenom: String(form.get("prenom") ?? ""),
+      nom: String(form.get("nom") ?? ""),
+      email: String(form.get("email") ?? ""),
+      telephone: String(form.get("telephone") ?? ""),
+      ville: String(form.get("ville") ?? ""),
+      horizon: String(form.get("horizon") ?? ""),
+      message: String(form.get("message") ?? ""),
+    });
     setSubmitted(true);
   };
 

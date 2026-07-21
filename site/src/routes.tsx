@@ -10,6 +10,15 @@ import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import TemoignagesVideos from "./pages/TemoignagesVideos";
 import NotFound from "./pages/NotFound";
+import AdminRoot from "./admin/AdminRoot";
+import AdminLayout from "./admin/components/AdminLayout";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminVideosPage from "./pages/admin/AdminVideosPage";
+import AdminBlogPage from "./pages/admin/AdminBlogPage";
+import AdminBlogEditorPage from "./pages/admin/AdminBlogEditorPage";
+import AdminContactsPage from "./pages/admin/AdminContactsPage";
+import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
 import { cities } from "./content/cities";
 import { blogPosts } from "./content/blog";
 
@@ -36,6 +45,26 @@ export const routes: RouteRecord[] = [
       },
       { path: "nous-contacter", Component: Contact },
       { path: "*", Component: NotFound },
+    ],
+  },
+  {
+    path: "/admin",
+    Component: AdminRoot,
+    children: [
+      { path: "login", Component: AdminLogin },
+      {
+        path: "",
+        Component: AdminLayout,
+        children: [
+          { index: true, Component: AdminDashboard },
+          { path: "videos", Component: AdminVideosPage },
+          { path: "blog", Component: AdminBlogPage },
+          { path: "blog/new", Component: AdminBlogEditorPage },
+          { path: "blog/:slug/edit", Component: AdminBlogEditorPage },
+          { path: "contacts", Component: AdminContactsPage },
+          { path: "settings", Component: AdminSettingsPage },
+        ],
+      },
     ],
   },
 ];

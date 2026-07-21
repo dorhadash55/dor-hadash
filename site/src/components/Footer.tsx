@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
-import { mainNav, siteInfo } from "../content/site";
+import { useSiteInfo } from "../content/useSiteContent";
+import { mainNav } from "../content/site";
 
 export default function Footer() {
+  const siteInfo = useSiteInfo();
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-brand-blue-deep text-white pb-24 lg:pb-0">
+    <footer className="bg-brand-blue-deep text-white pb-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:pb-0">
       <div className="mx-auto max-w-7xl px-6 py-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <img src="/images/logo.png" alt="Dor Hadash" className="h-12 w-auto mb-4 rounded bg-white/90 p-1" />

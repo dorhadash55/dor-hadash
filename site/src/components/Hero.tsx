@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
-import { hero } from "../content/homepage";
+import { hero as defaultHero } from "../content/homepage";
+import { useHeroContent } from "../content/useSiteContent";
 
 export default function Hero() {
+  const hero = useHeroContent();
+
   return (
     <section className="relative overflow-hidden text-white">
       {/* Photo de fond */}
@@ -21,25 +24,25 @@ export default function Hero() {
       <div className="relative mx-auto max-w-7xl px-6 py-20 sm:py-28 lg:py-32">
         <div className="max-w-2xl">
           <span className="inline-block rounded-full bg-white/15 px-4 py-1.5 text-sm font-medium tracking-wide backdrop-blur">
-            {hero.eyebrow}
+            {hero.eyebrow || defaultHero.eyebrow}
           </span>
           <h1 className="mt-6 font-heading text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-            {hero.title}
+            {hero.title || defaultHero.title}
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-white/90 sm:text-xl">{hero.subtitle}</p>
+          <p className="mt-6 max-w-xl text-lg text-white/90 sm:text-xl">{hero.subtitle || defaultHero.subtitle}</p>
 
           <div className="mt-10 flex flex-wrap gap-4">
             <Link
-              to={hero.ctaPrimary.href}
+              to={defaultHero.ctaPrimary.href}
               className="rounded-full bg-white px-7 py-3.5 text-base font-semibold text-brand-blue shadow-lg shadow-black/10 transition-transform hover:scale-[1.03]"
             >
-              {hero.ctaPrimary.label}
+              {defaultHero.ctaPrimary.label}
             </Link>
             <a
-              href={hero.ctaSecondary.href}
+              href={defaultHero.ctaSecondary.href}
               className="rounded-full border border-white/40 px-7 py-3.5 text-base font-semibold text-white transition-colors hover:bg-white/10"
             >
-              {hero.ctaSecondary.label}
+              {defaultHero.ctaSecondary.label}
             </a>
           </div>
         </div>

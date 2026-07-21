@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import SeoHead from "../components/SeoHead";
 import PageBanner from "../components/PageBanner";
-import { blogPosts } from "../content/blog";
+import { useBlogPosts } from "../admin/hooks/useAdminContent";
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
 export default function Blog() {
+  const blogPosts = useBlogPosts();
+
   return (
     <>
       <SeoHead />

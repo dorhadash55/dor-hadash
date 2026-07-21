@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import { siteInfo } from "../content/site";
+import { useSiteInfo } from "../content/useSiteContent";
 
 export default function MobileCtaBar() {
+  const siteInfo = useSiteInfo();
   return (
-    <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 flex border-t border-gray-100 bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.06)]">
+    <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 flex border-t border-gray-100 bg-white pb-[env(safe-area-inset-bottom,0px)] shadow-[0_-4px_12px_rgba(0,0,0,0.06)]">
       <a
         href={siteInfo.callPhone}
         className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold text-brand-blue border-r border-gray-100"

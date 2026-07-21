@@ -34,7 +34,7 @@ export const mainNav: NavItem[] = [
       { label: "Bat Yam", path: "/bat-yam" },
     ],
   },
-  { label: "Témoignages vidéo", path: "/temoignages-videos" },
+  { label: "Témoignages", path: "/temoignages-videos" },
   { label: "Blog", path: "/blog" },
   { label: "Nous Contacter", path: "/nous-contacter" },
 ];

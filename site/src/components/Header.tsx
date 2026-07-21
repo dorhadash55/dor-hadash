@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { mainNav } from "../content/site";
+import MobileMenu from "./MobileMenu";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [villesOpen, setVillesOpen] = useState(false);
+  const { pathname } = useLocation();
 
-  // Close mobile menu on route change / resize to desktop
   useEffect(() => {
     const onResize = () => {
       if (window.innerWidth >= 1024) setOpen(false);
@@ -16,6 +17,10 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
@@ -23,18 +28,21 @@ export default function Header() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm pt-[env(safe-area-inset-top,0px)]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex h-24 items-center justify-between">
-          {/* Mobile burger */}
+        <div className="grid h-24 grid-cols-[2.75rem_1fr_2.75rem] items-center lg:flex lg:justify-between">
           <button
             type="button"
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={open}
             onClick={() => setOpen((o) => !o)}
-            className="lg:hidden flex h-10 w-10 items-center justify-center rounded-md text-brand-blue"
+            className={`lg:hidden col-start-1 flex h-11 w-11 items-center justify-center rounded-full transition-all ${
+              open
+                ? "bg-brand-blue text-white shadow-md"
+                : "text-brand-blue hover:bg-brand-blue/5"
+            }`}
           >
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               {open ? (
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M6 18L18 6" />
               ) : (
@@ -43,11 +51,16 @@ export default function Header() {
             </svg>
           </button>
 
-          <NavLink to="/" className="flex items-center shrink-0" onClick={() => setOpen(false)}>
+          <NavLink
+            to="/"
+            className="col-start-2 flex items-center justify-center shrink-0 lg:col-auto lg:justify-start"
+            onClick={() => setOpen(false)}
+          >
             <img src="/images/logo.png" alt="Dor Hadash — Incubateur d'Alya" className="h-16 sm:h-20 w-auto object-contain" />
           </NavLink>
 
-          {/* Desktop nav */}
+          <div className="col-start-3 lg:hidden" aria-hidden="true" />
+
           <nav className="hidden lg:flex items-center gap-1">
             {mainNav.map((item) =>
               item.children ? (
@@ -113,40 +126,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile menu panel */}
-      {open && (
-        <div className="lg:hidden border-t border-gray-100 bg-white max-h-[calc(100svh-4rem)] overflow-y-auto">
-          <nav className="flex flex-col px-4 py-3">
-            {mainNav.map((item) => (
-              <div key={item.path} className="border-b border-gray-50 last:border-none">
-                <NavLink
-                  to={item.path}
-                  onClick={() => setOpen(false)}
-                  className={({ isActive }) =>
-                    `block py-3 text-base font-medium ${isActive ? "text-brand-blue" : "text-gray-800"}`
-                  }
-                >
-                  {item.label}
-                </NavLink>
-                {item.children && (
-                  <div className="flex flex-wrap gap-2 pb-3">
-                    {item.children.map((child) => (
-                      <NavLink
-                        key={child.path}
-                        to={child.path}
-                        onClick={() => setOpen(false)}
-                        className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700"
-                      >
-                        {child.label}
-                      </NavLink>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </nav>
-        </div>
-      )}
+      <MobileMenu open={open} onClose={() => setOpen(false)} />
     </header>
   );
 }
