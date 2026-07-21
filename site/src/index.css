@@ -155,3 +155,57 @@ h1, h2, h3, h4 {
     transform: translateY(0);
   }
 }
+
+/* ── Méthode Dor Hadash ── */
+
+.methode-pulse {
+  animation: methodePulse 2s ease-in-out infinite;
+}
+
+@keyframes methodePulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+}
+
+.methode-step {
+  animation: methodeStepIn 0.65s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes methodeStepIn {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.methode-progress {
+  animation: methodeProgress 1.4s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes methodeProgress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .methode-pulse,
+  .methode-step,
+  .methode-progress {
+    animation: none;
+  }
+}

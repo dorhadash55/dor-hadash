@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 
 export default function FinalCta() {
   return (
-    <section className="bg-brand-blue-deep py-20 text-center text-white">
-      <div className="mx-auto max-w-2xl px-6">
-        <h2 className="font-heading text-3xl font-semibold sm:text-4xl">Qu'attendez-vous ?</h2>
+    <section className="bg-brand-blue-deep py-16 text-center text-white sm:py-20">
+      <div className="mx-auto max-w-2xl px-4 sm:px-6">
+        <h2 className="font-heading text-2xl font-semibold sm:text-3xl lg:text-4xl">Qu'attendez-vous ?</h2>
         <p className="mt-4 text-white/80">Rejoignez-nous et préparez votre Alya en toute confiance.</p>
         <Link
           to="/nous-contacter"

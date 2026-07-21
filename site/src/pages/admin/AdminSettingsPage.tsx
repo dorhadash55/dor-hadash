@@ -2,11 +2,13 @@ import { useState } from "react";
 import AdminHeader from "../../admin/components/AdminHeader";
 import { AdminButton, AdminCard, FormField, TextArea, TextInput } from "../../admin/components/AdminUi";
 import { useSiteSettings } from "../../admin/hooks/useAdminContent";
+import { testFirestoreWrite } from "../../admin/firebase/firestoreDiagnostics";
 import {
   exportContentJson,
   getSiteSettings,
   importContentJson,
   isFirebaseConfigured,
+  pushAllContentToFirestore,
   resetContentToDefaults,
   saveSiteSettings,
 } from "../../admin/storage/contentStore";
@@ -17,6 +19,10 @@ export default function AdminSettingsPage() {
   const [form, setForm] = useState<SiteSettings>(current);
   const [saved, setSaved] = useState(false);
   const [importError, setImportError] = useState("");
+  const [syncing, setSyncing] = useState(false);
+  const [syncMessage, setSyncMessage] = useState("");
+  const [testing, setTesting] = useState(false);
+  const [testMessage, setTestMessage] = useState("");
 
   const updateHero = (key: keyof SiteSettings["hero"], value: string) => {
     setForm((prev) => ({ ...prev, hero: { ...prev.hero, [key]: value } }));
@@ -55,6 +61,26 @@ export default function AdminSettingsPage() {
       }
     };
     reader.readAsText(file);
+  };
+
+  const handleSyncFirestore = async () => {
+    setSyncing(true);
+    setSyncMessage("");
+    const result = await pushAllContentToFirestore();
+    setSyncing(false);
+    if (result.ok) {
+      setSyncMessage("Tout le contenu a été enregistré dans Firestore ✓");
+    } else {
+      setSyncMessage(`Erreur : ${result.error}`);
+    }
+  };
+
+  const handleTestFirestore = async () => {
+    setTesting(true);
+    setTestMessage("");
+    const result = await testFirestoreWrite();
+    setTesting(false);
+    setTestMessage(result.ok ? result.message : `${result.message}\n${result.details ?? ""}`);
   };
 
   return (
@@ -113,6 +139,39 @@ export default function AdminSettingsPage() {
           </div>
         </AdminCard>
 
+        <AdminCard title="Firestore — enregistrement">
+          <p className="text-sm text-gray-600">
+            Enregistre dans Firestore tous les articles de blog, témoignages vidéo, paramètres du site et
+            messages contact. Les photos uploadées sont stockées dans Firebase Storage.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <AdminButton onClick={handleTestFirestore} disabled={testing || !isFirebaseConfigured()}>
+              {testing ? "Test…" : "Tester la connexion Firestore"}
+            </AdminButton>
+            <AdminButton onClick={handleSyncFirestore} disabled={syncing || !isFirebaseConfigured()}>
+              {syncing ? "Enregistrement…" : "Tout enregistrer dans Firestore"}
+            </AdminButton>
+          </div>
+          {testMessage && (
+            <pre
+              className={`mt-3 whitespace-pre-wrap rounded-lg p-3 text-xs ${
+                testMessage.startsWith("Échec") || testMessage.startsWith("Non")
+                  ? "bg-red-50 text-brand-coral"
+                  : "bg-brand-teal/10 text-brand-teal"
+              }`}
+            >
+              {testMessage}
+            </pre>
+          )}
+          {syncMessage && (
+            <p
+              className={`mt-3 text-sm ${syncMessage.startsWith("Erreur") ? "text-brand-coral" : "text-brand-teal"}`}
+            >
+              {syncMessage}
+            </p>
+          )}
+        </AdminCard>
+
         <AdminCard title="Sauvegarde & restauration">
           <p className="text-sm text-gray-600">
             Exportez tout le contenu admin (vidéos, blog, messages, paramètres) en JSON pour le sauvegarder
@@ -146,18 +205,39 @@ export default function AdminSettingsPage() {
           {importError && <p className="mt-2 text-sm text-brand-coral">{importError}</p>}
         </AdminCard>
 
-        <AdminCard title="Configuration Firebase (à venir)">
+        <AdminCard title="Configuration Firebase">
           <div className="space-y-3 text-sm text-gray-600">
             <p>
               Statut :{" "}
               <strong className={isFirebaseConfigured() ? "text-brand-teal" : "text-amber-600"}>
-                {isFirebaseConfigured() ? "Variables détectées" : "Non configuré"}
+                {isFirebaseConfigured() ? "Connecté à Firestore" : "Non configuré (mode localStorage)"}
               </strong>
             </p>
             <ol className="list-decimal space-y-2 pl-5">
-              <li>Créez un projet sur console.firebase.google.com</li>
-              <li>Activez Firestore et Authentication (email/mot de passe)</li>
-              <li>Ajoutez les clés dans <code className="rounded bg-gray-100 px-1">.env</code> :</li>
+              <li>
+                Console Firebase → Paramètres du projet → Vos applications → Web → copiez la config
+              </li>
+              <li>
+                Activez <strong>Firestore</strong>, <strong>Storage</strong> et{" "}
+                <strong>Authentication</strong> → <strong>Google</strong>
+              </li>
+              <li>
+                Connectez-vous avec le compte Google{" "}
+                <code className="rounded bg-gray-100 px-1">dor.hadash55@gmail.com</code>
+              </li>
+              <li>
+                Si erreur « permission-denied » malgré la connexion Google : vérifiez{" "}
+                <strong>App Check</strong> → Firestore → mettez en <strong>Unenforced</strong> (pas Enforced)
+              </li>
+              <li>
+                Déployez les règles depuis{" "}
+                <code className="rounded bg-gray-100 px-1">site/firestore.rules</code> et{" "}
+                <code className="rounded bg-gray-100 px-1">site/storage.rules</code>
+              </li>
+              <li>
+                Ajoutez les clés dans <code className="rounded bg-gray-100 px-1">site/.env</code> (local) et
+                dans Vercel → Settings → Environment Variables (production)
+              </li>
             </ol>
             <pre className="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100">
 {`VITE_FIREBASE_API_KEY=...
@@ -165,14 +245,13 @@ VITE_FIREBASE_AUTH_DOMAIN=...
 VITE_FIREBASE_PROJECT_ID=...
 VITE_FIREBASE_STORAGE_BUCKET=...
 VITE_FIREBASE_MESSAGING_SENDER_ID=...
-VITE_FIREBASE_APP_ID=...
-VITE_ADMIN_PASSWORD=votre-mot-de-passe-admin`}
+VITE_FIREBASE_APP_ID=...`}
             </pre>
             <p>
-              Collections Firestore prévues : <code className="rounded bg-gray-100 px-1">videos</code>,{" "}
-              <code className="rounded bg-gray-100 px-1">blog_posts</code>,{" "}
-              <code className="rounded bg-gray-100 px-1">contact_submissions</code>,{" "}
-              <code className="rounded bg-gray-100 px-1">site_settings</code>
+              Données Firestore :{" "}
+              <code className="rounded bg-gray-100 px-1">site/content</code> (vidéos, blog, paramètres),{" "}
+              <code className="rounded bg-gray-100 px-1">contact_submissions</code> (messages). Photos :{" "}
+              <code className="rounded bg-gray-100 px-1">Storage /blog/</code>.
             </p>
           </div>
         </AdminCard>

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AdminHeader from "../../admin/components/AdminHeader";
+import ImageUpload from "../../admin/components/ImageUpload";
 import { AdminButton, AdminCard, FormField, TextArea, TextInput } from "../../admin/components/AdminUi";
 import { useBlogPost } from "../../admin/hooks/useAdminContent";
-import { getBlogPostBySlug, upsertBlogPost } from "../../admin/storage/contentStore";
+import { getBlogPostBySlug, upsertBlogPostAsync } from "../../admin/storage/contentStore";
 import type { BlogPost } from "../../admin/storage/types";
 import { slugify } from "../../admin/utils/slug";
 
@@ -52,6 +53,7 @@ export default function AdminBlogEditorPage() {
   const [slugManual, setSlugManual] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!isNew && existing) {
@@ -84,7 +86,7 @@ export default function AdminBlogEditorPage() {
     setSaved(false);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.title.trim()) {
       setError("Le titre est obligatoire.");
       return;
@@ -123,7 +125,16 @@ export default function AdminBlogEditorPage() {
       paragraphs,
     };
 
-    upsertBlogPost(post);
+    setSaving(true);
+    const result = await upsertBlogPostAsync(post);
+    setSaving(false);
+
+    if (!result.ok) {
+      setError(`Erreur Firestore : ${result.error}`);
+      setSaved(false);
+      return;
+    }
+
     setError("");
     setSaved(true);
 
@@ -140,7 +151,7 @@ export default function AdminBlogEditorPage() {
           <Link to="/admin/blog" className="text-sm font-medium text-brand-blue hover:underline">
             ← Retour au blog
           </Link>
-          {saved && <span className="text-sm text-brand-teal">Enregistré ✓</span>}
+          {saved && <span className="text-sm text-brand-teal">Enregistré dans Firestore ✓</span>}
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
@@ -194,12 +205,20 @@ Deuxième paragraphe..."
                     onChange={(e) => updateField("date", e.target.value)}
                   />
                 </FormField>
-                <FormField label="Image de couverture (URL)">
-                  <TextInput
+                <FormField label="Image de couverture">
+                  <ImageUpload
                     value={form.coverImage}
-                    onChange={(e) => updateField("coverImage", e.target.value)}
-                    placeholder="/images/blog/..."
+                    onChange={(url) => updateField("coverImage", url)}
+                    folder="blog"
+                    label="Photo de couverture"
                   />
+                  <div className="mt-3">
+                    <TextInput
+                      value={form.coverImage}
+                      onChange={(e) => updateField("coverImage", e.target.value)}
+                      placeholder="/images/blog/... ou URL Firebase Storage"
+                    />
+                  </div>
                 </FormField>
               </div>
             </AdminCard>
@@ -225,8 +244,8 @@ Deuxième paragraphe..."
 
             {error && <p className="text-sm text-brand-coral">{error}</p>}
 
-            <AdminButton className="w-full" onClick={handleSave}>
-              Enregistrer l'article
+            <AdminButton className="w-full" onClick={handleSave} disabled={saving}>
+              {saving ? "Enregistrement…" : "Enregistrer dans Firestore"}
             </AdminButton>
           </div>
         </div>

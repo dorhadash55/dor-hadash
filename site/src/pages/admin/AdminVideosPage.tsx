@@ -2,7 +2,7 @@ import { useState } from "react";
 import AdminHeader from "../../admin/components/AdminHeader";
 import { AdminButton, AdminCard, EmptyState, FormField, TextArea, TextInput } from "../../admin/components/AdminUi";
 import { useVideos } from "../../admin/hooks/useAdminContent";
-import { saveVideos } from "../../admin/storage/contentStore";
+import { saveVideosAsync } from "../../admin/storage/contentStore";
 import type { VideoTestimonial } from "../../admin/storage/types";
 import { extractYoutubeId, youtubeEmbedUrl, youtubeThumbnailUrl } from "../../admin/utils/youtube";
 
@@ -19,6 +19,8 @@ export default function AdminVideosPage() {
   const [form, setForm] = useState<VideoForm>(emptyForm());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const youtubeId = extractYoutubeId(form.youtubeUrl);
 
@@ -26,9 +28,27 @@ export default function AdminVideosPage() {
     setForm(emptyForm());
     setEditingId(null);
     setError("");
+    setSaved(false);
   };
 
-  const handleSubmit = () => {
+  const persistVideos = async (next: VideoTestimonial[]) => {
+    setSaving(true);
+    setError("");
+    setSaved(false);
+
+    const result = await saveVideosAsync(next);
+    setSaving(false);
+
+    if (!result.ok) {
+      setError(`Erreur Firestore : ${result.error}`);
+      return false;
+    }
+
+    setSaved(true);
+    return true;
+  };
+
+  const handleSubmit = async () => {
     const id = extractYoutubeId(form.youtubeUrl);
     if (!form.title.trim()) {
       setError("Le titre est obligatoire.");
@@ -50,8 +70,8 @@ export default function AdminVideosPage() {
       ? videos.map((v) => (v.id === editingId ? entry : v))
       : [entry, ...videos];
 
-    saveVideos(next);
-    resetForm();
+    const ok = await persistVideos(next);
+    if (ok) resetForm();
   };
 
   const startEdit = (video: VideoTestimonial) => {
@@ -62,26 +82,33 @@ export default function AdminVideosPage() {
       caption: video.caption,
     });
     setError("");
+    setSaved(false);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!confirm("Supprimer ce témoignage vidéo ?")) return;
-    saveVideos(videos.filter((v) => v.id !== id));
+    await persistVideos(videos.filter((v) => v.id !== id));
     if (editingId === id) resetForm();
   };
 
-  const moveVideo = (index: number, direction: -1 | 1) => {
+  const moveVideo = async (index: number, direction: -1 | 1) => {
     const next = [...videos];
     const target = index + direction;
     if (target < 0 || target >= next.length) return;
     [next[index], next[target]] = [next[target], next[index]];
-    saveVideos(next);
+    await persistVideos(next);
   };
 
   return (
     <>
       <AdminHeader title="Témoignages" />
       <main className="flex-1 space-y-6 p-4 sm:p-6">
+        {saved && (
+          <p className="rounded-lg bg-brand-teal/10 px-4 py-3 text-sm text-brand-teal">
+            Vidéo enregistrée dans Firestore ✓
+          </p>
+        )}
+
         <div className="grid gap-6 xl:grid-cols-2">
           <AdminCard title={editingId ? "Modifier la vidéo" : "Ajouter une vidéo YouTube"}>
             <div className="space-y-4">
@@ -116,11 +143,15 @@ export default function AdminVideosPage() {
               {error && <p className="text-sm text-brand-coral">{error}</p>}
 
               <div className="flex flex-wrap gap-2">
-                <AdminButton onClick={handleSubmit}>
-                  {editingId ? "Enregistrer" : "Ajouter la vidéo"}
+                <AdminButton onClick={handleSubmit} disabled={saving}>
+                  {saving
+                    ? "Enregistrement…"
+                    : editingId
+                      ? "Enregistrer dans Firestore"
+                      : "Ajouter dans Firestore"}
                 </AdminButton>
                 {editingId && (
-                  <AdminButton variant="secondary" onClick={resetForm}>
+                  <AdminButton variant="secondary" onClick={resetForm} disabled={saving}>
                     Annuler
                   </AdminButton>
                 )}
@@ -185,20 +216,24 @@ export default function AdminVideosPage() {
                     <p className="mt-1 text-xs text-gray-400">ID : {video.youtubeId}</p>
                   </div>
                   <div className="flex flex-wrap items-start gap-2">
-                    <AdminButton variant="ghost" onClick={() => moveVideo(index, -1)} disabled={index === 0}>
+                    <AdminButton
+                      variant="ghost"
+                      onClick={() => moveVideo(index, -1)}
+                      disabled={index === 0 || saving}
+                    >
                       ↑
                     </AdminButton>
                     <AdminButton
                       variant="ghost"
                       onClick={() => moveVideo(index, 1)}
-                      disabled={index === videos.length - 1}
+                      disabled={index === videos.length - 1 || saving}
                     >
                       ↓
                     </AdminButton>
-                    <AdminButton variant="secondary" onClick={() => startEdit(video)}>
+                    <AdminButton variant="secondary" onClick={() => startEdit(video)} disabled={saving}>
                       Modifier
                     </AdminButton>
-                    <AdminButton variant="danger" onClick={() => handleDelete(video.id)}>
+                    <AdminButton variant="danger" onClick={() => handleDelete(video.id)} disabled={saving}>
                       Supprimer
                     </AdminButton>
                   </div>

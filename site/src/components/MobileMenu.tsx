@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { NavLink } from "react-router-dom";
 import { mainNav, siteInfo, type NavItem } from "../content/site";
@@ -155,7 +155,13 @@ function MobileNavLink({
 }
 
 export default function MobileMenu({ open, onClose }: MobileMenuProps) {
-  if (typeof document === "undefined") return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return createPortal(
     <>

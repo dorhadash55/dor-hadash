@@ -6,6 +6,7 @@ import Footer from "./Footer";
 import MobileCtaBar from "./MobileCtaBar";
 import WhatsAppButton from "./WhatsAppButton";
 import { siteInfo } from "../content/site";
+import ContentSyncInit from "./ContentSyncInit";
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
@@ -29,6 +30,7 @@ export default function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <ContentSyncInit />
       <Head>
         <script type="application/ld+json">{JSON.stringify(organizationJsonLd)}</script>
       </Head>
