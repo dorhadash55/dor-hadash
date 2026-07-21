@@ -1,14 +1,25 @@
 import { isFirebaseConfigured } from "../firebase/config";
+import { useAuth } from "../auth/AuthContext";
 
 export default function FirebaseBanner() {
+  const { canWriteToFirestore, usesFirebaseAuth } = useAuth();
+
   if (!isFirebaseConfigured()) {
     return (
       <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-        <strong>Mode local</strong> — Les données sont stockées dans le navigateur (localStorage).
-        Configurez Firebase pour synchroniser le contenu en production.{" "}
+        <strong>Mode local</strong> — Configurez Firebase pour synchroniser le contenu en production.{" "}
         <a href="/admin/settings" className="font-semibold underline">
           Voir les instructions
         </a>
+      </div>
+    );
+  }
+
+  if (usesFirebaseAuth && !canWriteToFirestore) {
+    return (
+      <div className="border-b border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+        <strong>Accès lecture seule</strong> — Connectez-vous avec Google pour enregistrer dans
+        Firestore (vidéos, blog, paramètres).
       </div>
     );
   }

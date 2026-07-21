@@ -12,17 +12,18 @@ import {
   getRedirectResult,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signInWithRedirect,
   signOut,
+  type User,
 } from "firebase/auth";
 import { getFirebaseAuth, isFirebaseConfigured } from "../firebase/config";
-import { isAllowedAdminEmail } from "./adminAccess";
+import { getDefaultAdminEmail, isAllowedAdminEmail } from "./adminAccess";
 
 const AUTH_KEY = "dor-hadash:admin-auth";
 const DEFAULT_PASSWORD = "dorhadash-admin";
 
 type LoginInput = {
-  email?: string;
   password: string;
 };
 
@@ -34,6 +35,7 @@ type AuthContextValue = {
   isAuthenticated: boolean;
   isLoading: boolean;
   usesFirebaseAuth: boolean;
+  canWriteToFirestore: boolean;
   userEmail: string | null;
   login: (input: LoginInput) => Promise<LoginResult>;
   loginWithGoogle: () => Promise<LoginResult>;
@@ -42,33 +44,59 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function readLocalAuth(): boolean {
+function readPasswordSession(): boolean {
   if (typeof window === "undefined") return false;
   return sessionStorage.getItem(AUTH_KEY) === "1";
 }
 
-async function ensureAllowedAdmin(email: string | null | undefined): Promise<LoginResult> {
-  const auth = getFirebaseAuth();
-  if (!auth) return { ok: false, reason: "invalid" };
+function setPasswordSession(active: boolean) {
+  if (typeof window === "undefined") return;
+  if (active) sessionStorage.setItem(AUTH_KEY, "1");
+  else sessionStorage.removeItem(AUTH_KEY);
+}
 
-  if (!isAllowedAdminEmail(email)) {
+function getExpectedPassword() {
+  return (import.meta.env.VITE_ADMIN_PASSWORD as string | undefined) || DEFAULT_PASSWORD;
+}
+
+async function ensureAllowedAdmin(user: User | null): Promise<LoginResult> {
+  const auth = getFirebaseAuth();
+  if (!auth || !user) return { ok: false, reason: "invalid" };
+
+  if (!isAllowedAdminEmail(user.email)) {
     await signOut(auth);
     return { ok: false, reason: "unauthorized" };
   }
 
+  setPasswordSession(false);
   return { ok: true };
+}
+
+function isPopupFallbackError(code: string) {
+  return (
+    code === "auth/popup-blocked" ||
+    code === "auth/operation-not-supported-in-this-environment" ||
+    code === "auth/web-storage-unsupported"
+  );
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const usesFirebaseAuth = isFirebaseConfigured();
-  const [isAuthenticated, setIsAuthenticated] = useState(() =>
-    usesFirebaseAuth ? false : readLocalAuth(),
+  const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
+  const [passwordSession, setPasswordSessionState] = useState(() =>
+    usesFirebaseAuth ? readPasswordSession() : readPasswordSession(),
   );
   const [isLoading, setIsLoading] = useState(usesFirebaseAuth);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  const isAuthenticated = Boolean(firebaseUser) || passwordSession;
+  const canWriteToFirestore = Boolean(firebaseUser);
+  const userEmail = firebaseUser?.email ?? null;
 
   useEffect(() => {
-    if (!usesFirebaseAuth) return;
+    if (!usesFirebaseAuth) {
+      setIsLoading(false);
+      return;
+    }
 
     const auth = getFirebaseAuth();
     if (!auth) {
@@ -76,50 +104,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    void getRedirectResult(auth).then(async (result) => {
-      if (result?.user) {
-        await ensureAllowedAdmin(result.user.email);
-      }
-    });
+    void getRedirectResult(auth)
+      .then(async (result) => {
+        if (result?.user) {
+          await ensureAllowedAdmin(result.user);
+        }
+      })
+      .catch((error) => {
+        console.warn("[Dor Hadash] Google redirect:", error);
+      });
 
     return onAuthStateChanged(auth, (user) => {
       if (user && !isAllowedAdminEmail(user.email)) {
         void signOut(auth);
-        setIsAuthenticated(false);
-        setUserEmail(null);
+        setFirebaseUser(null);
         setIsLoading(false);
         return;
       }
 
-      setUserEmail(user?.email ?? null);
-      setIsAuthenticated(Boolean(user));
+      if (user) setPasswordSession(false);
+      setFirebaseUser(user);
       setIsLoading(false);
     });
   }, [usesFirebaseAuth]);
 
   const login = useCallback(
-    async ({ email, password }: LoginInput): Promise<LoginResult> => {
+    async ({ password }: LoginInput): Promise<LoginResult> => {
+      if (password !== getExpectedPassword()) {
+        return { ok: false, reason: "invalid" };
+      }
+
       if (usesFirebaseAuth) {
         const auth = getFirebaseAuth();
-        if (!auth || !email) return { ok: false, reason: "invalid" };
+        const email = getDefaultAdminEmail();
 
-        if (!isAllowedAdminEmail(email)) {
-          return { ok: false, reason: "unauthorized" };
-        }
-
-        try {
-          const credential = await signInWithEmailAndPassword(auth, email, password);
-          return ensureAllowedAdmin(credential.user.email);
-        } catch {
-          return { ok: false, reason: "invalid" };
+        if (auth) {
+          try {
+            const credential = await signInWithEmailAndPassword(auth, email, password);
+            return ensureAllowedAdmin(credential.user);
+          } catch {
+            // Mot de passe admin OK — accès UI sans Firebase Auth email/password configuré
+            setPasswordSession(true);
+            setPasswordSessionState(true);
+            return { ok: true };
+          }
         }
       }
 
-      const expected = import.meta.env.VITE_ADMIN_PASSWORD || DEFAULT_PASSWORD;
-      if (password !== expected) return { ok: false, reason: "invalid" };
-
-      sessionStorage.setItem(AUTH_KEY, "1");
-      setIsAuthenticated(true);
+      setPasswordSession(true);
+      setPasswordSessionState(true);
       return { ok: true };
     },
     [usesFirebaseAuth],
@@ -135,24 +168,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     provider.setCustomParameters({ prompt: "select_account" });
 
     try {
-      await signInWithRedirect(auth, provider);
-      return { ok: true };
-    } catch {
+      const result = await signInWithPopup(auth, provider);
+      return ensureAllowedAdmin(result.user);
+    } catch (error) {
+      const code = (error as { code?: string }).code ?? "";
+
+      if (code === "auth/popup-closed-by-user") {
+        return { ok: false, reason: "cancelled" };
+      }
+
+      if (isPopupFallbackError(code) || code.startsWith("auth/")) {
+        try {
+          await signInWithRedirect(auth, provider);
+          return { ok: true };
+        } catch {
+          return { ok: false, reason: "invalid" };
+        }
+      }
+
       return { ok: false, reason: "invalid" };
     }
   }, [usesFirebaseAuth]);
 
   const logout = useCallback(async () => {
+    setPasswordSession(false);
+    setPasswordSessionState(false);
+
     if (usesFirebaseAuth) {
       const auth = getFirebaseAuth();
       if (auth) await signOut(auth);
-      setIsAuthenticated(false);
-      setUserEmail(null);
+      setFirebaseUser(null);
       return;
     }
-
-    sessionStorage.removeItem(AUTH_KEY);
-    setIsAuthenticated(false);
   }, [usesFirebaseAuth]);
 
   const value = useMemo(
@@ -160,12 +207,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated,
       isLoading,
       usesFirebaseAuth,
+      canWriteToFirestore,
       userEmail,
       login,
       loginWithGoogle,
       logout,
     }),
-    [isAuthenticated, isLoading, usesFirebaseAuth, userEmail, login, loginWithGoogle, logout],
+    [
+      isAuthenticated,
+      isLoading,
+      usesFirebaseAuth,
+      canWriteToFirestore,
+      userEmail,
+      login,
+      loginWithGoogle,
+      logout,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -175,8 +232,4 @@ export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
-}
-
-export function getDefaultAdminPasswordHint() {
-  return import.meta.env.VITE_ADMIN_PASSWORD ? "(mot de passe configuré dans .env)" : DEFAULT_PASSWORD;
 }

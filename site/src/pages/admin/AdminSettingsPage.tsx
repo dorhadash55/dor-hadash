@@ -218,12 +218,15 @@ export default function AdminSettingsPage() {
                 Console Firebase → Paramètres du projet → Vos applications → Web → copiez la config
               </li>
               <li>
-                Activez <strong>Firestore</strong>, <strong>Storage</strong> et{" "}
-                <strong>Authentication</strong> → <strong>Google</strong>
+                Authentication → <strong>Google</strong> activé + domaines autorisés :{" "}
+                <code className="rounded bg-gray-100 px-1">localhost</code>, votre domaine Vercel{" "}
+                (<code className="rounded bg-gray-100 px-1">*.vercel.app</code>) et{" "}
+                <code className="rounded bg-gray-100 px-1">dor-hadash.com</code>
               </li>
               <li>
-                Connectez-vous avec le compte Google{" "}
-                <code className="rounded bg-gray-100 px-1">dor.hadash55@gmail.com</code>
+                Définissez <code className="rounded bg-gray-100 px-1">VITE_ADMIN_PASSWORD</code> (connexion
+                admin par mot de passe) et <code className="rounded bg-gray-100 px-1">VITE_ADMIN_EMAIL</code>{" "}
+                (compte Google autorisé)
               </li>
               <li>
                 Si erreur « permission-denied » malgré la connexion Google : vérifiez{" "}
@@ -240,7 +243,9 @@ export default function AdminSettingsPage() {
               </li>
             </ol>
             <pre className="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100">
-{`VITE_FIREBASE_API_KEY=...
+{`VITE_ADMIN_PASSWORD=...
+VITE_ADMIN_EMAIL=dor.hadash55@gmail.com
+VITE_FIREBASE_API_KEY=...
 VITE_FIREBASE_AUTH_DOMAIN=...
 VITE_FIREBASE_PROJECT_ID=...
 VITE_FIREBASE_STORAGE_BUCKET=...

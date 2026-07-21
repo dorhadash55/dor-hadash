@@ -1,8 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Head } from "vite-react-ssg";
 import { Link, Navigate, useLocation } from "react-router-dom";
-import { getDefaultAdminEmail } from "../../admin/auth/adminAccess";
-import { getDefaultAdminPasswordHint, useAuth } from "../../admin/auth/AuthContext";
+import { useAuth } from "../../admin/auth/AuthContext";
 
 function GoogleIcon() {
   return (
@@ -27,10 +26,9 @@ function GoogleIcon() {
   );
 }
 
-function LoginForm() {
+export default function AdminLogin() {
   const { isAuthenticated, isLoading, login, loginWithGoogle, usesFirebaseAuth } = useAuth();
   const location = useLocation();
-  const [email, setEmail] = useState(() => (usesFirebaseAuth ? getDefaultAdminEmail() : ""));
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -41,7 +39,7 @@ function LoginForm() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-brand-blue-deep to-brand-blue px-4 text-white">
+      <div className="flex min-h-screen items-center justify-center bg-brand-blue-deep px-4 text-white">
         Chargement…
       </div>
     );
@@ -49,35 +47,32 @@ function LoginForm() {
 
   if (isAuthenticated) return <Navigate to={from} replace />;
 
-  const loginErrorMessage = (reason: "invalid" | "unauthorized") =>
-    reason === "unauthorized"
-      ? "Cet email n'est pas autorisé à accéder à l'admin."
-      : usesFirebaseAuth
-        ? "Connexion impossible. Vérifiez vos identifiants ou réessayez avec Google."
-        : "Mot de passe incorrect.";
+  const handlePasswordLogin = async (e: FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setError("");
+
+    const result = await login({ password });
+    setSubmitting(false);
+
+    if (!result.ok && result.reason !== "cancelled") {
+      setError("Mot de passe incorrect.");
+    }
+  };
 
   const handleGoogleLogin = async () => {
     setGoogleSubmitting(true);
     setError("");
 
     const result = await loginWithGoogle();
-
     setGoogleSubmitting(false);
-    if (!result.ok && result.reason !== "cancelled") {
-      setError(loginErrorMessage(result.reason));
-    }
-  };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setError("");
-
-    const result = await login(usesFirebaseAuth ? { email, password } : { password });
-
-    setSubmitting(false);
-    if (!result.ok && result.reason !== "cancelled") {
-      setError(loginErrorMessage(result.reason));
+    if (!result.ok) {
+      if (result.reason === "unauthorized") {
+        setError("Ce compte Google n'est pas autorisé.");
+      } else if (result.reason !== "cancelled") {
+        setError("Connexion Google impossible. Réessayez ou utilisez le mot de passe.");
+      }
     }
   };
 
@@ -87,61 +82,16 @@ function LoginForm() {
         <title>Connexion admin | Dor Hadash</title>
         <meta name="robots" content="noindex, nofollow" />
       </Head>
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-brand-blue-deep to-brand-blue px-4">
-        <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
+
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-brand-blue-deep to-brand-blue px-4 py-10">
+        <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-xl">
           <div className="text-center">
-            <img src="/images/logo.png" alt="Dor Hadash" className="mx-auto h-16 w-auto" />
-            <h1 className="mt-4 font-heading text-2xl font-semibold text-brand-blue-deep">
-              Espace admin
-            </h1>
-            <p className="mt-2 text-sm text-gray-500">
-              {usesFirebaseAuth
-                ? "Connectez-vous avec votre compte Google administrateur"
-                : "Connectez-vous pour gérer le site"}
-            </p>
+            <img src="/images/logo.png" alt="Dor Hadash" className="mx-auto h-14 w-auto" />
+            <h1 className="mt-4 font-heading text-2xl font-semibold text-brand-blue-deep">Admin</h1>
+            <p className="mt-1 text-sm text-gray-500">Gestion du site Dor Hadash</p>
           </div>
 
-          {usesFirebaseAuth && (
-            <div className="mt-8 space-y-4">
-              <button
-                type="button"
-                onClick={handleGoogleLogin}
-                disabled={busy}
-                className="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-60"
-              >
-                <GoogleIcon />
-                {googleSubmitting ? "Connexion Google…" : "Continuer avec Google"}
-              </button>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-gray-400">ou par email</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <form className={`space-y-4 ${usesFirebaseAuth ? "mt-4" : "mt-8"}`} onSubmit={handleSubmit}>
-            {usesFirebaseAuth && (
-              <div>
-                <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-gray-700">
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                  required
-                  className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
-                />
-              </div>
-            )}
-
+          <form className="mt-8 space-y-4" onSubmit={handlePasswordLogin}>
             <div>
               <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-gray-700">
                 Mot de passe
@@ -152,40 +102,50 @@ function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
+                autoFocus
                 required
-                className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+                placeholder="Entrez le mot de passe admin"
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
               />
             </div>
 
-            {error && <p className="text-sm text-brand-coral">{error}</p>}
+            {error && (
+              <p className="rounded-lg bg-brand-coral/10 px-3 py-2 text-sm text-brand-coral">{error}</p>
+            )}
 
             <button
               type="submit"
               disabled={busy}
-              className="w-full rounded-full bg-brand-blue py-3 text-sm font-semibold text-white hover:bg-brand-blue-dark disabled:opacity-60"
+              className="w-full rounded-full bg-brand-blue py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-blue-dark disabled:opacity-60"
             >
               {submitting ? "Connexion…" : "Se connecter"}
             </button>
           </form>
 
-          {!usesFirebaseAuth && (
-            <p className="mt-6 rounded-lg bg-gray-50 p-3 text-xs text-gray-500">
-              Mode démo — mot de passe par défaut :{" "}
-              <code className="font-mono text-gray-700">{getDefaultAdminPasswordHint()}</code>
-              <br />
-              Configurez Firebase dans <code className="font-mono">.env</code> pour activer
-              Firestore et la connexion Google.
-            </p>
-          )}
-
           {usesFirebaseAuth && (
-            <p className="mt-6 rounded-lg bg-brand-teal/10 p-3 text-xs text-brand-teal">
-              Compte Google autorisé :{" "}
-              <code className="font-mono">{getDefaultAdminEmail()}</code>
-            </p>
+            <>
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200" />
+                </div>
+                <div className="relative flex justify-center text-xs text-gray-400">
+                  <span className="bg-white px-3">ou</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                disabled={busy}
+                className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-60"
+              >
+                <GoogleIcon />
+                {googleSubmitting ? "Redirection Google…" : "Continuer avec Google"}
+              </button>
+            </>
           )}
 
-          <p className="mt-4 text-center">
+          <p className="mt-6 text-center">
             <Link to="/" className="text-sm text-brand-blue hover:underline">
               ← Retour au site
             </Link>
@@ -194,8 +154,4 @@ function LoginForm() {
       </div>
     </>
   );
-}
-
-export default function AdminLogin() {
-  return <LoginForm />;
 }
