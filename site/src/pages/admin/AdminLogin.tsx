@@ -1,7 +1,7 @@
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { Head } from "vite-react-ssg";
 import { Link, Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "../../admin/auth/AuthContext";
+import { useAuth, formatGoogleAuthError, GOOGLE_AUTH_ERROR_KEY } from "../../admin/auth/AuthContext";
 
 function GoogleIcon() {
   return (
@@ -34,6 +34,14 @@ export default function AdminLogin() {
   const [submitting, setSubmitting] = useState(false);
   const [googleSubmitting, setGoogleSubmitting] = useState(false);
 
+  useEffect(() => {
+    const stored = sessionStorage.getItem(GOOGLE_AUTH_ERROR_KEY);
+    if (stored) {
+      sessionStorage.removeItem(GOOGLE_AUTH_ERROR_KEY);
+      setError(stored);
+    }
+  }, []);
+
   const from = (location.state as { from?: string } | null)?.from ?? "/admin";
   const busy = submitting || googleSubmitting;
 
@@ -64,15 +72,19 @@ export default function AdminLogin() {
     setGoogleSubmitting(true);
     setError("");
 
-    const result = await loginWithGoogle();
-    setGoogleSubmitting(false);
-
-    if (!result.ok) {
-      if (result.reason === "unauthorized") {
-        setError("Ce compte Google n'est pas autorisé.");
-      } else if (result.reason !== "cancelled") {
-        setError("Connexion Google impossible. Réessayez ou utilisez le mot de passe.");
+    try {
+      const result = await loginWithGoogle();
+      if (!result.ok) {
+        if (result.reason === "unauthorized") {
+          setError(result.message ?? "Ce compte Google n'est pas autorisé.");
+        } else if (result.reason !== "cancelled") {
+          setError(result.message ?? "Connexion Google impossible. Réessayez ou utilisez le mot de passe.");
+        }
       }
+    } catch (error) {
+      setError(formatGoogleAuthError(error));
+    } finally {
+      setGoogleSubmitting(false);
     }
   };
 
@@ -83,11 +95,11 @@ export default function AdminLogin() {
         <meta name="robots" content="noindex, nofollow" />
       </Head>
 
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-brand-blue-deep to-brand-blue px-4 py-10">
-        <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-xl">
+      <div className="flex min-h-dvh items-center justify-center bg-gradient-to-br from-brand-blue-deep to-brand-blue px-4 py-6 sm:py-10">
+        <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl sm:p-8">
           <div className="text-center">
             <img src="/images/logo.png" alt="Dor Hadash" className="mx-auto h-14 w-auto" />
-            <h1 className="mt-4 font-heading text-2xl font-semibold text-brand-blue-deep">Admin</h1>
+            <h1 className="mt-4 font-heading text-xl font-semibold text-brand-blue-deep sm:text-2xl">Admin</h1>
             <p className="mt-1 text-sm text-gray-500">Gestion du site Dor Hadash</p>
           </div>
 
@@ -102,10 +114,9 @@ export default function AdminLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
-                autoFocus
                 required
                 placeholder="Entrez le mot de passe admin"
-                className="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 text-base focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
               />
             </div>
 

@@ -5,9 +5,9 @@ export default function AdminHeader({ title }: { title: string }) {
   const { logout, usesFirebaseAuth, userEmail } = useAuth();
 
   return (
-    <header className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-4 sm:px-6">
-      <h1 className="font-heading text-xl font-semibold text-brand-blue-deep">{title}</h1>
-      <div className="flex items-center gap-3">
+    <header className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-200 bg-white px-3 py-3 sm:gap-3 sm:px-6 sm:py-4">
+      <h1 className="min-w-0 font-heading text-lg font-semibold text-brand-blue-deep sm:text-xl">{title}</h1>
+      <div className="flex shrink-0 items-center gap-2 sm:gap-3">
         {usesFirebaseAuth && userEmail && (
           <span className="hidden text-xs text-brand-teal sm:inline">
             Connecté : {userEmail}

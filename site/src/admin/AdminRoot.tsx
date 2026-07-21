@@ -7,7 +7,9 @@ export default function AdminRoot() {
   return (
     <AuthProvider>
       <ContentSyncInit />
-      <Outlet />
+      <div className="admin-shell min-h-dvh w-full max-w-[100vw]">
+        <Outlet />
+      </div>
     </AuthProvider>
   );
 }

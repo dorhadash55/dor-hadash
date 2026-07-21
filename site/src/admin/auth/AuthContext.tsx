@@ -21,6 +21,7 @@ import { getFirebaseAuth, isFirebaseConfigured } from "../firebase/config";
 import { getDefaultAdminEmail, isAllowedAdminEmail } from "./adminAccess";
 
 const AUTH_KEY = "dor-hadash:admin-auth";
+export const GOOGLE_AUTH_ERROR_KEY = "dor-hadash:google-auth-error";
 const DEFAULT_PASSWORD = "dorhadash-admin";
 
 type LoginInput = {
@@ -29,7 +30,7 @@ type LoginInput = {
 
 export type LoginResult =
   | { ok: true }
-  | { ok: false; reason: "invalid" | "unauthorized" | "cancelled" };
+  | { ok: false; reason: "invalid" | "unauthorized" | "cancelled"; message?: string };
 
 type AuthContextValue = {
   isAuthenticated: boolean;
@@ -76,8 +77,34 @@ function isPopupFallbackError(code: string) {
   return (
     code === "auth/popup-blocked" ||
     code === "auth/operation-not-supported-in-this-environment" ||
-    code === "auth/web-storage-unsupported"
+    code === "auth/web-storage-unsupported" ||
+    code === "auth/cancelled-popup-request"
   );
+}
+
+function preferGoogleRedirect(): boolean {
+  if (typeof window === "undefined") return false;
+  const host = window.location.hostname;
+  return host !== "localhost" && host !== "127.0.0.1";
+}
+
+export function formatGoogleAuthError(error: unknown): string {
+  const code = (error as { code?: string }).code ?? "";
+
+  if (code === "auth/unauthorized-domain") {
+    const host = typeof window !== "undefined" ? window.location.hostname : "votre-domaine";
+    return `Domaine non autorisé (${host}). Firebase Console → Authentication → Settings → Authorized domains → ajoutez ce domaine.`;
+  }
+  if (code === "auth/popup-closed-by-user") {
+    return "";
+  }
+  if (code === "auth/unauthorized" || code === "auth/invalid-credential") {
+    return "Connexion Google refusée. Vérifiez que Google est activé dans Firebase Authentication.";
+  }
+
+  const message = error instanceof Error ? error.message : "";
+  if (message) return message;
+  return "Connexion Google impossible. Réessayez ou utilisez le mot de passe.";
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -107,11 +134,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void getRedirectResult(auth)
       .then(async (result) => {
         if (result?.user) {
-          await ensureAllowedAdmin(result.user);
+          const loginResult = await ensureAllowedAdmin(result.user);
+          if (!loginResult.ok && loginResult.message) {
+            sessionStorage.setItem(GOOGLE_AUTH_ERROR_KEY, loginResult.message);
+          }
         }
       })
       .catch((error) => {
         console.warn("[Dor Hadash] Google redirect:", error);
+        sessionStorage.setItem(GOOGLE_AUTH_ERROR_KEY, formatGoogleAuthError(error));
       });
 
     return onAuthStateChanged(auth, (user) => {
@@ -168,6 +199,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     provider.setCustomParameters({ prompt: "select_account" });
 
     try {
+      if (preferGoogleRedirect()) {
+        await signInWithRedirect(auth, provider);
+        return { ok: true };
+      }
+
       const result = await signInWithPopup(auth, provider);
       return ensureAllowedAdmin(result.user);
     } catch (error) {
@@ -177,16 +213,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { ok: false, reason: "cancelled" };
       }
 
-      if (isPopupFallbackError(code) || code.startsWith("auth/")) {
+      if (isPopupFallbackError(code)) {
         try {
           await signInWithRedirect(auth, provider);
           return { ok: true };
-        } catch {
+        } catch (redirectError) {
+          console.warn("[Dor Hadash] Google redirect:", redirectError);
           return { ok: false, reason: "invalid" };
         }
       }
 
-      return { ok: false, reason: "invalid" };
+      console.warn("[Dor Hadash] Google sign-in:", error);
+      return {
+        ok: false,
+        reason: "invalid",
+        message: formatGoogleAuthError(error),
+      };
     }
   }, [usesFirebaseAuth]);
 

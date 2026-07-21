@@ -242,7 +242,7 @@ export default function AdminSettingsPage() {
                 dans Vercel → Settings → Environment Variables (production)
               </li>
             </ol>
-            <pre className="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-gray-100">
+            <pre className="max-w-full overflow-x-auto rounded-lg bg-gray-900 p-3 text-xs text-gray-100 sm:p-4">
 {`VITE_ADMIN_PASSWORD=...
 VITE_ADMIN_EMAIL=dor.hadash55@gmail.com
 VITE_FIREBASE_API_KEY=...
