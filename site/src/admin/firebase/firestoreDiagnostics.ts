@@ -60,12 +60,11 @@ export async function testFirestoreWrite(): Promise<{
 
   try {
     await setDoc(
-      doc(db, "site", "content"),
+      doc(db, "site", "_connectivity_test"),
       {
-        videos: [],
-        blogPosts: [],
-        siteSettings: null,
-        _connectivityTest: new Date().toISOString(),
+        ok: true,
+        testedAt: new Date().toISOString(),
+        testedBy: user.email ?? user.uid,
       },
       { merge: true },
     );

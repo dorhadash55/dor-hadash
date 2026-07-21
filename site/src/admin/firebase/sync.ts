@@ -18,14 +18,35 @@ import type { AdminContent, ContactSubmission, SiteSettings, VideoTestimonial } 
 import type { BlogPost } from "../storage/types";
 
 type SiteDocument = {
-  videos: VideoTestimonial[];
-  blogPosts: BlogPost[];
-  siteSettings: SiteSettings | null;
+  videos?: unknown;
+  blogPosts?: BlogPost[];
+  siteSettings?: SiteSettings | null;
 };
 
 let syncStarted = false;
 let autoSeedAttempted = false;
 let contactsUnsubscribe: Unsubscribe | null = null;
+
+function normalizeVideos(raw: unknown): VideoTestimonial[] {
+  if (!Array.isArray(raw)) return [];
+
+  return raw
+    .map((item) => {
+      if (!item || typeof item !== "object") return null;
+      const row = item as Record<string, unknown>;
+      const youtubeId = String(row.youtubeId ?? row.youtube_id ?? "").trim();
+      const title = String(row.title ?? "").trim();
+      if (!youtubeId || !title) return null;
+
+      return {
+        id: String(row.id ?? youtubeId),
+        youtubeId,
+        title,
+        caption: String(row.caption ?? ""),
+      };
+    })
+    .filter((video): video is VideoTestimonial => video !== null);
+}
 
 function buildSitePayload(data: {
   videos: VideoTestimonial[];
@@ -124,6 +145,15 @@ export function startFirestoreSync(
       }
 
       const data = snapshot.data() as SiteDocument;
+      const videos = normalizeVideos(data.videos);
+      const blogPosts = data.blogPosts?.length ? data.blogPosts : seed.blogPosts;
+      const siteSettings = data.siteSettings ?? null;
+
+      applyContent({ videos, blogPosts, siteSettings });
+
+      if (import.meta.env.DEV) {
+        console.info(`[Dor Hadash] Firestore : ${videos.length} vidéo(s) chargée(s).`);
+      }
 
       if (!autoSeedAttempted && !data.blogPosts?.length && isAdminUser()) {
         autoSeedAttempted = true;
@@ -131,7 +161,7 @@ export function startFirestoreSync(
           await setDoc(
             siteRef,
             buildSitePayload({
-              videos: data.videos ?? seed.videos,
+              videos,
               blogPosts: seed.blogPosts,
               siteSettings: data.siteSettings ?? seed.siteSettings,
             }),
@@ -140,18 +170,14 @@ export function startFirestoreSync(
         } catch (error) {
           console.warn("Firestore auto-seed blog:", error);
         }
-        return;
       }
-
-      applyContent({
-        videos: data.videos ?? [],
-        blogPosts: data.blogPosts?.length ? data.blogPosts : seed.blogPosts,
-        siteSettings: data.siteSettings ?? null,
-      });
     },
     (error) => {
-      console.warn("Firestore site/content:", error.message);
-      applySeedLocally(applyContent, getSeedContent);
+      console.warn(
+        "[Dor Hadash] Impossible de lire site/content :",
+        error.message,
+        "→ Vérifiez App Check (Unenforced) et les variables VITE_FIREBASE_* sur Vercel.",
+      );
     },
   );
 
@@ -189,6 +215,24 @@ export async function saveSiteDocument(data: {
     }
     throw error;
   }
+}
+
+export async function saveSiteSettingsDocument(settings: SiteSettings) {
+  const db = getDb();
+  if (!db) throw new Error("Firestore indisponible.");
+
+  const auth = getFirebaseAuth();
+  if (!auth?.currentUser) {
+    throw new Error("Connectez-vous à l'admin pour enregistrer dans Firestore.");
+  }
+
+  await ensureFirebaseAuthReady();
+
+  await setDoc(
+    doc(db, "site", "content"),
+    { siteSettings: settings, updatedAt: serverTimestamp() },
+    { merge: true },
+  );
 }
 
 export async function pushFullContentToFirestore(content: AdminContent) {

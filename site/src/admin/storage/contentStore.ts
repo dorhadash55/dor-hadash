@@ -7,6 +7,7 @@ import {
   deleteContactSubmissionDoc,
   pushFullContentToFirestore,
   saveSiteDocument,
+  saveSiteSettingsDocument,
   startFirestoreSync,
   syncContactSubmissions,
   updateContactSubmissionDoc,
@@ -112,6 +113,7 @@ function applyRemoteContent(partial: Partial<AdminContent>) {
     ...(partial.blogPosts !== undefined && { blogPosts: partial.blogPosts }),
     ...(partial.siteSettings !== undefined && { siteSettings: partial.siteSettings }),
   };
+  persistLocalStorage();
   emit();
 }
 
@@ -130,6 +132,7 @@ function persistSiteContent() {
     }).catch((error) => {
       console.error("Erreur enregistrement Firestore:", error);
     });
+    persistLocalStorage();
   } else {
     persistLocalStorage();
   }
@@ -145,6 +148,7 @@ async function persistSiteContentAsync() {
         blogPosts: cache.blogPosts,
         siteSettings: cache.siteSettings,
       });
+      persistLocalStorage();
     } else {
       persistLocalStorage();
     }
@@ -180,6 +184,9 @@ export function initContentSync() {
   syncInitialized = true;
 
   if (isFirebaseConfigured()) {
+    // Affichage immédiat du dernier contenu connu, puis sync Firestore
+    refreshCache();
+    emit();
     startFirestoreSync(applyRemoteContent, defaultContent);
     return;
   }
@@ -315,7 +322,15 @@ export function deleteContactSubmission(id: string) {
 
 export function saveSiteSettings(settings: SiteSettings) {
   cache = { ...cache, siteSettings: settings };
-  persistSiteContent();
+  if (isFirebaseConfigured()) {
+    void saveSiteSettingsDocument(settings).catch((error) => {
+      console.error("Erreur paramètres Firestore:", error);
+    });
+    persistLocalStorage();
+  } else {
+    persistLocalStorage();
+  }
+  emit();
 }
 
 export function resetContentToDefaults() {
