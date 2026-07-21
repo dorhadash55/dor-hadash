@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { useBlogPosts } from "../admin/hooks/useAdminContent";
 import type { BlogPost } from "../admin/storage/types";
+import Reveal from "./Reveal";
+import SectionHeading from "./SectionHeading";
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
@@ -107,38 +109,30 @@ export default function BlogTeaser() {
   const [featured, ...rest] = latest;
 
   return (
-    <section className="bg-gray-50 py-16 sm:py-24">
+    <section className="section-shell bg-brand-cream">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <span className="text-sm font-semibold uppercase tracking-wider text-brand-teal">Le blog</span>
-            <h2 className="mt-3 font-heading text-2xl font-semibold text-brand-blue-deep sm:text-3xl lg:text-4xl">
-              Conseils et actualités
-            </h2>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-gray-600 sm:text-base">
-              Conseils pratiques, actualités des villes et retours d'expérience pour préparer votre Alya.
-            </p>
-          </div>
-          <Link
-            to="/blog"
-            className="inline-flex w-fit items-center gap-1 rounded-full border border-brand-blue/20 bg-white px-4 py-2 text-sm font-semibold text-brand-blue shadow-sm transition-colors hover:border-brand-blue/40 hover:bg-brand-blue/5"
-          >
-            Tous les articles
-            <span aria-hidden="true">→</span>
-          </Link>
-        </div>
+        <Reveal>
+          <SectionHeading
+            label="Le blog"
+            title="Conseils et actualités"
+            description="Conseils pratiques, actualités des villes et retours d'expérience pour préparer votre Alya."
+            action={
+              <Link to="/blog" className="btn-outline">
+                Tous les articles →
+              </Link>
+            }
+          />
+        </Reveal>
 
         {latest.length > 0 ? (
           <>
-            {/* Mobile : à la une + liste compacte */}
-            <div className="mt-8 flex flex-col gap-3 sm:hidden">
+            <div className="mt-10 flex flex-col gap-3 sm:hidden">
               {featured && <FeaturedBlogCard post={featured} />}
               {rest.map((post) => (
                 <CompactBlogCard key={post.slug} post={post} />
               ))}
             </div>
 
-            {/* Desktop : grille */}
             <div className="mt-12 hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-3">
               {latest.map((post) => (
                 <GridBlogCard key={post.slug} post={post} />
@@ -146,7 +140,7 @@ export default function BlogTeaser() {
             </div>
           </>
         ) : (
-          <div className="mt-10 rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center text-gray-500">
+          <div className="mt-10 rounded-2xl border border-dashed border-brand-sand bg-white p-10 text-center text-gray-500">
             Les premiers articles arrivent bientôt.
           </div>
         )}

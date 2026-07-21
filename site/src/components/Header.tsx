@@ -28,9 +28,9 @@ export default function Header() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100 shadow-sm pt-[env(safe-area-inset-top,0px)]">
+    <header className="sticky top-0 z-50 border-b border-brand-blue/8 bg-brand-cream/90 backdrop-blur-md pt-[env(safe-area-inset-top,0px)]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid h-24 grid-cols-[2.75rem_1fr_2.75rem] items-center lg:flex lg:justify-between">
+        <div className="grid h-[4.5rem] grid-cols-[2.75rem_1fr_2.75rem] items-center sm:h-20 lg:flex lg:justify-between">
           <button
             type="button"
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
@@ -61,7 +61,7 @@ export default function Header() {
 
           <div className="col-start-3 lg:hidden" aria-hidden="true" />
 
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-0.5">
             {mainNav.map((item) =>
               item.children ? (
                 <div
@@ -73,8 +73,10 @@ export default function Header() {
                   <NavLink
                     to={item.path}
                     className={({ isActive }) =>
-                      `px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                        isActive ? "text-brand-blue" : "text-gray-700 hover:text-brand-blue"
+                      `relative px-3.5 py-2 text-sm font-medium transition-colors after:absolute after:inset-x-3.5 after:-bottom-px after:h-0.5 after:rounded-full after:bg-brand-teal after:transition-opacity ${
+                        isActive
+                          ? "text-brand-blue after:opacity-100"
+                          : "text-gray-700 hover:text-brand-blue after:opacity-0"
                       }`
                     }
                   >
@@ -107,8 +109,10 @@ export default function Header() {
                   key={item.path}
                   to={item.path}
                   className={({ isActive }) =>
-                    `px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                      isActive ? "text-brand-blue" : "text-gray-700 hover:text-brand-blue"
+                    `relative px-3.5 py-2 text-sm font-medium transition-colors after:absolute after:inset-x-3.5 after:-bottom-px after:h-0.5 after:rounded-full after:bg-brand-teal after:transition-opacity ${
+                      isActive
+                        ? "text-brand-blue after:opacity-100"
+                        : "text-gray-700 hover:text-brand-blue after:opacity-0"
                     }`
                   }
                 >
@@ -118,7 +122,7 @@ export default function Header() {
             )}
             <NavLink
               to="/nous-contacter"
-              className="ml-2 rounded-full bg-brand-blue px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-blue-dark"
+              className="ml-3 rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-brand-blue/25 transition-all hover:bg-brand-blue-dark hover:shadow-md"
             >
               M'inscrire
             </NavLink>

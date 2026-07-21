@@ -14,7 +14,7 @@ export default function VideoTeaserCard({
       onClick={onPlay}
       className="group w-full text-left transition-transform hover:-translate-y-0.5"
     >
-      <div className="overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition-shadow group-hover:shadow-md">
+      <div className="overflow-hidden rounded-2xl border border-brand-sand bg-white shadow-sm transition-shadow group-hover:shadow-md">
         <div className="relative aspect-[16/10] w-full overflow-hidden bg-brand-blue-deep">
           <img
             src={youtubeThumbnailUrl(video.youtubeId)}

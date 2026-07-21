@@ -1,5 +1,6 @@
 import SeoHead from "../components/SeoHead";
 import Hero from "../components/Hero";
+import HomeStats from "../components/HomeStats";
 import MethodeSection from "../components/MethodeSection";
 import ServicesSection from "../components/ServicesSection";
 import CitiesTeaser from "../components/CitiesTeaser";
@@ -12,6 +13,7 @@ export default function Home() {
     <>
       <SeoHead />
       <Hero />
+      <HomeStats />
       <MethodeSection />
       <ServicesSection />
       <CitiesTeaser />
