@@ -9,8 +9,10 @@ import {
 } from "react";
 import {
   GoogleAuthProvider,
+  browserLocalPersistence,
   getRedirectResult,
   onAuthStateChanged,
+  setPersistence,
   signInWithEmailAndPassword,
   signInWithPopup,
   signInWithRedirect,
@@ -40,6 +42,7 @@ type AuthContextValue = {
   userEmail: string | null;
   login: (input: LoginInput) => Promise<LoginResult>;
   loginWithGoogle: () => Promise<LoginResult>;
+  connectGoogleForFirestore: () => Promise<LoginResult>;
   logout: () => Promise<void>;
 };
 
@@ -66,7 +69,11 @@ async function ensureAllowedAdmin(user: User | null): Promise<LoginResult> {
 
   if (!isAllowedAdminEmail(user.email)) {
     await signOut(auth);
-    return { ok: false, reason: "unauthorized" };
+    return {
+      ok: false,
+      reason: "unauthorized",
+      message: `Ce compte Google (${user.email}) n'est pas autorisé. Utilisez ${getDefaultAdminEmail()}.`,
+    };
   }
 
   setPasswordSession(false);
@@ -131,32 +138,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    void getRedirectResult(auth)
-      .then(async (result) => {
+    let unsubAuth: (() => void) | undefined;
+    let cancelled = false;
+
+    const handleAuthUser = (user: User | null) => {
+      if (user && !isAllowedAdminEmail(user.email)) {
+        sessionStorage.setItem(
+          GOOGLE_AUTH_ERROR_KEY,
+          `Ce compte Google (${user.email}) n'est pas autorisé. Utilisez ${getDefaultAdminEmail()}.`,
+        );
+        void signOut(auth);
+        setFirebaseUser(null);
+        return;
+      }
+
+      if (user) setPasswordSession(false);
+      setFirebaseUser(user);
+    };
+
+    void (async () => {
+      try {
+        await setPersistence(auth, browserLocalPersistence);
+      } catch (error) {
+        console.warn("[Dor Hadash] Auth persistence:", error);
+      }
+
+      try {
+        const result = await getRedirectResult(auth);
         if (result?.user) {
           const loginResult = await ensureAllowedAdmin(result.user);
           if (!loginResult.ok && loginResult.message) {
             sessionStorage.setItem(GOOGLE_AUTH_ERROR_KEY, loginResult.message);
           }
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.warn("[Dor Hadash] Google redirect:", error);
         sessionStorage.setItem(GOOGLE_AUTH_ERROR_KEY, formatGoogleAuthError(error));
-      });
-
-    return onAuthStateChanged(auth, (user) => {
-      if (user && !isAllowedAdminEmail(user.email)) {
-        void signOut(auth);
-        setFirebaseUser(null);
-        setIsLoading(false);
-        return;
       }
 
-      if (user) setPasswordSession(false);
-      setFirebaseUser(user);
-      setIsLoading(false);
-    });
+      if (cancelled) return;
+
+      unsubAuth = onAuthStateChanged(auth, (user) => {
+        handleAuthUser(user);
+        setIsLoading(false);
+      });
+    })();
+
+    return () => {
+      cancelled = true;
+      unsubAuth?.();
+    };
   }, [usesFirebaseAuth]);
 
   const login = useCallback(
@@ -189,7 +220,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [usesFirebaseAuth],
   );
 
-  const loginWithGoogle = useCallback(async (): Promise<LoginResult> => {
+  const signInWithGoogleProvider = useCallback(async (): Promise<LoginResult> => {
     if (!usesFirebaseAuth) return { ok: false, reason: "invalid" };
 
     const auth = getFirebaseAuth();
@@ -205,7 +236,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const result = await signInWithPopup(auth, provider);
-      return ensureAllowedAdmin(result.user);
+      const loginResult = await ensureAllowedAdmin(result.user);
+      if (!loginResult.ok && loginResult.message) {
+        sessionStorage.setItem(GOOGLE_AUTH_ERROR_KEY, loginResult.message);
+      }
+      return loginResult;
     } catch (error) {
       const code = (error as { code?: string }).code ?? "";
 
@@ -232,6 +267,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [usesFirebaseAuth]);
 
+  const loginWithGoogle = signInWithGoogleProvider;
+  const connectGoogleForFirestore = signInWithGoogleProvider;
+
   const logout = useCallback(async () => {
     setPasswordSession(false);
     setPasswordSessionState(false);
@@ -253,6 +291,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       userEmail,
       login,
       loginWithGoogle,
+      connectGoogleForFirestore,
       logout,
     }),
     [
@@ -263,6 +302,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       userEmail,
       login,
       loginWithGoogle,
+      connectGoogleForFirestore,
       logout,
     ],
   );

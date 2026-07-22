@@ -1,6 +1,7 @@
 import { useState } from "react";
 import AdminHeader from "../../admin/components/AdminHeader";
 import { AdminButton, AdminCard, EmptyState, FormField, TextArea, TextInput } from "../../admin/components/AdminUi";
+import { useAuth } from "../../admin/auth/AuthContext";
 import { useVideos } from "../../admin/hooks/useAdminContent";
 import { saveVideosAsync } from "../../admin/storage/contentStore";
 import type { VideoTestimonial } from "../../admin/storage/types";
@@ -15,12 +16,14 @@ type VideoForm = {
 const emptyForm = (): VideoForm => ({ title: "", youtubeUrl: "", caption: "" });
 
 export default function AdminVideosPage() {
+  const { canWriteToFirestore, connectGoogleForFirestore } = useAuth();
   const videos = useVideos();
   const [form, setForm] = useState<VideoForm>(emptyForm());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [connectingGoogle, setConnectingGoogle] = useState(false);
 
   const youtubeId = extractYoutubeId(form.youtubeUrl);
 
@@ -32,6 +35,11 @@ export default function AdminVideosPage() {
   };
 
   const persistVideos = async (next: VideoTestimonial[]) => {
+    if (!canWriteToFirestore) {
+      setError("Connectez-vous avec Google (bandeau jaune en haut) pour enregistrer dans Firestore.");
+      return false;
+    }
+
     setSaving(true);
     setError("");
     setSaved(false);
@@ -140,10 +148,31 @@ export default function AdminVideosPage() {
                 />
               </FormField>
 
-              {error && <p className="text-sm text-brand-coral">{error}</p>}
+              {error && (
+                <div className="space-y-2">
+                  <p className="text-sm text-brand-coral">{error}</p>
+                  {!canWriteToFirestore && (
+                    <AdminButton
+                      variant="secondary"
+                      disabled={connectingGoogle}
+                      onClick={async () => {
+                        setConnectingGoogle(true);
+                        setError("");
+                        try {
+                          await connectGoogleForFirestore();
+                        } finally {
+                          setConnectingGoogle(false);
+                        }
+                      }}
+                    >
+                      {connectingGoogle ? "Redirection Google…" : "Se connecter avec Google"}
+                    </AdminButton>
+                  )}
+                </div>
+              )}
 
               <div className="flex flex-wrap gap-2">
-                <AdminButton onClick={handleSubmit} disabled={saving}>
+                <AdminButton onClick={handleSubmit} disabled={saving || !canWriteToFirestore}>
                   {saving
                     ? "Enregistrement…"
                     : editingId

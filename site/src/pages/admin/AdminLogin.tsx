@@ -1,6 +1,7 @@
 import { useState, useEffect, type FormEvent } from "react";
 import { Head } from "vite-react-ssg";
 import { Link, Navigate, useLocation } from "react-router-dom";
+import { getDefaultAdminEmail } from "../../admin/auth/adminAccess";
 import { useAuth, formatGoogleAuthError, GOOGLE_AUTH_ERROR_KEY } from "../../admin/auth/AuthContext";
 
 function GoogleIcon() {
@@ -101,6 +102,11 @@ export default function AdminLogin() {
             <img src="/images/logo.png" alt="Dor Hadash" className="mx-auto h-14 w-auto" />
             <h1 className="mt-4 font-heading text-xl font-semibold text-brand-blue-deep sm:text-2xl">Admin</h1>
             <p className="mt-1 text-sm text-gray-500">Gestion du site Dor Hadash</p>
+            {usesFirebaseAuth && (
+              <p className="mt-2 text-xs leading-relaxed text-gray-400">
+                Mot de passe = accès admin. Google ({getDefaultAdminEmail()}) = enregistrement Firebase.
+              </p>
+            )}
           </div>
 
           <form className="mt-8 space-y-4" onSubmit={handlePasswordLogin}>

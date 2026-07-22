@@ -197,7 +197,9 @@ export async function saveSiteDocument(data: {
 
   const auth = getFirebaseAuth();
   if (!auth?.currentUser) {
-    throw new Error("Connectez-vous à l'admin pour enregistrer dans Firestore.");
+    throw new Error(
+      "Session Firebase absente. Connectez-vous avec Google (compte admin) pour enregistrer dans Firestore.",
+    );
   }
 
   const user = await ensureFirebaseAuthReady();
@@ -223,7 +225,9 @@ export async function saveSiteSettingsDocument(settings: SiteSettings) {
 
   const auth = getFirebaseAuth();
   if (!auth?.currentUser) {
-    throw new Error("Connectez-vous à l'admin pour enregistrer dans Firestore.");
+    throw new Error(
+      "Session Firebase absente. Connectez-vous avec Google (compte admin) pour enregistrer dans Firestore.",
+    );
   }
 
   await ensureFirebaseAuthReady();
