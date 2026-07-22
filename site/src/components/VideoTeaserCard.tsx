@@ -15,7 +15,7 @@ export default function VideoTeaserCard({
       className="group w-full text-left transition-transform hover:-translate-y-0.5"
     >
       <div className="overflow-hidden rounded-2xl border border-brand-sand bg-white shadow-sm transition-shadow group-hover:shadow-md">
-        <div className="relative aspect-[16/10] w-full overflow-hidden bg-brand-blue-deep">
+        <div className="relative aspect-[16/10] w-full overflow-hidden bg-brand-blue-deep sm:aspect-video">
           <img
             src={youtubeThumbnailUrl(video.youtubeId)}
             alt=""
@@ -32,7 +32,7 @@ export default function VideoTeaserCard({
           </div>
         </div>
         <div className="p-2.5">
-          <h3 className="font-heading text-xs font-semibold leading-snug text-brand-blue-deep line-clamp-2">
+          <h3 className="font-heading text-sm font-semibold leading-snug text-brand-blue-deep line-clamp-2">
             {video.title}
           </h3>
         </div>

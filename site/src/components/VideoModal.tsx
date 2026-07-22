@@ -24,7 +24,7 @@ export default function VideoModal({
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -45,7 +45,7 @@ export default function VideoModal({
         <div className="aspect-video w-full">
           <iframe
             className="h-full w-full"
-            src={`${youtubeEmbedUrl(youtubeId)}?autoplay=1`}
+            src={youtubeEmbedUrl(youtubeId, { autoplay: true })}
             title={title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

@@ -16,18 +16,35 @@ export default function Reveal({
     const node = ref.current;
     if (!node) return;
 
-    const observer = new IntersectionObserver(
+    let observer: IntersectionObserver | null = null;
+
+    const show = () => {
+      setVisible(true);
+      observer?.disconnect();
+    };
+
+    const rect = node.getBoundingClientRect();
+    const alreadyVisible = rect.top < window.innerHeight * 0.95 && rect.bottom > 0;
+    if (alreadyVisible) {
+      show();
+      return;
+    }
+
+    observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
+        if (entry.isIntersecting) show();
       },
-      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
+      { threshold: 0.01, rootMargin: "80px 0px 80px 0px" },
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
+
+    const fallback = window.setTimeout(show, 2000);
+
+    return () => {
+      observer?.disconnect();
+      clearTimeout(fallback);
+    };
   }, []);
 
   return (
