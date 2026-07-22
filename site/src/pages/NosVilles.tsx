@@ -24,6 +24,7 @@ export default function NosVilles() {
               <div className="aspect-[4/3] w-full overflow-hidden">
                 <CityImage
                   city={city}
+                  variant="card"
                   className="h-full w-full transition-transform duration-500 group-hover:scale-105"
                 />
               </div>

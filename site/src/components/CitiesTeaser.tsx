@@ -37,6 +37,7 @@ export default function CitiesTeaser() {
                 <div className={`w-full overflow-hidden ${i === 0 ? "aspect-[4/3] sm:aspect-[2/1]" : "aspect-[4/3]"}`}>
                   <CityImage
                     city={city}
+                    variant="card"
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>

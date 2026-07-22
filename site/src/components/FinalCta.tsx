@@ -7,6 +7,8 @@ export default function FinalCta() {
         src="/images/nof-hagalil.jpg"
         alt=""
         aria-hidden="true"
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 h-full w-full object-cover"
       />
       <div className="absolute inset-0 bg-brand-blue-deep/88" />

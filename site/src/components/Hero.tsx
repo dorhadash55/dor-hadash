@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Head } from "vite-react-ssg";
 import { hero as defaultHero } from "../content/homepage";
 import { useHeroContent } from "../content/useSiteContent";
 
@@ -7,13 +8,20 @@ export default function Hero() {
 
   return (
     <section className="relative overflow-hidden bg-brand-blue-deep text-white">
+      <Head>
+        <link rel="preload" as="image" href="/images/jerusalem.jpg" fetchPriority="high" />
+      </Head>
       {/* Image */}
       <div className="relative lg:absolute lg:inset-0">
         <img
           src="/images/jerusalem.jpg"
           alt=""
           aria-hidden="true"
-          className="block w-full h-auto max-h-[52vh] object-cover object-center lg:h-full lg:max-h-none"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          sizes="100vw"
+          className="block h-auto max-h-[52vh] w-full object-cover object-center lg:h-full lg:max-h-none"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep via-brand-blue-deep/55 to-brand-blue-deep/15 lg:bg-gradient-to-r lg:from-brand-blue-deep/95 lg:via-brand-blue-deep/72 lg:via-45% lg:to-brand-blue-light/15" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep/90 via-transparent to-transparent lg:from-brand-blue-deep/50" />
