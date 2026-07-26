@@ -8,6 +8,11 @@ export type CityTestimonial = {
   quote: string;
 };
 
+export type CityGalleryImage = {
+  src: string;
+  caption: string;
+};
+
 export type City = {
   slug: string;
   name: string;
@@ -16,6 +21,7 @@ export type City = {
   isDraft?: boolean;
   lowResImage?: boolean; // vraie photo mais résolution trop faible pour la grande bannière
   photoCredit?: { text: string; url: string }; // requis pour les photos sous licence Creative Commons (attribution)
+  gallery?: CityGalleryImage[];
   intro: string[];
   sections: CitySection[];
   testimonials: CityTestimonial[];
@@ -105,35 +111,65 @@ export const cities: City[] = [
   {
     slug: "jerusalem",
     name: "Jérusalem",
-    tagline: "Le lien profond entre la ville sainte et votre retour",
+    tagline: "Une ville religieuse et branchée — nouvel incubateur d'Alya Dor Hadash",
     image: "/images/jerusalem.jpg",
+    gallery: [
+      {
+        src: "/images/cities/jerusalem/pisgat-zeev-vue-vallee.jpg",
+        caption: "Pisgat Ze'ev — vue sur le quartier et sa vallée verdoyante",
+      },
+      {
+        src: "/images/cities/jerusalem/pisgat-zeev-quartier.jpg",
+        caption: "Le tissu résidentiel de Pisgat Ze'ev, entre verdure et collines",
+      },
+      {
+        src: "/images/cities/jerusalem/pisgat-zeev-tramway-mall.jpg",
+        caption: "Tramway et centre commercial — commerces, services et mobilité au quotidien",
+      },
+      {
+        src: "/images/cities/jerusalem/pisgat-zeev-vue-desert.jpg",
+        caption: "Vue vers le désert de Judée depuis Pisgat Ze'ev",
+      },
+    ],
     intro: [
-      "Dor Hadash à Jérusalem, c'est un accueil porté par la communauté francophone Ahavat Israël, un coordinateur municipal, un accompagnement administratif, éducatif, social et professionnel, le soutien de Qualita, et un coach émotionnel avant et après votre Alya.",
-      "Nouveau : une préparation pré-Alya incluant un Oulpan de 5 mois, un atelier Budget individuel, un coaching de vie émotionnel et une préparation professionnelle avec le Hub de l'emploi de Qualita.",
+      "Accueillir les olim hadashim à Jérusalem symbolise le lien profond entre la ville sainte et le retour des nouveaux immigrants sur leur terre. Dor Hadash y implante son nouvel incubateur d'Alya — un programme sioniste qui facilite l'intégration des olim de France.",
+      "Dor Hadash à Jérusalem, c'est une organisation d'accueil et d'accompagnement : un coordinateur municipal interface entre les olim et le lieu d'accueil ; un accompagnement municipal administratif, éducatif, social et professionnel ; le soutien de Qualita pour l'obtention des droits ; la communauté francophone Ahavat Israël ; et un coach émotionnel avant le départ puis sur place après l'Alya.",
+      "Préparation pré-Alya : Oulpan de 5 mois, atelier Budget individuel, coaching de vie émotionnel ciblé Alya et intégration, et préparation professionnelle avec le Hub de l'emploi de Qualita.",
     ],
     sections: [
       {
-        heading: "Pisgat Zeev — votre quartier à Jérusalem",
+        heading: "Bienvenue à Jérusalem",
         paragraphs: [
-          "Le plus grand quartier de Jérusalem (50 000 habitants), au Nord de la ville, proche de l'Université Hébraïque du Mont Scopus et de l'hôpital Hadassah Har Hatsofim.",
-          "Population diversifiée, plus de 50 synagogues, 15 écoles primaires et secondaires, centres sportifs récents (piscines, stades), centre culturel avec permanence dédiée aux nouveaux immigrants.",
-          "La ville offre gratuitement aux nouveaux arrivants 10 jours d'hébergement et l'aide d'une association spécialisée pour trouver un logement.",
+          "Vivre à Jérusalem offre une riche histoire culturelle, des sites religieux importants, une diversité culinaire et une vie sociale animée. La ville est aussi un centre économique en croissance, avec des opportunités professionnelles variées et avant-gardistes.",
+          "La municipalité de Jérusalem, leader dans l'intégration des olim, investit constamment dans les services municipaux destinés aux olim francophones, grâce à Qualita, à l'Autorité municipale pour l'Alya et l'Intégration, et aux organismes partenaires.",
+          "Elle offre gratuitement aux nouveaux arrivants 10 jours d'hébergement et l'aide d'une association spécialisée dans l'immobilier pour trouver un logement.",
         ],
       },
       {
-        heading: "Transports, santé et climat",
+        heading: "Pisgat Ze'ev — votre quartier à Jérusalem",
         paragraphs: [
-          "Bus et tramway (4 stations à Pisgat Zeev), connexion directe aux routes rapides Jérusalem–Tel Aviv et vers Modiin. Toutes les caisses de santé sont représentées.",
-          "Climat doux toute l'année, nuits fraîches en été, hiver moins rude qu'ailleurs grâce à la proximité du désert, avec vue sur le désert de Judée et la Mer Morte.",
+          "C'est le plus grand quartier de Jérusalem, avec environ 50 000 habitants. Situé au nord de la ville, proche de Neve Yaacov, Ramat Eshkol et Giva'a Tzarfatit, il est non loin de l'Université Hébraïque du Mont Scopus, de l'hôpital Hadassah Har Hatsofim et du centre de haute technologie du Mont Hotzvim.",
+          "La population est diversifiée : religieux, laïcs et traditionalistes. Plus de 50 synagogues actives et des centres de prière et d'études de tous rites — un melting-pot d'Israéliens de toutes origines.",
+          "On y trouve des ganim, 15 écoles primaires et secondaires, un country club, un centre de jeunes et de culture, des centres sportifs récents (trois piscines, stades illuminés, parcours de santé), le Centre Paiis pour la culture et les arts (salle de 400 places), et un matnas avec permanence dédiée aux nouveaux immigrants : activités pour enfants, femmes et adultes, bibliothèque, club retraités, atelier lecture en français, conférences et excursions.",
+          "La communauté Ahavat Israël, francophone et administrée par d'anciens olim (souvent plus de 15 ans en Israël), accompagne l'intégration : prières en semaine et le Shabbat, cours, collations, repas communautaires et excursions.",
+          "Malgré l'inflation de l'immobilier, Pisgat Ze'ev reste un quartier aux constructions assez récentes, parmi les tarifs les plus avantageux de Jérusalem.",
         ],
       },
       {
-        heading: "Logement, immersion, éducation, emploi",
+        heading: "Transports, santé, commerces et climat",
         paragraphs: [
-          "Logement : aide à la recherche sur place ou en visio avant l'arrivée.",
-          "Immersion : oulpan intensif le matin pendant 5 mois, activité bénévole ou professionnelle l'après-midi, parrainage par des familles francophones.",
-          "Éducation : écoles de haut niveau, traditionnalistes et religieuses.",
-          "Emploi : bilan de compétences, formation, suivi personnalisé du Hub de l'emploi de Qualita.",
+          "Les transports publics relient Pisgat Ze'ev au cœur de Jérusalem par un large réseau de bus et par le tramway (4 stations dans le quartier, avec des extensions à venir). Le quartier est directement connecté à la route 1 (Jérusalem–Tel Aviv, en évitant l'entrée de la ville) et à la route 443 (vers Modiin).",
+          "Toutes les caisses de santé sont représentées : Maccabi, Meuhedet, Leumi, Clalit, ainsi que le centre de protection du nourrisson. Magasins, supermarchés modernes et un centre commercial avec boutiques et restaurants couvrent les besoins du quotidien.",
+          "Climat doux toute l'année : nuits d'été fraîches comme à Jérusalem, hiver moins rude grâce à la proximité du désert. Les paysages et le point de vue sur le désert de Judée et la Mer Morte sont à couper le souffle.",
+        ],
+      },
+      {
+        heading: "Le programme Dor Hadash à Jérusalem",
+        paragraphs: [
+          "Logement : aide à la recherche d'un logement sur place ou en visio avant l'arrivée du olé et de sa famille.",
+          "Immersion : oulpan intensif tous les matins pendant les 5 premiers mois ; activité bénévole tous les après-midis (parrainage par des familles francophones locales) ou activité professionnelle d'appoint.",
+          "Éducation : scolarité de haut niveau, traditionnaliste et religieuse, dans les multiples écoles de la ville.",
+          "Emploi : bilan de compétences, formation professionnelle, accompagnement à la création d'entreprise ou à l'emploi (ateliers, emploi rémunéré l'après-midi en entreprise locale), suivi personnalisé du Hub de l'emploi de Qualita.",
         ],
       },
     ],
