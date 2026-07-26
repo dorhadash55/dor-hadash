@@ -188,33 +188,75 @@ export const cities: City[] = [
   {
     slug: "haifa",
     name: "Haïfa",
-    tagline: "Une ville qui travaille, entre mer et Technion",
+    tagline: "Une ville abordable, religieuse et branchée — entre mer et Carmel",
     image: "/images/haifa.jpg",
+    gallery: [
+      {
+        src: "/images/cities/haifa/vue-baie.jpg",
+        caption: "Haïfa, entre le Carmel et la mer",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/haifa/plage-coucher.jpg",
+        caption: "La grande bleue au pied de la ville",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/haifa/rue-palmiers.jpg",
+        caption: "Vie de quartier, cafés et palmiers",
+        fit: "cover",
+      },
+    ],
+    galleryMore: [
+      {
+        src: "/images/cities/haifa/plaquette-recto.jpg",
+        caption: "Dor Hadash implante son incubateur d'Alya à Haïfa",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/haifa/plaquette-verso.jpg",
+        caption: "Programme et piliers d'intégration à Haïfa",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/haifa/vue-port.jpg",
+        caption: "Ville portuaire dynamique",
+        fit: "contain",
+      },
+    ],
     intro: [
-      "Dor Hadash à Haïfa, c'est une organisation d'accueil par un coordinateur municipal, interface entre les olim et le lieu d'accueil, ainsi qu'un accompagnement administratif porté par la communauté du Rav Dr Elyaou Zini, Rabbin du Technion.",
-      "Un programme complet : logement à loyer modéré, éducation de qualité subventionnée, oulpan accompagné de bénévolat, formation professionnelle en entreprise ou en établissement universitaire.",
+      "Tel Aviv fait la fête, Jérusalem prie, Haïfa travaille. Ville portuaire dynamique de 280 000 habitants, Haïfa dément son stéréotype somnolent grâce à ses logements abordables, sa diversité, son ambiance détendue et son judaïsme pratiqué.",
+      "Dor Hadash y déploie son incubateur d'Alya : organisation d'accueil avec coordinateur municipal, accompagnement administratif, et ancrage dans la communauté francophone du Rav Dr Elyaou Zini, rabbin du Technion.",
     ],
     sections: [
       {
-        heading: "Bienvenue à Haïfa",
+        heading: "Une ville qui travaille, entre mer et Carmel",
         paragraphs: [
-          "Haïfa dément son stéréotype somnolent et attire de plus en plus d'Israéliens grâce à ses logements abordables, sa diversité, son ambiance détendue et son judaïsme pratiqué.",
-          "Ville portuaire de 280 000 habitants, Haïfa abrite le complexe Matam (Intel, IBM, Motorola, Google, Yahoo!, Philips) ainsi que le Technion et l'université de Haïfa. Le quartier du port a été entièrement réhabilité.",
+          "Haïfa abrite le complexe Matam dédié à la high-tech (Intel, IBM, Motorola, Google, Yahoo!, Philips), ainsi que le Technion et l'université de Haïfa. Le quartier du port a été entièrement réhabilité.",
+          "Entre la mer et le mont Carmel, la ville offre aussi les jardins bahaïs, des malls, cinémas et espaces de loisirs — une ville vivante, verdoyante et ouverte.",
         ],
       },
       {
-        heading: "Immobilier, transports et commerces",
+        heading: "Logement, transports et croissance",
         paragraphs: [
-          "Les loyers du centre-ville restent inférieurs à ceux des autres grandes villes. Transports remarquables : train, bus hybrides et le seul métro d'Israël. Croissance démographique attendue de 60 000 habitants d'ici 2025.",
+          "Les loyers du centre-ville restent nettement inférieurs à ceux des autres grandes villes. Les prix sont environ 30 % moins chers que le marché national (environ 2 500 à 3 500 ₪ selon la taille, le quartier et le meublé).",
+          "Transports remarquables : train, bus hybrides et le seul métro d'Israël. Une croissance démographique de 60 000 habitants est attendue d'ici 2025.",
+        ],
+      },
+      {
+        heading: "Dor Hadash à Haïfa",
+        paragraphs: [
+          "Une organisation d'accueil par un coordinateur municipal, interface entre les olim et le lieu d'accueil, et un accompagnement administratif porté par la communauté bienveillante et intégrée du Rav Dr Elyaou Zini.",
+          "Partenaires : Agence juive, municipalité de Haïfa, communauté du Rav Zini, et Qualita — pour faciliter l'intégration des olim de France.",
         ],
       },
       {
         heading: "Logement, immersion, éducation, emploi",
         paragraphs: [
-          "Logement : aide à la recherche sur place ou en visio, prix 30% moins chers que le marché national (2 500 à 3 500 shekels selon quartier et meublé ou non).",
-          "Immersion : oulpan intensif le matin pendant 5 mois, activité bénévole ou professionnelle l'après-midi, parrainage par des familles francophones locales.",
-          "Éducation : écoles de haut niveau, traditionnalistes et religieuses.",
-          "Emploi : bilan de compétences, formation professionnelle, accompagnement à la création d'entreprise ou emploi rémunéré l'après-midi.",
+          "Logement : aide à la recherche sur place ou en visio avant l'arrivée — loyers accessibles selon quartier et meublé.",
+          "Immersion : oulpan intensif tous les matins pendant les 5 premiers mois ; activité bénévole l'après-midi (parrainage par des familles francophones locales) ou activité professionnelle d'appoint.",
+          "Éducation : scolarité de haut niveau, traditionnaliste et religieuse, dans les écoles de la ville.",
+          "Emploi : bilan de compétences, formation professionnelle, accompagnement à la création d'entreprise ou emploi rémunéré l'après-midi en entreprise locale.",
         ],
       },
     ],

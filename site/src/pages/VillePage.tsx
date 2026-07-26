@@ -75,15 +75,6 @@ export default function VillePage() {
           ))}
         </div>
 
-        {galleryMore.length > 0 && (
-          <CityGalleryCarousel
-            images={galleryMore}
-            title={`${city.name} en détail`}
-            subtitle="Situation, services et vie locale — glissez ou laissez défiler."
-            variant="section"
-          />
-        )}
-
         {city.testimonials.length > 0 && (
           <div className="mt-14">
             <h2 className="font-heading text-2xl font-semibold text-brand-blue-deep">Ils témoignent</h2>
@@ -97,8 +88,21 @@ export default function VillePage() {
             </div>
           </div>
         )}
+      </section>
 
-        <div className="mt-14 rounded-2xl bg-brand-blue/5 p-8 text-center">
+      {galleryMore.length > 0 && (
+        <section className="mx-auto max-w-5xl px-2 sm:px-6">
+          <CityGalleryCarousel
+            images={galleryMore}
+            title={`${city.name} en détail`}
+            subtitle="Appuyez sur une slide pour l'agrandir — plus lisible sur mobile."
+            variant="section"
+          />
+        </section>
+      )}
+
+      <section className="mx-auto max-w-4xl px-4 pb-16 pt-10 sm:px-6">
+        <div className="rounded-2xl bg-brand-blue/5 p-8 text-center">
           <h2 className="font-heading text-xl font-semibold text-brand-blue-deep">
             Un projet d&apos;Alya à {city.name} ?
           </h2>

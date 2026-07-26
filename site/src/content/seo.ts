@@ -32,7 +32,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/haifa": {
     title: "Faire son Alya à Haïfa | Dor Hadash",
     description:
-      "Haïfa, ville portuaire dynamique et abordable : logement à loyer modéré, éducation de qualité, oulpan et formation professionnelle avec Dor Hadash.",
+      "Haïfa, ville abordable, religieuse et branchée entre mer et Carmel : logement, oulpan, éducation et emploi avec l'incubateur d'Alya Dor Hadash.",
   },
   "/jerusalem": {
     title: "Faire son Alya à Jérusalem | Dor Hadash",
