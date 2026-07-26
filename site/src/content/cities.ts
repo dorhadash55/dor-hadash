@@ -11,6 +11,8 @@ export type CityTestimonial = {
 export type CityGalleryImage = {
   src: string;
   caption: string;
+  /** contain = slide entière (plaquette) ; cover = photo paysage (défaut) */
+  fit?: "cover" | "contain";
 };
 
 export type City = {
@@ -21,7 +23,10 @@ export type City = {
   isDraft?: boolean;
   lowResImage?: boolean; // vraie photo mais résolution trop faible pour la grande bannière
   photoCredit?: { text: string; url: string }; // requis pour les photos sous licence Creative Commons (attribution)
+  /** Carrousel bannière (photos larges) */
   gallery?: CityGalleryImage[];
+  /** Galerie plus bas dans la page (slides détaillées, etc.) */
+  galleryMore?: CityGalleryImage[];
   intro: string[];
   sections: CitySection[];
   testimonials: CityTestimonial[];
@@ -31,43 +36,150 @@ export const cities: City[] = [
   {
     slug: "karmiel",
     name: "Karmiel",
-    tagline: "La plus belle ville d'Israël… après Jérusalem !",
+    tagline: "Le cœur de la Galilée — plus belle ville d'Israël… après Jérusalem !",
     image: "/images/karmiel.jpg",
-    photoCredit: {
-      text: "Photo : Wikimedia Commons (CC BY-SA 3.0)",
-      url: "https://commons.wikimedia.org/wiki/File:Karmiel_-_Israel_2008.jpg",
-    },
+    // Haut de page : 3 photos larges
+    gallery: [
+      {
+        src: "/images/cities/karmiel/bienvenue.jpg",
+        caption: "Bienvenue à Karmiel",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/karmiel/coeur-galilee.jpg",
+        caption: "Karmiel, le cœur de la Galilée",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/karmiel/culture-loisirs.jpg",
+        caption: "Culture et loisirs à Karmiel",
+        fit: "cover",
+      },
+    ],
+    // Plus bas : slides détaillées (lisibles en grand, une par une sur mobile)
+    galleryMore: [
+      {
+        src: "/images/cities/karmiel/centre-galilee.jpg",
+        caption: "Au centre de la Galilée",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/karmiel/situation-geographique.jpg",
+        caption: "Situation géographique et transports",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/karmiel/organisation-ville.jpg",
+        caption: "Organisation et développement de la ville",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/karmiel/securite.jpg",
+        caption: "Sécurité collective",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/karmiel/education.jpg",
+        caption: "Éducation",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/karmiel/mairie-integration.jpg",
+        caption: "Mairie et intégration",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/karmiel/evenements.jpg",
+        caption: "Festivals et événements",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/karmiel/industrie-emploi.jpg",
+        caption: "Industrie et emploi",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/karmiel/commerces-services.jpg",
+        caption: "Commerces et services",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/karmiel/sante.jpg",
+        caption: "Services de santé",
+        fit: "contain",
+      },
+    ],
     intro: [
-      "L'Association Dor Hadash, incubateur d'Alya, vous accompagne dans la ville du Projet de Développement de la Galilée Centrale : Karmiel.",
+      "L'Association Dor Hadash, incubateur d'Alya, vous accompagne dans la ville du Projet de Développement de la Galilée Centrale : Karmiel — le cœur de la Galilée.",
       "Attractive aux jeunes couples et familles, son dynamisme vous plaira d'emblée. Dès 1981, Karmiel obtenait la double reconnaissance du Prix Beautiful Israël (6 fois de suite comme la plus belle ville d'Israël après Jérusalem) et du Prix Kaplan pour sa gestion et ses services.",
     ],
     sections: [
       {
-        heading: "Transports et développement économique",
+        heading: "Situation géographique",
         paragraphs: [
-          "Karmiel est idéalement située dans la vallée de Beit Hakerem, sur la route qui va d'Akko à Meiron, Sfat et Tibériade — région historique du judaïsme.",
-          "Son réseau routier et ferroviaire la relient à tous les grands centres de vie israéliens et à l'aéroport Ben Gourion, ainsi qu'au grand centre portuaire et industriel de Haïfa.",
-          "À peu de distance de la Méditerranée (20 km), au seuil de la Haute-Galilée, la ville a fait le choix de l'environnement : nombreux parcs et jardins, caractère charmant de ville moyenne (48 000 habitants), accueillante envers les familles.",
+          "Karmiel est idéalement située dans la vallée de Beit Hakerem, au centre de la Galilée : à environ 25 km de la mer (Acre et Nahariya), 25 km de Tibériade et 40 km de Haïfa — avec Sfat et Nazareth à proximité.",
+          "Les transports en commun sont excellents : train et bus relient Karmiel à tout Israël, aux grands centres de vie et à l'aéroport Ben Gourion, ainsi qu'au pôle portuaire et industriel de Haïfa.",
+        ],
+      },
+      {
+        heading: "Organisation et développement de la ville",
+        paragraphs: [
+          "Ville nouvelle créée en 1964, Karmiel compte environ 53 000 habitants (âge moyen autour de 42 ans). Elle fait partie des rares villes conçues selon un plan directeur fondé sur une excellente infrastructure urbaine.",
+          "La protection de l'environnement repose sur une séparation nette entre zones d'habitation et zones industrielles. Plusieurs dizaines de parcs et d'espaces verts : à Karmiel, on respire un air pur.",
+          "De nouveaux quartiers modernes se construisent selon des standards architecturaux élevés, avec des prix de vente d'appartements raisonnables.",
+        ],
+      },
+      {
+        heading: "Sécurité collective",
+        paragraphs: [
+          "Karmiel compte parmi les villes les plus sûres d'Israël. Le taux de délinquance de rue est parmi les plus bas du pays, notamment grâce à environ 400 caméras de sécurité réparties dans la cité.",
+          "La police municipale, entraînée et professionnelle, est présente 24 h/24 et 7 j/7. De nombreux programmes luttent contre les incivilités et les comportements délinquants.",
         ],
       },
       {
         heading: "Éducation",
         paragraphs: [
-          "8 écoles secondaires, 9 écoles publiques élémentaires, une école religieuse avec cursus secondaire, une école élémentaire indépendante, une école pour enfants surdoués, de nombreux jardins d'enfants et garderies.",
-          "Le collège d'ingénierie ORT Braude (3 500 étudiants) forme en informatique, électronique, administration et biotechnologie industrielle. Une Silicon Wadi locale émerge, avec des hubs comme Kerem-Tech.",
+          "84 jardins d'enfants municipaux, 9 écoles primaires, 5 lycées, une éducation spécialisée pour les enfants à besoins particuliers, des classes d'accueil pour enfants surdoués, et une grande variété d'activités pour tous les âges.",
+          "Académie sportive, conservatoire de musique, country club, piscine, salles de sport, courts de tennis, centres de soins et mouvements de jeunesse.",
+          "Le centre universitaire Braude forme des techniciens et ingénieurs, avec un département de biotechnologie. Une Silicon Wadi locale émerge, avec des hubs comme Kerem-Tech.",
         ],
       },
       {
-        heading: "Intégration & sécurité",
+        heading: "Mairie et intégration",
         paragraphs: [
-          "Population diversifiée et tolérante, plus de 30 synagogues, minorité druze facilitant l'intégration. Karmiel offre les avantages de la ville « périphérique », avec les aides financières du Ministère de l'Intégration et de l'Alya.",
-          "Dor Hadash, en partenariat avec la municipalité, vous accompagne à chaque étape : démarches administratives, logement en Mercaz Klita à moindre coût, Oulpan, formation, emploi, éducation, vie culturelle.",
+          "Excellence de la gestion financière et des services municipaux. Accompagnement personnalisé de chaque nouvel immigrant, avec des aides à tous les niveaux pour une intégration réussie.",
+          "Centre d'intégration moderne et confortable (Agence juive) proposant un hébergement jusqu'à 5 mois, et appartements d'intégration en location pour une durée limitée.",
+          "Oulpans d'hébreu pour débutants et avancés, groupes de conversation, et une communauté chaleureuse toujours prête à aider. À Karmiel, on se sent à la maison.",
+          "Dor Hadash, en partenariat avec la municipalité, vous accompagne à chaque étape : démarches administratives, logement en Mercaz Klita à moindre coût, oulpan, formation, emploi, éducation et vie culturelle.",
+        ],
+      },
+      {
+        heading: "Culture et loisirs",
+        paragraphs: [
+          "Festival international annuel de danses, exposition de voitures de collection, expositions Pourim, festival de la bière, fête de la jeunesse, concerts classiques, spectacles vivants, théâtre national et pour enfants, spectacles de rue, cinémas, restaurants et cafés.",
+          "Événements collectifs, sorties, conférences et activités pour toute la population — une vie culturelle et sociale très riche.",
+        ],
+      },
+      {
+        heading: "Industrie et emploi",
+        paragraphs: [
+          "Parc industriel de 270 hectares en pleine expansion près de la ville, avec environ 200 entreprises (textile, plastique, électronique, métaux, médecine, etc.).",
+          "Trois zones industrielles aux abords de la ville, dont de nombreuses entreprises de haute technologie, et un nouveau centre industriel et tertiaire sur le site de la gare ferroviaire.",
+        ],
+      },
+      {
+        heading: "Commerces, services et santé",
+        paragraphs: [
+          "Supermarchés, centres commerciaux, shopping, banques, salles de sport et spas, antennes des administrations de l'État : à Karmiel, il y a tout ce dont on a besoin.",
+          "Quatre koupot holim (Clalit, Maccabi, Leumit, Meuhedet), médecine généraliste et spécialisée, radiologie, laboratoires, santé mentale, physiothérapie, dentaires, développement de l'enfant, urgences Terem, et maisons de personnes âgées. Ouverture prévue en 2025 d'un centre médical de rééducation et de recherche.",
+          "Hôpitaux de la région à proximité : Safed, Tibériade, Nazareth, Afula, Haïfa et Saint-Jean-d'Acre.",
         ],
       },
       {
         heading: "La prépa Dor Hadash",
         paragraphs: [
-          "Une préparation pré-Alya : un Oulpan de 5 mois en Zoom, un atelier Budget individuel, une préparation professionnelle avec le Hub de l'Emploi de Qualita.",
+          "Une préparation pré-Alya : oulpan de 5 mois en Zoom, atelier Budget individuel, préparation professionnelle avec le Hub de l'emploi de Qualita.",
+          "Dor Hadash à Karmiel, c'est une organisation d'accueil : coordinateur municipal (interface avec le Mercaz Klita), accompagnement administratif, éducatif, social et professionnel, soutien Qualita pour les droits, et communauté francophone active et bienveillante.",
         ],
       },
     ],
@@ -178,38 +290,115 @@ export const cities: City[] = [
   {
     slug: "nof-hagalil",
     name: "Nof HaGalil",
-    tagline: "La plus grande ville de Galilée, entourée de nature",
+    tagline: "Une ville en plein développement, au cœur de la Galilée",
     image: "/images/nof-hagalil.jpg",
+    gallery: [
+      {
+        src: "/images/cities/nof-hagalil/vue-ville.jpg",
+        caption: "Nof HaGalil, au cœur de la Galilée",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/nof-hagalil/quartier-moderne.jpg",
+        caption: "Une ville en plein développement",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/nof-hagalil/paysage-galilee.jpg",
+        caption: "Cadre de vie verdoyant et familial",
+        fit: "cover",
+      },
+    ],
+    galleryMore: [
+      {
+        src: "/images/cities/nof-hagalil/plaquette.jpg",
+        caption: "Programme Dor Hadash à Nof HaGalil",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/nof-hagalil/mairie.jpg",
+        caption: "Municipalité de Nof HaGalil",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/nof-hagalil/developpement.jpg",
+        caption: "Commerces, bureaux et chantiers en expansion",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/nof-hagalil/residence-neuve.jpg",
+        caption: "Logements modernes et accessibles",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/nof-hagalil/loisirs-aquatiques.jpg",
+        caption: "Loisirs aquatiques pour toute la famille",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/nof-hagalil/sport-piscine.jpg",
+        caption: "Sport et piscine",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/nof-hagalil/piscine-couverte.jpg",
+        caption: "Complexe aquatique couvert",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/nof-hagalil/amphitheatre.jpg",
+        caption: "Culture et espace public",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/nof-hagalil/padel.jpg",
+        caption: "Infrastructures sportives modernes",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/nof-hagalil/transports.jpg",
+        caption: "Transports et connexions en développement",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/nof-hagalil/education.jpg",
+        caption: "Éducation et intégration",
+        fit: "contain",
+      },
+    ],
     intro: [
-      "La ville de Nof HaGalil et l'association Dor Hadash unissent leurs atouts pour un programme complet d'une année : logement à loyer modéré, éducation subventionnée, oulpan avec bénévolat, formation en alternance rémunérée avec proposition d'embauche à la clé.",
-      "Nof HaGalil se trouve à 38 km de Haïfa et 126 km de Tel Aviv, à 577 mètres d'altitude, entourée de montagnes, forêts et vallées verdoyantes.",
+      "Située au cœur de la Galilée, Nof HaGalil offre un cadre de vie moderne, familial et sécurisé, avec une forte croissance économique et d'excellentes infrastructures.",
+      "À seulement 45 minutes de Haïfa et de Tibériade, et à moins de 20 minutes d'Afula, la ville combine avantages fiscaux, logement abordable et accompagnement personnalisé pour réussir son Alya.",
     ],
     sections: [
       {
-        heading: "La ville et sa culture",
+        heading: "Les avantages",
         paragraphs: [
-          "70% de la ville est composée d'espaces verts, forêts et réserves naturelles : sentiers de randonnée, pistes cyclables, nombreuses aires de jeux.",
-          "8 centres communautaires dont la salle des arts « Mr Green », un complexe avec spa, piscine et salle de sport.",
+          "Réduction d'impôt pouvant atteindre 18 %, pour un soutien financier concret aux familles et aux professionnels.",
+          "Jusqu'à 2 000 ₪ d'aide au loyer par mois pendant 2 ans. Ces aides sont cumulables avec celles du Ministère de l'Intégration.",
+          "Coût de la vie et immobilier plus accessibles que dans le centre d'Israël — loyers et achats nettement plus abordables qu'à Tel Aviv ou dans le centre du pays.",
         ],
       },
       {
-        heading: "Accueil des Olim",
+        heading: "Un accompagnement complet",
         paragraphs: [
-          "Un département municipal dédié accompagne les nouveaux arrivants, en lien avec le ministère du Développement du Néguev et de la Galilée. Un coordinateur francophone et un réseau de bénévoles francophones épaulent au quotidien les nouveaux arrivants.",
-          "Avantage spécifique : réduction de 90% sur les taxes municipales la première année d'installation. Parc locatif de logements temporaires disponible.",
+          "Dor Hadash accompagne les familles avant, pendant et après l'Alya : oulpan intensif, accompagnement administratif et professionnel, conseils budgétaires, coordinateur dédié, et intégration au sein d'une communauté francophone.",
+          "Préparation pré-Alya : oulpan intensif adapté à votre niveau, atelier budget et organisation financière, préparation professionnelle, et orientation vers un réseau francophone accueillant.",
+          "Sur place : partenariat actif avec la municipalité, structuration communautaire et religieuse francophone, et suivi personnalisé pour une intégration réussie.",
         ],
       },
       {
-        heading: "Transports, commerce et emploi",
+        heading: "Pour qui ?",
         paragraphs: [
-          "Réseau de bus reliant toutes les zones de la ville vers Tel Aviv, Netanya, Haïfa, Jérusalem. Un projet de ligne ferroviaire vers Haïfa est prévu dans les 4 prochaines années.",
-          "3 zones industrielles dont le pôle Ziporit (une quarantaine d'entreprises, dont de la haute technologie). Le plus grand supermarché du Moyen-Orient, « Mercaz Mazon », attire des milliers de visiteurs par jour.",
+          "Ce programme s'adresse prioritairement aux familles francophones, aux jeunes couples avec enfants, et aux familles souhaitant un environnement stable pour une intégration réussie.",
         ],
       },
       {
-        heading: "Éducation",
+        heading: "Pourquoi choisir Nof HaGalil ?",
         paragraphs: [
-          "Écoles équipées d'écrans interactifs, journée continue jusqu'à 15h20, écoles religieuses de différentes tendances du judaïsme.",
+          "Une ville dynamique qui combine avantages fiscaux, logement abordable, qualité de vie et accompagnement personnalisé pour réussir son Alya.",
+          "Ville prioritaire du développement national, Nof HaGalil bénéficie d'un fort soutien gouvernemental, d'infrastructures modernes, d'un réseau de transports en expansion, et d'un cadre familial, vert et sécurisé.",
+          "Espaces verts, sport, loisirs et équipements culturels : piscines, terrains, amphithéâtre et commerces — une ville qui grandit et accueille chaque année de nouvelles familles.",
         ],
       },
     ],

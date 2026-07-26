@@ -11,6 +11,7 @@ export default function VillePage() {
   if (!city) return <Navigate to="/nos-villes" replace />;
 
   const gallery = city.gallery ?? [];
+  const galleryMore = city.galleryMore ?? [];
   const hasGallery = gallery.length > 0;
 
   return (
@@ -28,7 +29,6 @@ export default function VillePage() {
         </div>
       </section>
 
-      {/* Bannière : carrousel si galerie, sinon photo unique */}
       {hasGallery ? (
         <CityGalleryCarousel
           images={gallery}
@@ -74,6 +74,15 @@ export default function VillePage() {
             </div>
           ))}
         </div>
+
+        {galleryMore.length > 0 && (
+          <CityGalleryCarousel
+            images={galleryMore}
+            title={`${city.name} en détail`}
+            subtitle="Situation, services et vie locale — glissez ou laissez défiler."
+            variant="section"
+          />
+        )}
 
         {city.testimonials.length > 0 && (
           <div className="mt-14">

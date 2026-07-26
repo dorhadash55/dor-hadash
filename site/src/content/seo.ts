@@ -42,7 +42,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/nof-hagalil": {
     title: "Faire son Alya à Nof HaGalil | Dor Hadash",
     description:
-      "Nof HaGalil, la plus grande ville de Galilée : logement, éducation, formation en alternance. Un programme d'un an avec Dor Hadash pour réussir votre Alya.",
+      "Nof HaGalil, ville en plein développement au cœur de la Galilée : avantages fiscaux jusqu'à 18 %, aide au loyer, cadre familial et accompagnement Dor Hadash pour réussir votre Alya.",
   },
   "/ashdod": {
     title: "Faire son Alya à Ashdod | Dor Hadash",
