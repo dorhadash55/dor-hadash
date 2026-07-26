@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import AdminHeader from "../../admin/components/AdminHeader";
 import ImageUpload from "../../admin/components/ImageUpload";
+import { useAuth } from "../../admin/auth/AuthContext";
 import { AdminButton, AdminCard, FormField, TextArea, TextInput } from "../../admin/components/AdminUi";
 import { useBlogPost } from "../../admin/hooks/useAdminContent";
 import { getBlogPostBySlug, upsertBlogPostAsync } from "../../admin/storage/contentStore";
@@ -48,6 +49,8 @@ export default function AdminBlogEditorPage() {
   const isNew = !slug;
   const existing = useBlogPost(slug ?? "");
   const navigate = useNavigate();
+  const { canWriteToFirestore, connectGoogleForFirestore } = useAuth();
+  const [connectingGoogle, setConnectingGoogle] = useState(false);
 
   const [form, setForm] = useState<BlogForm>(emptyForm());
   const [slugManual, setSlugManual] = useState(false);
@@ -87,6 +90,11 @@ export default function AdminBlogEditorPage() {
   };
 
   const handleSave = async () => {
+    if (!canWriteToFirestore) {
+      setError("Connectez-vous avec Google (bandeau en haut) pour enregistrer dans Firestore.");
+      return;
+    }
+
     if (!form.title.trim()) {
       setError("Le titre est obligatoire.");
       return;
@@ -145,12 +153,25 @@ export default function AdminBlogEditorPage() {
 
   return (
     <>
-      <AdminHeader title={isNew ? "Nouvel article" : "Modifier l'article"} />
+      <AdminHeader
+        title={isNew ? "Nouvel article" : "Modifier l'article"}
+        description="Rédigez le contenu, uploadez une photo de couverture et enregistrez dans Firebase."
+      />
       <main className="flex-1 space-y-6 p-4 sm:p-6">
         <div className="flex flex-wrap items-center gap-3">
           <Link to="/admin/blog" className="text-sm font-medium text-brand-blue hover:underline">
             ← Retour au blog
           </Link>
+          {!isNew && form.slug && (
+            <a
+              href={`/blog/${form.slug}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm font-medium text-brand-blue hover:underline"
+            >
+              Aperçu sur le site ↗
+            </a>
+          )}
           {saved && <span className="text-sm text-brand-teal">Enregistré dans Firestore ✓</span>}
         </div>
 
@@ -242,9 +263,30 @@ Deuxième paragraphe..."
               </div>
             </AdminCard>
 
-            {error && <p className="text-sm text-brand-coral">{error}</p>}
+            {error && (
+              <div className="space-y-2">
+                <p className="text-sm text-brand-coral">{error}</p>
+                {!canWriteToFirestore && (
+                  <AdminButton
+                    variant="secondary"
+                    disabled={connectingGoogle}
+                    onClick={async () => {
+                      setConnectingGoogle(true);
+                      setError("");
+                      try {
+                        await connectGoogleForFirestore();
+                      } finally {
+                        setConnectingGoogle(false);
+                      }
+                    }}
+                  >
+                    {connectingGoogle ? "Redirection Google…" : "Se connecter avec Google"}
+                  </AdminButton>
+                )}
+              </div>
+            )}
 
-            <AdminButton className="w-full" onClick={handleSave} disabled={saving}>
+            <AdminButton className="w-full" onClick={handleSave} disabled={saving || !canWriteToFirestore}>
               {saving ? "Enregistrement…" : "Enregistrer dans Firestore"}
             </AdminButton>
           </div>

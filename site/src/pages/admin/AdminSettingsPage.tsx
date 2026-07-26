@@ -1,6 +1,7 @@
 import { useState } from "react";
 import AdminHeader from "../../admin/components/AdminHeader";
-import { AdminButton, AdminCard, FormField, TextArea, TextInput } from "../../admin/components/AdminUi";
+import { AdminButton, AdminCard, FormField, TextArea, TextInput, AdminBadge } from "../../admin/components/AdminUi";
+import { useAuth } from "../../admin/auth/AuthContext";
 import { useSiteSettings } from "../../admin/hooks/useAdminContent";
 import { testFirestoreWrite } from "../../admin/firebase/firestoreDiagnostics";
 import {
@@ -16,6 +17,7 @@ import type { SiteSettings } from "../../admin/storage/types";
 
 export default function AdminSettingsPage() {
   const current = useSiteSettings();
+  const { canWriteToFirestore } = useAuth();
   const [form, setForm] = useState<SiteSettings>(current);
   const [saved, setSaved] = useState(false);
   const [importError, setImportError] = useState("");
@@ -23,6 +25,7 @@ export default function AdminSettingsPage() {
   const [syncMessage, setSyncMessage] = useState("");
   const [testing, setTesting] = useState(false);
   const [testMessage, setTestMessage] = useState("");
+  const [showTech, setShowTech] = useState(false);
 
   const updateHero = (key: keyof SiteSettings["hero"], value: string) => {
     setForm((prev) => ({ ...prev, hero: { ...prev.hero, [key]: value } }));
@@ -30,6 +33,10 @@ export default function AdminSettingsPage() {
   };
 
   const handleSave = () => {
+    if (!canWriteToFirestore && isFirebaseConfigured()) {
+      alert("Connectez-vous avec Google pour enregistrer dans Firebase.");
+      return;
+    }
     saveSiteSettings({
       ...form,
       phonesIsrael: form.phonesIsrael.filter(Boolean),
@@ -85,11 +92,25 @@ export default function AdminSettingsPage() {
 
   return (
     <>
-      <AdminHeader title="Paramètres" />
+      <AdminHeader
+        title="Paramètres"
+        description="Coordonnées du site, texte de la page d'accueil, sauvegarde et outils Firebase."
+      />
       <main className="flex-1 space-y-6 p-4 sm:p-6">
-        <AdminCard title="Contact du site">
+        <div className="flex flex-wrap items-center gap-2">
+          <AdminBadge tone={isFirebaseConfigured() ? "success" : "warning"}>
+            {isFirebaseConfigured() ? "Firebase configuré" : "Mode local"}
+          </AdminBadge>
+          {isFirebaseConfigured() && (
+            <AdminBadge tone={canWriteToFirestore ? "success" : "warning"}>
+              {canWriteToFirestore ? "Enregistrement actif" : "Google requis pour enregistrer"}
+            </AdminBadge>
+          )}
+        </div>
+
+        <AdminCard title="Contact affiché sur le site">
           <div className="space-y-4">
-            <FormField label="Email">
+            <FormField label="Email" hint="Footer, page contact">
               <TextInput
                 type="email"
                 value={form.email}
@@ -99,7 +120,7 @@ export default function AdminSettingsPage() {
                 }}
               />
             </FormField>
-            <FormField label="Téléphones Israël (un par ligne)">
+            <FormField label="Téléphones Israël" hint="Un numéro par ligne">
               <TextArea
                 value={form.phonesIsrael.join("\n")}
                 onChange={(e) => {
@@ -109,7 +130,7 @@ export default function AdminSettingsPage() {
                 rows={3}
               />
             </FormField>
-            <FormField label="Téléphones France (un par ligne)">
+            <FormField label="Téléphones France" hint="Un numéro par ligne">
               <TextArea
                 value={form.phonesFrance.join("\n")}
                 onChange={(e) => {
@@ -120,13 +141,15 @@ export default function AdminSettingsPage() {
               />
             </FormField>
             {saved && <p className="text-sm text-brand-teal">Paramètres enregistrés ✓</p>}
-            <AdminButton onClick={handleSave}>Enregistrer</AdminButton>
+            <AdminButton onClick={handleSave} disabled={!canWriteToFirestore && isFirebaseConfigured()}>
+              Enregistrer les contacts
+            </AdminButton>
           </div>
         </AdminCard>
 
-        <AdminCard title="Page d'accueil — Hero">
+        <AdminCard title="Page d'accueil — bannière principale">
           <div className="space-y-4">
-            <FormField label="Surtitre">
+            <FormField label="Surtitre" hint="Ex : Association Dor Hadash">
               <TextInput value={form.hero.eyebrow} onChange={(e) => updateHero("eyebrow", e.target.value)} />
             </FormField>
             <FormField label="Titre principal">
@@ -135,21 +158,25 @@ export default function AdminSettingsPage() {
             <FormField label="Sous-titre">
               <TextArea value={form.hero.subtitle} onChange={(e) => updateHero("subtitle", e.target.value)} rows={3} />
             </FormField>
-            <AdminButton onClick={handleSave}>Enregistrer le hero</AdminButton>
+            <AdminButton onClick={handleSave} disabled={!canWriteToFirestore && isFirebaseConfigured()}>
+              Enregistrer le hero
+            </AdminButton>
           </div>
         </AdminCard>
 
-        <AdminCard title="Firestore — enregistrement">
+        <AdminCard title="Synchronisation Firebase">
           <p className="text-sm text-gray-600">
-            Enregistre dans Firestore tous les articles de blog, témoignages vidéo, paramètres du site et
-            messages contact. Les photos uploadées sont stockées dans Firebase Storage.
+            Testez la connexion puis poussez tout le contenu (vidéos, blog, paramètres, messages) vers Firestore.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <AdminButton onClick={handleTestFirestore} disabled={testing || !isFirebaseConfigured()}>
-              {testing ? "Test…" : "Tester la connexion Firestore"}
+              {testing ? "Test…" : "Tester Firestore"}
             </AdminButton>
-            <AdminButton onClick={handleSyncFirestore} disabled={syncing || !isFirebaseConfigured()}>
-              {syncing ? "Enregistrement…" : "Tout enregistrer dans Firestore"}
+            <AdminButton
+              onClick={handleSyncFirestore}
+              disabled={syncing || !isFirebaseConfigured() || !canWriteToFirestore}
+            >
+              {syncing ? "Enregistrement…" : "Tout synchroniser"}
             </AdminButton>
           </div>
           {testMessage && (
@@ -174,8 +201,7 @@ export default function AdminSettingsPage() {
 
         <AdminCard title="Sauvegarde & restauration">
           <p className="text-sm text-gray-600">
-            Exportez tout le contenu admin (vidéos, blog, messages, paramètres) en JSON pour le sauvegarder
-            ou le migrer vers Firebase plus tard.
+            Exportez ou importez tout le contenu admin en JSON (utile avant une migration ou en cas de problème).
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <AdminButton variant="secondary" onClick={handleExport}>
@@ -195,6 +221,7 @@ export default function AdminSettingsPage() {
               onClick={() => {
                 if (confirm("Réinitialiser tout le contenu admin aux valeurs par défaut ?")) {
                   resetContentToDefaults();
+                  setForm(getSiteSettings());
                   setSaved(false);
                 }
               }}
@@ -205,60 +232,45 @@ export default function AdminSettingsPage() {
           {importError && <p className="mt-2 text-sm text-brand-coral">{importError}</p>}
         </AdminCard>
 
-        <AdminCard title="Configuration Firebase">
-          <div className="space-y-3 text-sm text-gray-600">
-            <p>
-              Statut :{" "}
-              <strong className={isFirebaseConfigured() ? "text-brand-teal" : "text-amber-600"}>
-                {isFirebaseConfigured() ? "Connecté à Firestore" : "Non configuré (mode localStorage)"}
-              </strong>
+        <AdminCard
+          title="Aide technique Firebase"
+          action={
+            <AdminButton variant="ghost" onClick={() => setShowTech((v) => !v)}>
+              {showTech ? "Masquer" : "Afficher"}
+            </AdminButton>
+          }
+        >
+          {showTech ? (
+            <div className="space-y-3 text-sm text-gray-600">
+              <ol className="list-decimal space-y-2 pl-5">
+                <li>Console Firebase → Paramètres → Web → copiez la config</li>
+                <li>
+                  Authentication → Google activé + domaines :{" "}
+                  <code className="rounded bg-gray-100 px-1">localhost</code>,{" "}
+                  <code className="rounded bg-gray-100 px-1">dor-hadash.vercel.app</code>,{" "}
+                  <code className="rounded bg-gray-100 px-1">dor-hadash.com</code>
+                </li>
+                <li>
+                  Variables Vercel : <code className="rounded bg-gray-100 px-1">VITE_ADMIN_PASSWORD</code>,{" "}
+                  <code className="rounded bg-gray-100 px-1">VITE_ADMIN_EMAIL</code>, toutes les{" "}
+                  <code className="rounded bg-gray-100 px-1">VITE_FIREBASE_*</code>
+                </li>
+                <li>App Check → Firestore → <strong>Unenforced</strong> si erreur permission-denied</li>
+                <li>Publiez <code className="rounded bg-gray-100 px-1">firestore.rules</code> et{" "}
+                  <code className="rounded bg-gray-100 px-1">storage.rules</code>
+                </li>
+              </ol>
+              <pre className="max-w-full overflow-x-auto rounded-lg bg-gray-900 p-3 text-xs text-gray-100">
+{`VITE_ADMIN_EMAIL=dor.hadash55@gmail.com
+VITE_FIREBASE_PROJECT_ID=dor-hadash-a1202
+…`}
+              </pre>
+            </div>
+          ) : (
+            <p className="text-sm text-gray-500">
+              Instructions détaillées pour la configuration Firebase, Vercel et les domaines autorisés.
             </p>
-            <ol className="list-decimal space-y-2 pl-5">
-              <li>
-                Console Firebase → Paramètres du projet → Vos applications → Web → copiez la config
-              </li>
-              <li>
-                Authentication → <strong>Google</strong> activé + domaines autorisés :{" "}
-                <code className="rounded bg-gray-100 px-1">localhost</code>, votre domaine Vercel{" "}
-                (<code className="rounded bg-gray-100 px-1">*.vercel.app</code>) et{" "}
-                <code className="rounded bg-gray-100 px-1">dor-hadash.com</code>
-              </li>
-              <li>
-                Définissez <code className="rounded bg-gray-100 px-1">VITE_ADMIN_PASSWORD</code> (connexion
-                admin par mot de passe) et <code className="rounded bg-gray-100 px-1">VITE_ADMIN_EMAIL</code>{" "}
-                (compte Google autorisé)
-              </li>
-              <li>
-                Si erreur « permission-denied » malgré la connexion Google : vérifiez{" "}
-                <strong>App Check</strong> → Firestore → mettez en <strong>Unenforced</strong> (pas Enforced)
-              </li>
-              <li>
-                Déployez les règles depuis{" "}
-                <code className="rounded bg-gray-100 px-1">site/firestore.rules</code> et{" "}
-                <code className="rounded bg-gray-100 px-1">site/storage.rules</code>
-              </li>
-              <li>
-                Ajoutez les clés dans <code className="rounded bg-gray-100 px-1">site/.env</code> (local) et
-                dans Vercel → Settings → Environment Variables (production)
-              </li>
-            </ol>
-            <pre className="max-w-full overflow-x-auto rounded-lg bg-gray-900 p-3 text-xs text-gray-100 sm:p-4">
-{`VITE_ADMIN_PASSWORD=...
-VITE_ADMIN_EMAIL=dor.hadash55@gmail.com
-VITE_FIREBASE_API_KEY=...
-VITE_FIREBASE_AUTH_DOMAIN=...
-VITE_FIREBASE_PROJECT_ID=...
-VITE_FIREBASE_STORAGE_BUCKET=...
-VITE_FIREBASE_MESSAGING_SENDER_ID=...
-VITE_FIREBASE_APP_ID=...`}
-            </pre>
-            <p>
-              Données Firestore :{" "}
-              <code className="rounded bg-gray-100 px-1">site/content</code> (vidéos, blog, paramètres),{" "}
-              <code className="rounded bg-gray-100 px-1">contact_submissions</code> (messages). Photos :{" "}
-              <code className="rounded bg-gray-100 px-1">Storage /blog/</code>.
-            </p>
-          </div>
+          )}
         </AdminCard>
       </main>
     </>

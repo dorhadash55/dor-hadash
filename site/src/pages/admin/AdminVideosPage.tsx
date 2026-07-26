@@ -109,7 +109,10 @@ export default function AdminVideosPage() {
 
   return (
     <>
-      <AdminHeader title="Témoignages" />
+      <AdminHeader
+        title="Témoignages vidéo"
+        description="Ajoutez des vidéos YouTube affichées sur l'accueil et la page Témoignages. L'ordre ↑↓ définit l'affichage."
+      />
       <main className="flex-1 space-y-6 p-4 sm:p-6">
         {saved && (
           <p className="rounded-lg bg-brand-teal/10 px-4 py-3 text-sm text-brand-teal">

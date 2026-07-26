@@ -305,6 +305,26 @@ export function markContactRead(id: string, read = true) {
   emit();
 }
 
+export function markAllContactsRead() {
+  const unread = cache.contactSubmissions.filter((s) => !s.read);
+  if (unread.length === 0) return;
+
+  cache = {
+    ...cache,
+    contactSubmissions: cache.contactSubmissions.map((s) => ({ ...s, read: true })),
+  };
+  sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+
+  if (isFirebaseConfigured()) {
+    for (const s of unread) {
+      void updateContactSubmissionDoc(s.id, { read: true });
+    }
+  } else {
+    persistLocalStorage();
+  }
+  emit();
+}
+
 export function deleteContactSubmission(id: string) {
   cache = {
     ...cache,
