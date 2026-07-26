@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { services } from "../content/homepage";
 import Reveal from "./Reveal";
@@ -11,6 +12,8 @@ const accents = [
 ];
 
 export default function ServicesSection() {
+  const [openTitle, setOpenTitle] = useState<string | null>(null);
+
   return (
     <section className="section-shell bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -19,23 +22,30 @@ export default function ServicesSection() {
             align="center"
             label="Notre accompagnement"
             title="Nos 6 réponses pour une Alya réussie"
-            description="Un accompagnement complet, de la préparation à l'intégration."
+            description="De la préparation à l'intégration."
           />
         </Reveal>
 
-        {/* Mobile */}
-        <Reveal delay={100}>
-          <div className="mt-10 divide-y divide-brand-sand rounded-2xl border border-brand-sand bg-brand-cream sm:hidden">
-            {services.map((s, i) => {
-              const accent = accents[i % accents.length];
-              return (
-                <div key={s.title} className="flex items-start gap-3 px-4 py-4">
-                  <div
-                    className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${accent.border} ${accent.iconBg} ${accent.iconText}`}
-                  >
-                    <ServiceIcon icon={s.icon} className="h-5 w-5" />
-                  </div>
-                  <div className="min-w-0 flex-1">
+        {/* Mobile — accordion compact */}
+        <div className="mt-8 divide-y divide-brand-sand overflow-hidden rounded-2xl border border-brand-sand bg-brand-cream sm:hidden">
+          {services.map((s, i) => {
+            const accent = accents[i % accents.length];
+            const open = openTitle === s.title;
+            return (
+              <button
+                key={s.title}
+                type="button"
+                onClick={() => setOpenTitle(open ? null : s.title)}
+                aria-expanded={open}
+                className="flex w-full items-start gap-3 px-3.5 py-3.5 text-left"
+              >
+                <div
+                  className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${accent.border} ${accent.iconBg} ${accent.iconText}`}
+                >
+                  <ServiceIcon icon={s.icon} className="h-5 w-5" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
                     <h3 className="font-heading text-[0.9375rem] font-semibold text-brand-blue-deep [overflow-wrap:anywhere]">
                       {s.title}
                       {s.isNew && (
@@ -44,15 +54,26 @@ export default function ServicesSection() {
                         </span>
                       )}
                     </h3>
+                    <span
+                      className={`shrink-0 text-brand-blue transition-transform ${open ? "rotate-180" : ""}`}
+                      aria-hidden="true"
+                    >
+                      <Chevron />
+                    </span>
+                  </div>
+                  {open && (
                     <p className="mt-1.5 text-[0.8125rem] leading-[1.55] text-gray-600 [overflow-wrap:anywhere]">
                       {s.description}
                     </p>
-                  </div>
+                  )}
                 </div>
-              );
-            })}
-          </div>
-        </Reveal>
+              </button>
+            );
+          })}
+        </div>
+        <p className="mt-2 text-center text-xs text-gray-400 sm:hidden">
+          Appuyez pour lire le détail
+        </p>
 
         {/* Desktop */}
         <div className="mt-14 hidden space-y-5 sm:block">
@@ -106,5 +127,13 @@ export default function ServicesSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+function Chevron() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
   );
 }

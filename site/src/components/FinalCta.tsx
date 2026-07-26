@@ -20,21 +20,22 @@ export default function FinalCta() {
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-24">
+      <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-24">
         <div className="mx-auto max-w-2xl text-center text-white">
           <p className="font-accent text-xs uppercase tracking-[0.24em] text-brand-teal">Prochaine étape</p>
-          <h2 className="mt-3 font-heading text-3xl font-semibold text-balance sm:text-4xl lg:text-5xl">
-            Qu'attendez-vous pour préparer votre Alya ?
+          <h2 className="mt-2 font-heading text-2xl font-semibold text-balance sm:mt-3 sm:text-4xl lg:text-5xl">
+            Prêt à préparer votre Alya ?
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-white/85 sm:text-lg">
-            Rejoignez Dor Hadash — inscription gratuite, accompagnement personnalisé dès le premier contact.
+          <p className="mt-2 text-sm leading-relaxed text-white/85 sm:mt-4 sm:text-lg">
+            Inscription gratuite — accompagnement dès le premier contact.
           </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link to="/nous-contacter" className="btn-primary">
+          {/* Sur mobile la barre CTA fixe suffit : un seul bouton ici, plus léger */}
+          <div className="mt-5 flex flex-col items-center justify-center gap-3 sm:mt-8 sm:flex-row">
+            <Link to="/nous-contacter" className="btn-primary hidden sm:inline-flex">
               M'inscrire gratuitement →
             </Link>
-            <a href="#methode" className="btn-ghost">
-              Découvrir la méthode
+            <a href="#methode" className="btn-ghost text-sm sm:text-base">
+              Revoir la méthode
             </a>
           </div>
         </div>

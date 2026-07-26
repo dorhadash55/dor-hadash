@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { methodeSteps } from "../content/homepage";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
@@ -10,6 +11,8 @@ const stepThemes = [
 ];
 
 export default function MethodeSection() {
+  const [openStep, setOpenStep] = useState<string | null>(null);
+
   return (
     <section id="methode" className="section-shell relative overflow-hidden bg-brand-cream">
       <div className="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand-teal/8 blur-3xl" />
@@ -20,36 +23,51 @@ export default function MethodeSection() {
             align="center"
             label="Notre méthode"
             title="La méthode Dor Hadash"
-            description="Quatre étapes claires pour transformer votre projet d'Alya en une intégration réussie."
+            description="Quatre étapes pour une Alya réussie."
           />
         </Reveal>
 
-        {/* Mobile */}
-        <div className="relative mt-12 sm:hidden">
+        {/* Mobile — accordion compact */}
+        <div className="relative mt-8 sm:hidden">
           <div
-            className="absolute bottom-4 left-[1.6875rem] top-4 w-px bg-gradient-to-b from-brand-blue via-brand-teal to-brand-coral"
+            className="absolute bottom-3 left-[1.375rem] top-3 w-px bg-gradient-to-b from-brand-blue via-brand-teal to-brand-coral"
             aria-hidden="true"
           />
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-2.5">
             {methodeSteps.map((s, i) => {
               const theme = stepThemes[i];
+              const open = openStep === s.step;
               return (
-                <Reveal key={s.step} delay={i * 80}>
-                  <article className="methode-step relative pl-14">
-                    <div
-                      className={`absolute left-0 top-5 flex h-[3.375rem] w-[3.375rem] items-center justify-center rounded-full bg-gradient-to-br ${theme.badge} font-heading text-base font-semibold text-white shadow-lg ${theme.glow}`}
-                    >
-                      {s.step}
+                <article key={s.step} className="methode-step relative pl-12">
+                  <div
+                    className={`absolute left-0 top-2.5 flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br ${theme.badge} font-heading text-sm font-semibold text-white shadow-md ${theme.glow}`}
+                  >
+                    {s.step}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setOpenStep(open ? null : s.step)}
+                    aria-expanded={open}
+                    className={`w-full rounded-2xl bg-white p-3.5 text-left shadow-sm ring-1 transition ${theme.ring}`}
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="font-heading text-base font-semibold text-brand-blue-deep">{s.title}</h3>
+                      <span
+                        className={`shrink-0 text-brand-blue transition-transform ${open ? "rotate-180" : ""}`}
+                        aria-hidden="true"
+                      >
+                        <Chevron />
+                      </span>
                     </div>
-                    <div className={`rounded-2xl bg-white p-4 shadow-sm ring-1 ${theme.ring}`}>
-                      <h3 className="font-heading text-lg font-semibold text-brand-blue-deep">{s.title}</h3>
+                    {open && (
                       <p className="mt-2 text-sm leading-relaxed text-gray-600">{s.description}</p>
-                    </div>
-                  </article>
-                </Reveal>
+                    )}
+                  </button>
+                </article>
               );
             })}
           </div>
+          <p className="mt-3 text-center text-xs text-gray-400">Appuyez sur une étape pour voir le détail</p>
         </div>
 
         {/* Desktop */}
@@ -74,7 +92,9 @@ export default function MethodeSection() {
                         {s.step}
                       </div>
                     </div>
-                    <div className={`mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md ${theme.ring}`}>
+                    <div
+                      className={`mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md ${theme.ring}`}
+                    >
                       <h3 className="font-heading text-lg font-semibold text-brand-blue-deep">{s.title}</h3>
                       <p className="mt-2 text-sm leading-relaxed text-gray-600">{s.description}</p>
                     </div>
@@ -86,5 +106,13 @@ export default function MethodeSection() {
         </div>
       </div>
     </section>
+  );
+}
+
+function Chevron() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
   );
 }
