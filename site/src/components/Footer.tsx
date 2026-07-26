@@ -12,7 +12,7 @@ export default function Footer() {
 
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <img src="/images/logo.png" alt="Dor Hadash" className="mb-4 h-12 w-auto rounded bg-white/95 p-1" />
+          <img src="/images/logo.png" alt="Dor Hadash" className="mb-4 h-12 w-auto object-contain" />
           <p className="text-sm leading-relaxed text-white/70">
             Incubateur d'Alya francophone — accompagner les francophones dans leur intégration en Israël.
           </p>

@@ -4,6 +4,7 @@ import PageBanner from "../components/PageBanner";
 import { addContactSubmission } from "../admin/storage/contentStore";
 import { useSiteInfo } from "../content/useSiteContent";
 import { cities } from "../content/cities";
+import { sendContactEmails } from "../lib/sendContactEmails";
 
 const horizons = [
   "Moins de 6 mois",
@@ -15,11 +16,16 @@ const horizons = [
 export default function Contact() {
   const siteInfo = useSiteInfo();
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
+    setSending(true);
+
     const form = new FormData(e.currentTarget);
-    addContactSubmission({
+    const payload = {
       prenom: String(form.get("prenom") ?? ""),
       nom: String(form.get("nom") ?? ""),
       email: String(form.get("email") ?? ""),
@@ -27,8 +33,24 @@ export default function Contact() {
       ville: String(form.get("ville") ?? ""),
       horizon: String(form.get("horizon") ?? ""),
       message: String(form.get("message") ?? ""),
-    });
-    setSubmitted(true);
+    };
+
+    try {
+      // 1) Emails : équipe (dorhadash5780@…) + confirmation à l'utilisateur
+      await sendContactEmails(payload);
+      // 2) Admin Messages (Firestore) — après succès email pour éviter les doublons au retry
+      addContactSubmission(payload);
+      setSubmitted(true);
+    } catch (err) {
+      console.error(err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Une erreur est survenue. Réessayez ou contactez-nous par téléphone.",
+      );
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -74,7 +96,9 @@ export default function Contact() {
                 <h3 className="mt-4 font-heading text-lg font-semibold text-brand-blue-deep">
                   Merci, votre message a bien été envoyé !
                 </h3>
-                <p className="mt-2 text-sm text-gray-600">Nous revenons vers vous très rapidement.</p>
+                <p className="mt-2 text-sm text-gray-600">
+                  Un email de confirmation vient de vous être envoyé. Nous revenons vers vous très rapidement.
+                </p>
               </div>
             ) : (
               <form className="space-y-5" onSubmit={handleSubmit}>
@@ -88,7 +112,8 @@ export default function Contact() {
                       name="prenom"
                       type="text"
                       required
-                      className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+                      disabled={sending}
+                      className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 disabled:opacity-60"
                     />
                   </div>
                   <div>
@@ -100,7 +125,8 @@ export default function Contact() {
                       name="nom"
                       type="text"
                       required
-                      className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+                      disabled={sending}
+                      className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 disabled:opacity-60"
                     />
                   </div>
                 </div>
@@ -114,7 +140,8 @@ export default function Contact() {
                     name="email"
                     type="email"
                     required
-                    className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+                    disabled={sending}
+                    className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 disabled:opacity-60"
                   />
                 </div>
 
@@ -127,7 +154,8 @@ export default function Contact() {
                     name="telephone"
                     type="tel"
                     required
-                    className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+                    disabled={sending}
+                    className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 disabled:opacity-60"
                   />
                 </div>
 
@@ -141,7 +169,8 @@ export default function Contact() {
                       name="ville"
                       required
                       defaultValue=""
-                      className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+                      disabled={sending}
+                      className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 disabled:opacity-60"
                     >
                       <option value="" disabled>
                         Sélectionner…
@@ -163,7 +192,8 @@ export default function Contact() {
                       name="horizon"
                       required
                       defaultValue=""
-                      className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+                      disabled={sending}
+                      className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 disabled:opacity-60"
                     >
                       <option value="" disabled>
                         Sélectionner…
@@ -185,15 +215,23 @@ export default function Contact() {
                     id="message"
                     name="message"
                     rows={4}
-                    className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+                    disabled={sending}
+                    className="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20 disabled:opacity-60"
                   />
                 </div>
 
+                {error && (
+                  <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
+                    {error}
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full rounded-full bg-brand-blue py-3 text-base font-semibold text-white transition-colors hover:bg-brand-blue-dark"
+                  disabled={sending}
+                  className="w-full rounded-full bg-brand-blue py-3 text-base font-semibold text-white transition-colors hover:bg-brand-blue-dark disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  Envoyer
+                  {sending ? "Envoi en cours…" : "Envoyer"}
                 </button>
               </form>
             )}

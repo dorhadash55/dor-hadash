@@ -183,7 +183,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             <img
               src="/images/logo.png"
               alt=""
-              className="h-14 w-auto rounded-xl bg-white/95 p-1.5 shadow-lg shadow-black/20"
+              className="h-14 w-auto object-contain"
             />
             <div className="min-w-0 flex-1">
               <p className="font-heading text-xl font-semibold leading-tight text-white">Dor Hadash</p>
