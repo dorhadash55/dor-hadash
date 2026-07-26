@@ -18,7 +18,7 @@ const organizationJsonLd = {
   logo: "https://www.dor-hadash.com/images/logo.png",
   email: siteInfo.email,
   telephone: siteInfo.phones.israel[0],
-  sameAs: [siteInfo.social.facebook],
+  sameAs: [siteInfo.social.facebook, siteInfo.social.instagram],
 };
 
 export default function Layout() {

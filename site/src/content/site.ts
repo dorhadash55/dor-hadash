@@ -8,7 +8,8 @@ export const siteInfo = {
   },
   callPhone: "tel:+972522263776",
   social: {
-    facebook: "https://www.facebook.com/dorhadashisrael",
+    facebook: "https://www.facebook.com/share/1B39kgdKvT/",
+    instagram: "https://www.instagram.com/dorhadash.pisgatzeev?igsh=MXhjN3Y5dmVueGdvZA==",
   },
 };
 
