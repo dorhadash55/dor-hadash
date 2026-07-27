@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { sendContactMails } from "./api/sendContactMails";
+import { sendContactMails } from "./api/sendContactMails.js";
 
 function contactApiPlugin(env: Record<string, string>): Plugin {
   return {
