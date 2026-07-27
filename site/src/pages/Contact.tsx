@@ -36,10 +36,10 @@ export default function Contact() {
     };
 
     try {
-      // 1) Emails : équipe (dorhadash5780@…) + confirmation à l'utilisateur
+      // 1) Emails : admin(s) avec coordonnées + confirmation utilisateur
       await sendContactEmails(payload);
-      // 2) Admin Messages (Firestore) — après succès email pour éviter les doublons au retry
-      addContactSubmission(payload);
+      // 2) Admin → Messages (Firestore)
+      await addContactSubmission(payload);
       setSubmitted(true);
     } catch (err) {
       console.error(err);

@@ -2,8 +2,13 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Tout utilisateur connecté (admin Google) peut lire/écrire
-    // Le site limite déjà l'accès admin à dor.hadash55@gmail.com
+    // Messages du formulaire public : création libre, lecture/modif réservée à l'admin connecté
+    match /contact_submissions/{id} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+
+    // Reste du contenu : lecture publique, écriture admin connecté
     match /{document=**} {
       allow read: if true;
       allow write: if request.auth != null;

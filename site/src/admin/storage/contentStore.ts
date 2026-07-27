@@ -263,9 +263,9 @@ export function deleteBlogPost(slug: string) {
   persistSiteContent();
 }
 
-export function addContactSubmission(
+export async function addContactSubmission(
   data: Omit<ContactSubmission, "id" | "createdAt" | "read">,
-) {
+): Promise<ContactSubmission> {
   const submission: ContactSubmission = {
     ...data,
     id: crypto.randomUUID(),
@@ -279,13 +279,19 @@ export function addContactSubmission(
   sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
 
   if (isFirebaseConfigured()) {
-    void addContactSubmissionDoc(submission).catch((error) => {
+    try {
+      await addContactSubmissionDoc(submission);
+    } catch (error) {
       console.error("Erreur contact Firestore:", error);
-    });
+      throw new Error(
+        "Message enregistré localement, mais l'enregistrement Firebase a échoué. Vérifiez les règles Firestore.",
+      );
+    }
   } else {
     persistLocalStorage();
   }
   emit();
+  return submission;
 }
 
 export function markContactRead(id: string, read = true) {
