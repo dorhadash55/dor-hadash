@@ -12,7 +12,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/mission": {
     title: "Notre mission | Dor Hadash",
     description:
-      "Découvrez la mission de Dor Hadash, incubateur d'Alya pensé pour une intégration sociale et professionnelle réussie des olim francophones en Israël.",
+      "Mission Dor Hadash : accompagnement à l'intégration des olim francophones — hébergement, oulpan, formation, emploi et village communautaire traditionaliste.",
   },
   "/lequipe": {
     title: "L'équipe Dor Hadash | Qui sommes-nous ?",
@@ -65,9 +65,9 @@ export const seoByPath: Record<string, SeoEntry> = {
       "Une question sur votre Alya ? Contactez l'équipe Dor Hadash par téléphone, email ou via notre formulaire. Réponse rapide garantie.",
   },
   "/temoignages-videos": {
-    title: "Témoignages | Dor Hadash",
+    title: "Paroles d'olim | Dor Hadash",
     description:
-      "Découvrez en vidéo le témoignage d'olim accompagnés par Dor Hadash dans leur installation en Israël.",
+      "Témoignages d'olim et présentation du programme Dor Hadash en vidéo, pour préparer votre Alya en Israël.",
   },
 };
 

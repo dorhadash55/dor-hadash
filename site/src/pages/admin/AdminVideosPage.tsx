@@ -5,15 +5,26 @@ import { useAuth } from "../../admin/auth/AuthContext";
 import { useVideos } from "../../admin/hooks/useAdminContent";
 import { saveVideosAsync } from "../../admin/storage/contentStore";
 import type { VideoTestimonial } from "../../admin/storage/types";
+import {
+  getVideoCategory,
+  videoCategoryLabels,
+  type VideoCategory,
+} from "../../content/videos";
 import { extractYoutubeId, youtubeEmbedUrl, youtubeThumbnailUrl } from "../../admin/utils/youtube";
 
 type VideoForm = {
   title: string;
   youtubeUrl: string;
   caption: string;
+  category: VideoCategory;
 };
 
-const emptyForm = (): VideoForm => ({ title: "", youtubeUrl: "", caption: "" });
+const emptyForm = (): VideoForm => ({
+  title: "",
+  youtubeUrl: "",
+  caption: "",
+  category: "temoignage",
+});
 
 export default function AdminVideosPage() {
   const { canWriteToFirestore, connectGoogleForFirestore } = useAuth();
@@ -72,6 +83,7 @@ export default function AdminVideosPage() {
       youtubeId: id,
       title: form.title.trim(),
       caption: form.caption.trim(),
+      category: form.category,
     };
 
     const next = editingId
@@ -88,13 +100,14 @@ export default function AdminVideosPage() {
       title: video.title,
       youtubeUrl: video.youtubeId,
       caption: video.caption,
+      category: getVideoCategory(video),
     });
     setError("");
     setSaved(false);
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Supprimer ce témoignage vidéo ?")) return;
+    if (!confirm("Supprimer cette vidéo ?")) return;
     await persistVideos(videos.filter((v) => v.id !== id));
     if (editingId === id) resetForm();
   };
@@ -110,8 +123,8 @@ export default function AdminVideosPage() {
   return (
     <>
       <AdminHeader
-        title="Témoignages vidéo"
-        description="Ajoutez des vidéos YouTube affichées sur l'accueil et la page Témoignages. L'ordre ↑↓ définit l'affichage."
+        title="Vidéos"
+        description="Témoignages d'olim, présentation du programme, autres vidéos. Choisissez une catégorie pour chaque vidéo."
       />
       <main className="flex-1 space-y-6 p-4 sm:p-6">
         {saved && (
@@ -127,8 +140,24 @@ export default function AdminVideosPage() {
                 <TextInput
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  placeholder="Ex : Mon Alya à Karmiel"
+                  placeholder="Ex : Présentation du programme Dor Hadash"
                 />
+              </FormField>
+
+              <FormField label="Catégorie" hint="Détermine le regroupement sur la page Vidéos">
+                <select
+                  value={form.category}
+                  onChange={(e) =>
+                    setForm({ ...form, category: e.target.value as VideoCategory })
+                  }
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-800 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+                >
+                  {(Object.keys(videoCategoryLabels) as VideoCategory[]).map((key) => (
+                    <option key={key} value={key}>
+                      {videoCategoryLabels[key]}
+                    </option>
+                  ))}
+                </select>
               </FormField>
 
               <FormField
@@ -146,7 +175,7 @@ export default function AdminVideosPage() {
                 <TextArea
                   value={form.caption}
                   onChange={(e) => setForm({ ...form, caption: e.target.value })}
-                  placeholder="Témoignage de la famille Cohen sur leur installation à..."
+                  placeholder="Décrivez brièvement la vidéo…"
                   rows={4}
                 />
               </FormField>
@@ -203,7 +232,10 @@ export default function AdminVideosPage() {
                   />
                 </div>
                 <div className="p-4">
-                  <h3 className="font-heading font-semibold text-brand-blue-deep">
+                  <p className="text-xs font-medium uppercase tracking-wide text-brand-teal">
+                    {videoCategoryLabels[form.category]}
+                  </p>
+                  <h3 className="mt-1 font-heading font-semibold text-brand-blue-deep">
                     {form.title || "Titre de la vidéo"}
                   </h3>
                   <p className="mt-1 text-sm text-gray-600">
@@ -231,7 +263,7 @@ export default function AdminVideosPage() {
           {videos.length === 0 ? (
             <EmptyState
               title="Aucune vidéo"
-              description="Ajoutez votre premier témoignage YouTube avec le formulaire ci-dessus."
+              description="Ajoutez une première vidéo YouTube avec le formulaire ci-dessus."
             />
           ) : (
             <ul className="divide-y divide-gray-100">
@@ -243,6 +275,9 @@ export default function AdminVideosPage() {
                     className="h-20 w-36 shrink-0 rounded-lg object-cover"
                   />
                   <div className="min-w-0 flex-1">
+                    <p className="text-xs font-medium text-brand-teal">
+                      {videoCategoryLabels[getVideoCategory(video)]}
+                    </p>
                     <h3 className="font-heading font-semibold text-brand-blue-deep">{video.title}</h3>
                     <p className="mt-1 line-clamp-2 text-sm text-gray-600">{video.caption}</p>
                     <p className="mt-1 text-xs text-gray-400">ID : {video.youtubeId}</p>

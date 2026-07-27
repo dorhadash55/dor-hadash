@@ -26,7 +26,7 @@ export default function AdminDashboard() {
       done: !usesFirebaseAuth || canWriteToFirestore,
       link: "/admin/login",
     },
-    { label: "Au moins 1 témoignage vidéo", done: stats.videos > 0, link: "/admin/videos" },
+    { label: "Au moins 1 vidéo", done: stats.videos > 0, link: "/admin/videos" },
     { label: "Articles de blog publiés", done: stats.blogPosts > 0, link: "/admin/blog" },
     { label: "Paramètres site vérifiés", done: content.siteSettings !== null, link: "/admin/settings" },
   ];
@@ -50,7 +50,7 @@ export default function AdminDashboard() {
         )}
 
         <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
-          <AdminStatCard label="Vidéos" value={stats.videos} to="/admin/videos" hint="Témoignages YouTube" />
+          <AdminStatCard label="Vidéos" value={stats.videos} to="/admin/videos" hint="YouTube (témoignages & programme)" />
           <AdminStatCard label="Articles blog" value={stats.blogPosts} to="/admin/blog" />
           <AdminStatCard label="Messages" value={stats.contacts} to="/admin/contacts" />
           <AdminStatCard
@@ -93,7 +93,7 @@ export default function AdminDashboard() {
                 rel="noreferrer"
                 className="text-sm font-medium text-brand-blue hover:underline"
               >
-                Témoignages ↗
+                Vidéos ↗
               </a>
               <a
                 href="/blog"

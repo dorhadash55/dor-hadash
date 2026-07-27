@@ -316,10 +316,60 @@ h1, h2, h3, h4 {
   }
 }
 
+/* ── Mission page ── */
+
+.mission-hero-img {
+  animation: missionKenBurns 18s ease-in-out infinite alternate;
+  transform-origin: center 35%;
+}
+
+.mission-hero-in {
+  animation: missionHeroIn 0.85s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes missionKenBurns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes missionHeroIn {
+  from {
+    opacity: 0;
+    transform: translateY(1.1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mission-pillar {
+  box-shadow: 0 10px 28px rgba(3, 45, 122, 0.06);
+  animation: missionPillarIn 0.7s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes missionPillarIn {
+  from {
+    opacity: 0;
+    transform: translateX(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .methode-pulse,
   .methode-step,
   .methode-progress,
+  .mission-hero-img,
+  .mission-hero-in,
+  .mission-pillar,
   .reveal {
     animation: none;
     opacity: 1;

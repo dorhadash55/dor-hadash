@@ -43,6 +43,10 @@ function normalizeVideos(raw: unknown): VideoTestimonial[] {
         youtubeId,
         title,
         caption: String(row.caption ?? ""),
+        category:
+          row.category === "programme" || row.category === "autre" || row.category === "temoignage"
+            ? row.category
+            : "temoignage",
       };
     })
     .filter((video): video is VideoTestimonial => video !== null);

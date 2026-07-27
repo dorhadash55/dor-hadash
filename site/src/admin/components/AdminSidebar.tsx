@@ -4,7 +4,7 @@ import { getAdminStats } from "../storage/contentStore";
 
 const navItems = [
   { to: "/admin", label: "Tableau de bord", end: true, icon: "◉" },
-  { to: "/admin/videos", label: "Témoignages", icon: "▶" },
+  { to: "/admin/videos", label: "Vidéos", icon: "▶" },
   { to: "/admin/blog", label: "Blog", icon: "✎" },
   { to: "/admin/contacts", label: "Messages", icon: "✉" },
   { to: "/admin/settings", label: "Paramètres", icon: "⚙" },

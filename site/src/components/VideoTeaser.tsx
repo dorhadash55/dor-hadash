@@ -20,11 +20,11 @@ export default function VideoTeaser() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
           <SectionHeading
-            label="Ils témoignent"
-            title="La parole aux olim"
+            label="Paroles d'olim"
+            title="Témoignages et programme"
             action={
               <Link to="/temoignages-videos" className="btn-outline">
-                Tous les témoignages →
+                Voir tout →
               </Link>
             }
           />

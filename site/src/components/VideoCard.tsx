@@ -1,10 +1,12 @@
 import { useState } from "react";
 import type { VideoTestimonial } from "../content/videos";
+import { getVideoCategory, videoCategoryLabels } from "../content/videos";
 import { youtubeThumbnailUrl } from "../admin/utils/youtube";
 import VideoModal from "./VideoModal";
 
 export default function VideoCard({ video }: { video: VideoTestimonial }) {
   const [active, setActive] = useState(false);
+  const category = getVideoCategory(video);
 
   return (
     <>
@@ -31,7 +33,10 @@ export default function VideoCard({ video }: { video: VideoTestimonial }) {
           </div>
         </button>
         <div className="p-5">
-          <h3 className="font-heading text-base font-semibold text-brand-blue-deep">{video.title}</h3>
+          <p className="text-xs font-medium uppercase tracking-wide text-brand-teal">
+            {videoCategoryLabels[category]}
+          </p>
+          <h3 className="mt-1 font-heading text-base font-semibold text-brand-blue-deep">{video.title}</h3>
           <p className="mt-1 text-sm text-gray-600">{video.caption}</p>
         </div>
       </div>
