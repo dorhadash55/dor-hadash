@@ -16,6 +16,7 @@ import { getDb, getFirebaseAuth, isFirebaseConfigured } from "./config";
 import { ensureFirebaseAuthReady } from "./authReady";
 import type { AdminContent, ContactSubmission, SiteSettings, VideoTestimonial } from "../storage/types";
 import type { BlogPost } from "../storage/types";
+import type { VideoCategory } from "../../content/videos";
 
 type SiteDocument = {
   videos?: unknown;
@@ -30,26 +31,30 @@ let contactsUnsubscribe: Unsubscribe | null = null;
 function normalizeVideos(raw: unknown): VideoTestimonial[] {
   if (!Array.isArray(raw)) return [];
 
-  return raw
-    .map((item) => {
-      if (!item || typeof item !== "object") return null;
-      const row = item as Record<string, unknown>;
-      const youtubeId = String(row.youtubeId ?? row.youtube_id ?? "").trim();
-      const title = String(row.title ?? "").trim();
-      if (!youtubeId || !title) return null;
+  const videos: VideoTestimonial[] = [];
 
-      return {
-        id: String(row.id ?? youtubeId),
-        youtubeId,
-        title,
-        caption: String(row.caption ?? ""),
-        category:
-          row.category === "programme" || row.category === "autre" || row.category === "temoignage"
-            ? row.category
-            : "temoignage",
-      };
-    })
-    .filter((video): video is VideoTestimonial => video !== null);
+  for (const item of raw) {
+    if (!item || typeof item !== "object") continue;
+    const row = item as Record<string, unknown>;
+    const youtubeId = String(row.youtubeId ?? row.youtube_id ?? "").trim();
+    const title = String(row.title ?? "").trim();
+    if (!youtubeId || !title) continue;
+
+    const category: VideoCategory =
+      row.category === "programme" || row.category === "autre" || row.category === "temoignage"
+        ? row.category
+        : "temoignage";
+
+    videos.push({
+      id: String(row.id ?? youtubeId),
+      youtubeId,
+      title,
+      caption: String(row.caption ?? ""),
+      category,
+    });
+  }
+
+  return videos;
 }
 
 function buildSitePayload(data: {
