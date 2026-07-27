@@ -99,6 +99,10 @@ export default function Contact() {
                 <p className="mt-2 text-sm text-gray-600">
                   Un email de confirmation vient de vous être envoyé. Nous revenons vers vous très rapidement.
                 </p>
+                <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900/90">
+                  Pensez à vérifier vos <strong>spams / courriers indésirables</strong> si vous ne voyez pas
+                  le message dans votre boîte de réception.
+                </p>
               </div>
             ) : (
               <form className="space-y-5" onSubmit={handleSubmit}>

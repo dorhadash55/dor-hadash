@@ -113,6 +113,9 @@ function userConfirmationHtml(prenom: string, contactEmail: string) {
     <p style="margin:0 0 14px;font-size:15px;line-height:1.65;color:#374151;">
       Nous avons bien reçu votre message. L'équipe Dor Hadash vous recontactera dans les plus brefs délais pour échanger sur votre projet d'Alya.
     </p>
+    <p style="margin:0 0 14px;font-size:14px;line-height:1.55;color:#92400e;background:#fffbeb;padding:12px 14px;border-radius:10px;border:1px solid #fde68a;">
+      Astuce : si cet email n'apparaît pas dans votre boîte de réception, vérifiez le dossier <strong>spam / indésirables</strong> et marquez-le comme « non spam ».
+    </p>
     <p style="margin:0 0 14px;font-size:15px;line-height:1.65;color:#374151;">
       En attendant, n'hésitez pas à découvrir nos villes partenaires et notre accompagnement sur le site.
     </p>
@@ -175,6 +178,8 @@ export async function sendContactMails(data: ContactMailData, env: ContactMailEn
       `Bonjour ${data.prenom},`,
       "",
       "Nous avons bien reçu votre message. L'équipe Dor Hadash vous recontactera dans les plus brefs délais.",
+      "",
+      "Si cet email est dans vos spams / indésirables, marquez-le comme « non spam ».",
       "",
       "À bientôt,",
       "L'équipe Dor Hadash",
