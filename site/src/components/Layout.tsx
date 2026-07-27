@@ -35,7 +35,7 @@ export default function Layout() {
         <script type="application/ld+json">{JSON.stringify(organizationJsonLd)}</script>
       </Head>
       <Header />
-      <main className="flex-1">
+      <main key={pathname} className="page-enter flex-1">
         <Outlet />
       </main>
       <Footer />

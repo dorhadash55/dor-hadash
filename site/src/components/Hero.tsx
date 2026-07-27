@@ -21,7 +21,7 @@ export default function Hero() {
           decoding="async"
           fetchPriority="high"
           sizes="100vw"
-          className="block h-auto max-h-[52vh] w-full object-cover object-center lg:h-full lg:max-h-none"
+          className="hero-img-in block h-auto max-h-[52vh] w-full object-cover object-center lg:h-full lg:max-h-none"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep via-brand-blue-deep/55 to-brand-blue-deep/15 lg:bg-gradient-to-r lg:from-brand-blue-deep/95 lg:via-brand-blue-deep/72 lg:via-45% lg:to-brand-blue-light/15" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep/90 via-transparent to-transparent lg:from-brand-blue-deep/50" />
@@ -39,18 +39,30 @@ export default function Hero() {
       <div className="relative mx-auto flex min-h-0 max-w-7xl flex-col justify-end px-4 pb-10 pt-6 sm:px-6 sm:pb-14 lg:min-h-[88vh] lg:justify-center lg:py-24">
         <div className="grid items-end gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16">
           <div className="max-w-2xl">
-            <p className="font-accent text-xs uppercase tracking-[0.28em] text-brand-teal sm:text-sm">
+            <p
+              className="hero-in font-accent text-xs uppercase tracking-[0.28em] text-brand-teal sm:text-sm"
+              style={{ animationDelay: "120ms" }}
+            >
               {hero.eyebrow || defaultHero.eyebrow}
             </p>
-            <h1 className="mt-3 font-heading text-[2rem] font-semibold leading-[1.08] text-balance sm:text-4xl lg:text-5xl xl:text-[3.35rem]">
+            <h1
+              className="hero-in mt-3 font-heading text-[2rem] font-semibold leading-[1.08] text-balance sm:text-4xl lg:text-5xl xl:text-[3.35rem]"
+              style={{ animationDelay: "280ms" }}
+            >
               {hero.title || defaultHero.title}
             </h1>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-white/88 sm:mt-5 sm:text-lg lg:text-xl">
+            <p
+              className="hero-in mt-4 max-w-xl text-base leading-relaxed text-white/88 sm:mt-5 sm:text-lg lg:text-xl"
+              style={{ animationDelay: "420ms" }}
+            >
               {hero.subtitle || defaultHero.subtitle}
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link to={defaultHero.ctaPrimary.href} className="btn-primary group">
+            <div
+              className="hero-in mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
+              style={{ animationDelay: "580ms" }}
+            >
+              <Link to={defaultHero.ctaPrimary.href} className="btn-primary hero-cta-pulse group relative">
                 {defaultHero.ctaPrimary.label}
                 <span className="inline-block transition-transform group-hover:translate-x-0.5" aria-hidden="true">
                   →
@@ -64,7 +76,10 @@ export default function Hero() {
 
           {/* Panneau latéral desktop — ancrage visuel */}
           <div className="hidden lg:block">
-            <div className="ml-auto max-w-sm rounded-2xl border border-white/15 bg-white/8 p-6 backdrop-blur-md">
+            <div
+              className="hero-in ml-auto max-w-sm rounded-2xl border border-white/15 bg-white/8 p-6 backdrop-blur-md"
+              style={{ animationDelay: "520ms" }}
+            >
               <p className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal">Pour qui ?</p>
               <ul className="mt-4 space-y-3 text-sm text-white/90">
                 <li className="flex gap-3">

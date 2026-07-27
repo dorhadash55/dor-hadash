@@ -18,7 +18,7 @@ export default function VideoTeaser() {
   return (
     <section className="section-shell bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <Reveal>
+        <Reveal variant="blur">
           <SectionHeading
             label="Paroles d'olim"
             title="Témoignages et programme"
@@ -34,7 +34,8 @@ export default function VideoTeaser() {
           {preview.map((v, i) => (
             <Reveal
               key={v.id}
-              delay={i * 70}
+              delay={i * 100}
+              variant="scale"
               className="w-[78vw] max-w-[20rem] shrink-0 snap-center sm:w-48 sm:max-w-none sm:snap-align-none"
             >
               <VideoTeaserCard video={v} onPlay={() => setActiveVideo(v)} />

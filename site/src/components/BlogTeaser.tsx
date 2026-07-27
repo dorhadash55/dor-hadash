@@ -127,22 +127,32 @@ export default function BlogTeaser() {
         {latest.length > 0 ? (
           <>
             <div className="mt-10 flex flex-col gap-3 sm:hidden">
-              {featured && <FeaturedBlogCard post={featured} />}
-              {rest.map((post) => (
-                <CompactBlogCard key={post.slug} post={post} />
+              {featured && (
+                <Reveal variant="up">
+                  <FeaturedBlogCard post={featured} />
+                </Reveal>
+              )}
+              {rest.map((post, i) => (
+                <Reveal key={post.slug} delay={(i + 1) * 80} variant="up">
+                  <CompactBlogCard post={post} />
+                </Reveal>
               ))}
             </div>
 
             <div className="mt-12 hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-3">
-              {latest.map((post) => (
-                <GridBlogCard key={post.slug} post={post} />
+              {latest.map((post, i) => (
+                <Reveal key={post.slug} delay={i * 100} variant="up">
+                  <GridBlogCard post={post} />
+                </Reveal>
               ))}
             </div>
           </>
         ) : (
-          <div className="mt-10 rounded-2xl border border-dashed border-brand-sand bg-white p-10 text-center text-gray-500">
-            Les premiers articles arrivent bientôt.
-          </div>
+          <Reveal>
+            <div className="mt-10 rounded-2xl border border-dashed border-brand-sand bg-white p-10 text-center text-gray-500">
+              Les premiers articles arrivent bientôt.
+            </div>
+          </Reveal>
         )}
       </div>
     </section>

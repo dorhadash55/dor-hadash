@@ -14,11 +14,11 @@ export default function MethodeSection() {
   const [openStep, setOpenStep] = useState<string | null>(null);
 
   return (
-    <section id="methode" className="section-shell relative overflow-hidden bg-brand-cream">
+    <section id="methode" className="section-shell relative overflow-x-clip bg-brand-cream">
       <div className="pointer-events-none absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand-teal/8 blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
-        <Reveal>
+        <Reveal variant="blur">
           <SectionHeading
             align="center"
             label="Notre méthode"
@@ -28,47 +28,49 @@ export default function MethodeSection() {
         </Reveal>
 
         {/* Mobile — accordion compact */}
-        <div className="relative mt-8 sm:hidden">
-          <div
-            className="absolute bottom-3 left-[1.375rem] top-3 w-px bg-gradient-to-b from-brand-blue via-brand-teal to-brand-coral"
-            aria-hidden="true"
-          />
-          <div className="flex flex-col gap-2.5">
-            {methodeSteps.map((s, i) => {
-              const theme = stepThemes[i];
-              const open = openStep === s.step;
-              return (
-                <article key={s.step} className="methode-step relative pl-12">
-                  <div
-                    className={`absolute left-0 top-2.5 flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br ${theme.badge} font-heading text-sm font-semibold text-white shadow-md ${theme.glow}`}
-                  >
-                    {s.step}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setOpenStep(open ? null : s.step)}
-                    aria-expanded={open}
-                    className={`w-full rounded-2xl bg-white p-3.5 text-left shadow-sm ring-1 transition ${theme.ring}`}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-heading text-base font-semibold text-brand-blue-deep">{s.title}</h3>
-                      <span
-                        className={`shrink-0 text-brand-blue transition-transform ${open ? "rotate-180" : ""}`}
-                        aria-hidden="true"
-                      >
-                        <Chevron />
-                      </span>
+        <Reveal delay={100} className="sm:hidden">
+          <div className="relative mt-8">
+            <div
+              className="absolute bottom-3 left-[1.375rem] top-3 w-px bg-gradient-to-b from-brand-blue via-brand-teal to-brand-coral"
+              aria-hidden="true"
+            />
+            <div className="flex flex-col gap-2.5">
+              {methodeSteps.map((s, i) => {
+                const theme = stepThemes[i];
+                const open = openStep === s.step;
+                return (
+                  <article key={s.step} className="methode-step relative pl-12">
+                    <div
+                      className={`absolute left-0 top-2.5 flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br ${theme.badge} font-heading text-sm font-semibold text-white shadow-md ${theme.glow}`}
+                    >
+                      {s.step}
                     </div>
-                    {open && (
-                      <p className="mt-2 text-sm leading-relaxed text-gray-600">{s.description}</p>
-                    )}
-                  </button>
-                </article>
-              );
-            })}
+                    <button
+                      type="button"
+                      onClick={() => setOpenStep(open ? null : s.step)}
+                      aria-expanded={open}
+                      className={`w-full rounded-2xl bg-white p-3.5 text-left shadow-sm ring-1 transition ${theme.ring}`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="font-heading text-base font-semibold text-brand-blue-deep">{s.title}</h3>
+                        <span
+                          className={`shrink-0 text-brand-blue transition-transform ${open ? "rotate-180" : ""}`}
+                          aria-hidden="true"
+                        >
+                          <Chevron />
+                        </span>
+                      </div>
+                      {open && (
+                        <p className="mt-2 text-sm leading-relaxed text-gray-600">{s.description}</p>
+                      )}
+                    </button>
+                  </article>
+                );
+              })}
+            </div>
+            <p className="mt-3 text-center text-xs text-gray-400">Appuyez sur une étape pour voir le détail</p>
           </div>
-          <p className="mt-3 text-center text-xs text-gray-400">Appuyez sur une étape pour voir le détail</p>
-        </div>
+        </Reveal>
 
         {/* Desktop */}
         <div className="relative mt-16 hidden sm:block">
@@ -83,7 +85,7 @@ export default function MethodeSection() {
             {methodeSteps.map((s, i) => {
               const theme = stepThemes[i];
               return (
-                <Reveal key={s.step} delay={i * 90}>
+                <Reveal key={s.step} delay={i * 110} variant="up">
                   <article className="methode-step group">
                     <div className="relative z-10 inline-flex">
                       <div

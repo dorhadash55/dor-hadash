@@ -27,57 +27,57 @@ export default function ServicesSection() {
         </Reveal>
 
         {/* Mobile — accordion compact */}
-        <div className="mt-8 divide-y divide-brand-sand overflow-hidden rounded-2xl border border-brand-sand bg-brand-cream sm:hidden">
-          {services.map((s, i) => {
-            const accent = accents[i % accents.length];
-            const open = openTitle === s.title;
-            return (
-              <button
-                key={s.title}
-                type="button"
-                onClick={() => setOpenTitle(open ? null : s.title)}
-                aria-expanded={open}
-                className="flex w-full items-start gap-3 px-3.5 py-3.5 text-left"
-              >
-                <div
-                  className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${accent.border} ${accent.iconBg} ${accent.iconText}`}
+        <Reveal delay={80} className="sm:hidden">
+          <div className="mt-8 divide-y divide-brand-sand overflow-hidden rounded-2xl border border-brand-sand bg-brand-cream">
+            {services.map((s, i) => {
+              const accent = accents[i % accents.length];
+              const open = openTitle === s.title;
+              return (
+                <button
+                  key={s.title}
+                  type="button"
+                  onClick={() => setOpenTitle(open ? null : s.title)}
+                  aria-expanded={open}
+                  className="flex w-full items-start gap-3 px-3.5 py-3.5 text-left"
                 >
-                  <ServiceIcon icon={s.icon} className="h-5 w-5" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-heading text-[0.9375rem] font-semibold text-brand-blue-deep [overflow-wrap:anywhere]">
-                      {s.title}
-                      {s.isNew && (
-                        <span className="ml-1.5 inline-block rounded-full bg-brand-teal/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-brand-teal">
-                          Nouveau
-                        </span>
-                      )}
-                    </h3>
-                    <span
-                      className={`shrink-0 text-brand-blue transition-transform ${open ? "rotate-180" : ""}`}
-                      aria-hidden="true"
-                    >
-                      <Chevron />
-                    </span>
+                  <div
+                    className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${accent.border} ${accent.iconBg} ${accent.iconText}`}
+                  >
+                    <ServiceIcon icon={s.icon} className="h-5 w-5" />
                   </div>
-                  {open && (
-                    <p className="mt-1.5 text-[0.8125rem] leading-[1.55] text-gray-600 [overflow-wrap:anywhere]">
-                      {s.description}
-                    </p>
-                  )}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-        <p className="mt-2 text-center text-xs text-gray-400 sm:hidden">
-          Appuyez pour lire le détail
-        </p>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="font-heading text-[0.9375rem] font-semibold text-brand-blue-deep [overflow-wrap:anywhere]">
+                        {s.title}
+                        {s.isNew && (
+                          <span className="ml-1.5 inline-block rounded-full bg-brand-teal/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-brand-teal">
+                            Nouveau
+                          </span>
+                        )}
+                      </h3>
+                      <span
+                        className={`shrink-0 text-brand-blue transition-transform ${open ? "rotate-180" : ""}`}
+                        aria-hidden="true"
+                      >
+                        <Chevron />
+                      </span>
+                    </div>
+                    {open && (
+                      <p className="mt-1.5 text-[0.8125rem] leading-[1.55] text-gray-600 [overflow-wrap:anywhere]">
+                        {s.description}
+                      </p>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-center text-xs text-gray-400">Appuyez pour lire le détail</p>
+        </Reveal>
 
         {/* Desktop */}
         <div className="mt-14 hidden space-y-5 sm:block">
-          <Reveal delay={80}>
+          <Reveal delay={80} variant="blur">
             <div className="relative overflow-hidden rounded-3xl">
               <img
                 src="/images/hero-accompagnement.jpg"
@@ -103,7 +103,8 @@ export default function ServicesSection() {
               return (
                 <Reveal
                   key={s.title}
-                  delay={120 + i * 50}
+                  delay={120 + i * 70}
+                  variant="up"
                   className={`group rounded-2xl border bg-white p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${accent.border}`}
                 >
                   <div

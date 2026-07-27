@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
+import Reveal from "./Reveal";
 
 export default function FinalCta() {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-x-clip">
       <img
         src="/images/nof-hagalil.jpg"
         alt=""
@@ -21,7 +22,7 @@ export default function FinalCta() {
       />
 
       <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-24">
-        <div className="mx-auto max-w-2xl text-center text-white">
+        <Reveal variant="blur" className="mx-auto max-w-2xl text-center text-white">
           <p className="font-accent text-xs uppercase tracking-[0.24em] text-brand-teal">Prochaine étape</p>
           <h2 className="mt-2 font-heading text-2xl font-semibold text-balance sm:mt-3 sm:text-4xl lg:text-5xl">
             Prêt à préparer votre Alya ?
@@ -29,7 +30,6 @@ export default function FinalCta() {
           <p className="mt-2 text-sm leading-relaxed text-white/85 sm:mt-4 sm:text-lg">
             Inscription gratuite — accompagnement dès le premier contact.
           </p>
-          {/* Sur mobile la barre CTA fixe suffit : un seul bouton ici, plus léger */}
           <div className="mt-5 flex flex-col items-center justify-center gap-3 sm:mt-8 sm:flex-row">
             <Link to="/nous-contacter" className="btn-primary hidden sm:inline-flex">
               M'inscrire gratuitement →
@@ -38,7 +38,7 @@ export default function FinalCta() {
               Revoir la méthode
             </a>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

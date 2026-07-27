@@ -1,7 +1,13 @@
+const WHATSAPP_PHONE = "972522263776";
+const WHATSAPP_MESSAGE =
+  "Chalom Dor Hadash,\n\nJe m'intéresse à votre accompagnement pour l'Alya et j'aimerais échanger avec vous.\n\nMerci d'avance !";
+
 export default function WhatsAppButton() {
+  const href = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+
   return (
     <a
-      href="https://wa.me/972522263776"
+      href={href}
       target="_blank"
       rel="noreferrer"
       aria-label="Contacter Dor Hadash sur WhatsApp"

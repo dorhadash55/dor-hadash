@@ -8,7 +8,7 @@ export default function CitiesTeaser() {
   return (
     <section className="section-shell bg-brand-cream">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <Reveal>
+        <Reveal variant="blur">
           <SectionHeading
             label="Où s'installer"
             title="Le parcours d'Alya, ville par ville"
@@ -25,7 +25,8 @@ export default function CitiesTeaser() {
           {cities.map((city, i) => (
             <Reveal
               key={city.slug}
-              delay={i * 70}
+              delay={i * 90}
+              variant="scale"
               className="w-[72vw] max-w-[18rem] shrink-0 snap-center sm:w-auto sm:max-w-none sm:snap-align-none"
             >
               <Link

@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import SeoHead from "../components/SeoHead";
 import PageBanner from "../components/PageBanner";
+import Reveal from "../components/Reveal";
 import { addContactSubmission } from "../admin/storage/contentStore";
 import { useSiteInfo } from "../content/useSiteContent";
 import { cities } from "../content/cities";
@@ -63,7 +64,7 @@ export default function Contact() {
 
       <section className="mx-auto max-w-5xl px-6 py-16">
         <div className="grid gap-12 lg:grid-cols-2">
-          <div>
+          <Reveal variant="left">
             <h2 className="font-heading text-xl font-semibold text-brand-blue-deep">Appelez-nous</h2>
             <ul className="mt-4 space-y-2 text-gray-700">
               <li>Israël : {siteInfo.phones.israel.join(" ou ")}</li>
@@ -83,9 +84,10 @@ export default function Contact() {
               Notre programme, votre inscription, une envie de devenir donateur, ou tout autre sujet lié à Dor
               Hadash : nous sommes là pour vous !
             </p>
-          </div>
+          </Reveal>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
+          <Reveal variant="right" delay={120}>
+            <div className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
             {submitted ? (
               <div className="py-10 text-center">
                 <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-teal/15 text-brand-teal">
@@ -239,7 +241,8 @@ export default function Contact() {
                 </button>
               </form>
             )}
-          </div>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>
