@@ -17,6 +17,7 @@ import { ensureFirebaseAuthReady } from "./authReady";
 import type { AdminContent, ContactSubmission, SiteSettings, VideoTestimonial } from "../storage/types";
 import type { BlogPost } from "../storage/types";
 import type { VideoCategory } from "../../content/videos";
+import { extractYoutubeId } from "../utils/youtube";
 
 type SiteDocument = {
   videos?: unknown;
@@ -36,7 +37,9 @@ function normalizeVideos(raw: unknown): VideoTestimonial[] {
   for (const item of raw) {
     if (!item || typeof item !== "object") continue;
     const row = item as Record<string, unknown>;
-    const youtubeId = String(row.youtubeId ?? row.youtube_id ?? "").trim();
+    const youtubeId =
+      extractYoutubeId(String(row.youtubeId ?? row.youtube_id ?? "")) ??
+      String(row.youtubeId ?? row.youtube_id ?? "").trim();
     const title = String(row.title ?? "").trim();
     if (!youtubeId || !title) continue;
 

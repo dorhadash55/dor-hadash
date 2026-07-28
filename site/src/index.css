@@ -130,12 +130,11 @@ body {
 .reveal {
   opacity: 0;
   will-change: opacity, transform, filter;
-  pointer-events: none;
 }
 
 .reveal.is-revealed {
   opacity: 1;
-  pointer-events: auto;
+  will-change: auto;
 }
 
 .reveal.is-revealed.reveal-up {
@@ -483,7 +482,6 @@ body {
     transform: none;
     filter: none;
     animation: none !important;
-    pointer-events: auto;
   }
 
   .page-enter,

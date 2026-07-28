@@ -70,10 +70,12 @@ export default function TemoignagesVideos() {
             {filter === "all" ? (
               <div className="mt-10 space-y-12">
                 {grouped.map((group, gi) => (
-                  <Reveal key={group.category} delay={gi * 80} variant="up">
-                    <h2 className="font-heading text-xl font-semibold text-brand-blue-deep">
-                      {group.label}
-                    </h2>
+                  <div key={group.category}>
+                    <Reveal delay={gi * 80} variant="up">
+                      <h2 className="font-heading text-xl font-semibold text-brand-blue-deep">
+                        {group.label}
+                      </h2>
+                    </Reveal>
                     <div className="mt-5 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                       {group.items.map((v, i) => (
                         <Reveal key={v.id} delay={i * 70} variant="scale">
@@ -81,7 +83,7 @@ export default function TemoignagesVideos() {
                         </Reveal>
                       ))}
                     </div>
-                  </Reveal>
+                  </div>
                 ))}
               </div>
             ) : (

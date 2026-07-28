@@ -32,15 +32,17 @@ export function extractYoutubeId(input: string): string | null {
 }
 
 export function youtubeEmbedUrl(id: string, options?: { autoplay?: boolean }) {
+  const cleanId = extractYoutubeId(id) ?? id.trim();
   const params = new URLSearchParams({
     playsinline: "1",
     rel: "0",
     modestbranding: "1",
   });
   if (options?.autoplay) params.set("autoplay", "1");
-  return `https://www.youtube-nocookie.com/embed/${id}?${params.toString()}`;
+  return `https://www.youtube-nocookie.com/embed/${cleanId}?${params.toString()}`;
 }
 
 export function youtubeThumbnailUrl(id: string) {
-  return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+  const cleanId = extractYoutubeId(id) ?? id.trim();
+  return `https://img.youtube.com/vi/${cleanId}/hqdefault.jpg`;
 }

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import { youtubeEmbedUrl } from "../admin/utils/youtube";
+import { createPortal } from "react-dom";
+import { extractYoutubeId, youtubeEmbedUrl } from "../admin/utils/youtube";
 
 export default function VideoModal({
   youtubeId,
@@ -10,21 +11,26 @@ export default function VideoModal({
   title: string;
   onClose: () => void;
 }) {
+  const id = extractYoutubeId(youtubeId) ?? youtubeId.trim();
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      document.body.style.overflow = prevOverflow;
     };
   }, [onClose]);
 
-  return (
+  if (typeof document === "undefined" || !id) return null;
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-sm"
+      className="fixed inset-0 z-[300] flex items-center justify-center bg-black/75 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -37,21 +43,23 @@ export default function VideoModal({
         <button
           type="button"
           onClick={onClose}
-          className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
+          className="absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-lg text-white hover:bg-black/90"
           aria-label="Fermer"
         >
           ✕
         </button>
-        <div className="aspect-video w-full">
+        <div className="aspect-video w-full bg-black">
           <iframe
             className="h-full w-full"
-            src={youtubeEmbedUrl(youtubeId, { autoplay: true })}
+            src={youtubeEmbedUrl(id, { autoplay: true })}
             title={title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
           />
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
