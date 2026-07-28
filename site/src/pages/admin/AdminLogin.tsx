@@ -1,7 +1,7 @@
 import { useState, useEffect, type FormEvent } from "react";
 import { Head } from "vite-react-ssg";
 import { Link, Navigate, useLocation } from "react-router-dom";
-import { getDefaultAdminEmail } from "../../admin/auth/adminAccess";
+import { getAllowedAdminEmails } from "../../admin/auth/adminAccess";
 import { useAuth, formatGoogleAuthError, GOOGLE_AUTH_ERROR_KEY } from "../../admin/auth/AuthContext";
 
 function GoogleIcon() {
@@ -104,7 +104,8 @@ export default function AdminLogin() {
             <p className="mt-1 text-sm text-gray-500">Gestion du site Dor Hadash</p>
             {usesFirebaseAuth && (
               <p className="mt-2 text-xs leading-relaxed text-gray-400">
-                Mot de passe = accès admin. Google ({getDefaultAdminEmail()}) = enregistrement Firebase.
+                Mot de passe = accès admin. Google ({getAllowedAdminEmails().join(" ou ")}) =
+                enregistrement Firebase.
               </p>
             )}
           </div>
@@ -157,7 +158,7 @@ export default function AdminLogin() {
                 className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-60"
               >
                 <GoogleIcon />
-                {googleSubmitting ? "Redirection Google…" : "Continuer avec Google"}
+                {googleSubmitting ? "Connexion Google…" : "Continuer avec Google"}
               </button>
             </>
           )}

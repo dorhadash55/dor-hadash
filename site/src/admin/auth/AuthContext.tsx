@@ -89,11 +89,7 @@ function isPopupFallbackError(code: string) {
   );
 }
 
-function preferGoogleRedirect(): boolean {
-  if (typeof window === "undefined") return false;
-  const host = window.location.hostname;
-  return host !== "localhost" && host !== "127.0.0.1";
-}
+const GOOGLE_REDIRECT_PENDING_KEY = "dor-hadash:google-redirect-pending";
 
 export function formatGoogleAuthError(error: unknown): string {
   const code = (error as { code?: string }).code ?? "";
@@ -163,6 +159,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.warn("[Dor Hadash] Auth persistence:", error);
       }
 
+      const redirectPending =
+        typeof sessionStorage !== "undefined" &&
+        sessionStorage.getItem(GOOGLE_REDIRECT_PENDING_KEY) === "1";
+      if (redirectPending) {
+        sessionStorage.removeItem(GOOGLE_REDIRECT_PENDING_KEY);
+      }
+
       try {
         const result = await getRedirectResult(auth);
         if (result?.user) {
@@ -170,6 +173,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (!loginResult.ok && loginResult.message) {
             sessionStorage.setItem(GOOGLE_AUTH_ERROR_KEY, loginResult.message);
           }
+        } else if (redirectPending) {
+          sessionStorage.setItem(
+            GOOGLE_AUTH_ERROR_KEY,
+            "La connexion Google n'a pas pu être finalisée (redirect). Réessayez — une fenêtre popup va s'ouvrir. " +
+              "Vérifiez aussi Firebase → Authentication → Authorized domains (dor-hadash.vercel.app).",
+          );
         }
       } catch (error) {
         console.warn("[Dor Hadash] Google redirect:", error);
@@ -229,12 +238,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account" });
 
-    try {
-      if (preferGoogleRedirect()) {
-        await signInWithRedirect(auth, provider);
-        return { ok: true };
-      }
+    const startRedirect = async () => {
+      sessionStorage.setItem(GOOGLE_REDIRECT_PENDING_KEY, "1");
+      await signInWithRedirect(auth, provider);
+      return { ok: true } as const;
+    };
 
+    try {
+      // Toujours popup d'abord (comme en local). Le redirect casse souvent sur Vercel
+      // à cause du blocage des cookies tiers entre le site et *.firebaseapp.com.
       const result = await signInWithPopup(auth, provider);
       const loginResult = await ensureAllowedAdmin(result.user);
       if (!loginResult.ok && loginResult.message) {
@@ -250,11 +262,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (isPopupFallbackError(code)) {
         try {
-          await signInWithRedirect(auth, provider);
-          return { ok: true };
+          return await startRedirect();
         } catch (redirectError) {
           console.warn("[Dor Hadash] Google redirect:", redirectError);
-          return { ok: false, reason: "invalid" };
+          return {
+            ok: false,
+            reason: "invalid",
+            message: formatGoogleAuthError(redirectError),
+          };
         }
       }
 

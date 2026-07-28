@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { NavLink } from "react-router-dom";
 import { mainNav, siteInfo, type NavItem } from "../content/site";
@@ -156,10 +156,29 @@ function MobileNavLink({
 
 export default function MobileMenu({ open, onClose }: MobileMenuProps) {
   const [mounted, setMounted] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleClose = () => {
+    const active = document.activeElement;
+    if (active instanceof HTMLElement && panelRef.current?.contains(active)) {
+      active.blur();
+    }
+    onClose();
+    // Remettre le focus sur le bouton hamburger après la fermeture
+    requestAnimationFrame(() => {
+      document.getElementById("mobile-menu-toggle")?.focus();
+    });
+  };
+
+  useEffect(() => {
+    if (!mounted || !open) return;
+    closeBtnRef.current?.focus();
+  }, [open, mounted]);
 
   if (!mounted) return null;
 
@@ -167,18 +186,23 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
     <>
       <button
         type="button"
+        tabIndex={open ? 0 : -1}
         aria-label="Fermer le menu"
-        onClick={onClose}
+        onClick={handleClose}
         className={`mobile-menu-backdrop fixed inset-0 z-[100] lg:hidden ${open ? "mobile-menu-backdrop-open" : ""}`}
+        {...(!open ? { inert: true } : {})}
       />
 
       <div
+        ref={panelRef}
+        id="mobile-menu-panel"
         className={`mobile-menu-panel fixed inset-0 z-[101] flex flex-col lg:hidden ${open ? "mobile-menu-panel-open" : ""}`}
-        aria-hidden={!open}
-        inert={!open ? true : undefined}
+        role="dialog"
+        aria-modal={open}
+        aria-label="Menu de navigation"
+        {...(!open ? { inert: true } : {})}
       >
         <div className="mobile-menu-bg relative flex min-h-0 flex-1 flex-col overflow-hidden">
-          {/* En-tête */}
           <div className="mobile-menu-header relative flex items-center gap-4 px-5 pb-5 pt-[calc(1.25rem+env(safe-area-inset-top,0px))]">
             <img
               src="/images/logo.png"
@@ -190,18 +214,18 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
               <p className="mt-0.5 text-sm text-white/65">{siteInfo.tagline}</p>
             </div>
             <button
+              ref={closeBtnRef}
               type="button"
               aria-label="Fermer le menu"
-              onClick={onClose}
+              onClick={handleClose}
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/12 text-white ring-1 ring-white/20 backdrop-blur-sm transition-all hover:scale-105 hover:bg-white/22 active:scale-95"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M6 18L18 6" />
               </svg>
             </button>
           </div>
 
-          {/* Navigation */}
           <nav
             className={`mobile-menu-nav relative flex-1 overflow-y-auto px-5 pb-6 ${open ? "mobile-menu-open" : ""}`}
             aria-label="Navigation principale"
@@ -211,16 +235,15 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             </p>
             <div className="flex flex-col gap-2.5">
               {mobileNavItems.map((item, index) => (
-                <MobileNavLink key={item.path} item={item} onClose={onClose} index={index} />
+                <MobileNavLink key={item.path} item={item} onClose={handleClose} index={index} />
               ))}
             </div>
           </nav>
 
-          {/* CTAs */}
           <div className="mobile-menu-footer relative shrink-0 px-5 py-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))]">
             <NavLink
               to="/nous-contacter"
-              onClick={onClose}
+              onClick={handleClose}
               className="mobile-menu-cta-primary flex items-center justify-center gap-2 rounded-2xl py-4 font-heading text-base font-semibold text-white shadow-xl transition-transform active:scale-[0.98]"
             >
               M'inscrire — c'est gratuit

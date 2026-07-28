@@ -282,9 +282,12 @@ export async function addContactSubmission(
     try {
       await addContactSubmissionDoc(submission);
     } catch (error) {
+      // Les emails sont déjà partis côté Contact : on ne bloque pas l'utilisateur.
+      // Cause fréquente : règles Firestore non publiées, ou App Check en mode Enforced.
       console.error("Erreur contact Firestore:", error);
-      throw new Error(
-        "Message enregistré localement, mais l'enregistrement Firebase a échoué. Vérifiez les règles Firestore.",
+      console.warn(
+        "[Dor Hadash] Message conservé localement. Publiez firestore.rules " +
+          "(create public sur contact_submissions) et vérifiez App Check → Firestore → Unenforced.",
       );
     }
   } else {

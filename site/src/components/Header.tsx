@@ -32,9 +32,11 @@ export default function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="grid h-[4.5rem] grid-cols-[2.75rem_1fr_2.75rem] items-center sm:h-20 lg:flex lg:justify-between">
           <button
+            id="mobile-menu-toggle"
             type="button"
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={open}
+            aria-controls="mobile-menu-panel"
             onClick={() => setOpen((o) => !o)}
             className={`lg:hidden col-start-1 flex h-11 w-11 items-center justify-center rounded-full transition-all ${
               open

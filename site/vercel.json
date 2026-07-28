@@ -11,6 +11,10 @@
   },
   "rewrites": [
     {
+      "source": "/__/auth/:path*",
+      "destination": "https://dor-hadash-a1202.firebaseapp.com/__/auth/:path*"
+    },
+    {
       "source": "/admin/blog/:slug/edit",
       "destination": "/admin"
     }
