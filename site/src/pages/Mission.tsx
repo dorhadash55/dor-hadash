@@ -266,7 +266,7 @@ export default function Mission() {
           <div className="mt-6 space-y-4">
             {missionVillage.slice(1).map((p, i) => (
               <Reveal key={p} delay={120 + i * 60}>
-                <p className="text-[0.95rem] leading-relaxed text-gray-600 sm:text-base">{p}</p>
+                <p className="text-sm leading-relaxed text-gray-600 sm:text-base">{p}</p>
               </Reveal>
             ))}
           </div>
@@ -274,7 +274,7 @@ export default function Mission() {
           <Reveal delay={200}>
             <div className="mt-8 overflow-hidden rounded-2xl bg-gradient-to-br from-brand-blue-deep to-brand-blue px-5 py-5 text-white sm:px-6 sm:py-6">
               <p className="font-accent text-[11px] uppercase tracking-[0.2em] text-brand-teal">Pour qui ?</p>
-              <p className="mt-2 text-[0.95rem] font-medium leading-relaxed sm:text-base">{missionAudience}</p>
+              <p className="mt-2 text-sm font-medium leading-relaxed sm:text-base">{missionAudience}</p>
             </div>
           </Reveal>
         </div>
@@ -432,7 +432,7 @@ export default function Mission() {
           <ul className="mt-7 space-y-2">
             {missionSynthese.map((item, i) => (
               <Reveal key={item} delay={Math.min(i * 35, 250)}>
-                <li className="flex items-start gap-3 border-b border-brand-sand/80 py-3.5 text-sm leading-relaxed text-gray-800 last:border-0 sm:text-[0.95rem]">
+                <li className="flex items-start gap-3 border-b border-brand-sand/80 py-3.5 text-sm leading-relaxed text-gray-800 last:border-0 sm:text-base">
                   <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-teal/15 font-heading text-xs font-bold text-brand-teal">
                     {i + 1}
                   </span>

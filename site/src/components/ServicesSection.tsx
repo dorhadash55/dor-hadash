@@ -63,7 +63,7 @@ export default function ServicesSection() {
                       </span>
                     </div>
                     {open && (
-                      <p className="mt-1.5 text-[0.8125rem] leading-[1.55] text-gray-600 [overflow-wrap:anywhere]">
+                      <p className="mt-1.5 text-sm leading-relaxed text-gray-600 [overflow-wrap:anywhere]">
                         {s.description}
                       </p>
                     )}
