@@ -33,10 +33,12 @@ const supportIcons: ReactNode[] = [
 
 function Accordion({
   title,
+  teaser,
   children,
   defaultOpen = false,
 }: {
   title: string;
+  teaser?: string;
   children: ReactNode;
   defaultOpen?: boolean;
 }) {
@@ -47,11 +49,18 @@ function Accordion({
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left active:bg-white/5"
+        className="flex w-full items-start justify-between gap-3 px-4 py-4 text-left active:bg-white/5"
       >
-        <span className="font-heading text-[1.05rem] font-semibold tracking-wide text-white">{title}</span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-heading text-[1.05rem] font-semibold tracking-wide text-white">
+            {title}
+          </span>
+          {teaser && !open && (
+            <span className="mt-1 block text-sm leading-snug text-white/60">{teaser}</span>
+          )}
+        </span>
         <span
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-teal/20 text-brand-teal transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+          className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-teal/20 text-brand-teal transition-transform duration-300 ${open ? "rotate-180" : ""}`}
           aria-hidden
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -305,12 +314,19 @@ export default function Mission() {
 
           <div className="mt-7 space-y-3 sm:hidden">
             <Reveal>
-              <Accordion title="Le lieu" defaultOpen>
+              <Accordion
+                title="Le lieu"
+                teaser="À proximité d'une grande ville, pensé pour le quotidien."
+                defaultOpen
+              >
                 {missionIncubator.lieu}
               </Accordion>
             </Reveal>
             <Reveal delay={50}>
-              <Accordion title="Les équipements">
+              <Accordion
+                title="Les équipements"
+                teaser="Logements, école, synagogue, sport et cadre de vie."
+              >
                 <ul className="space-y-2.5">
                   {missionIncubator.equipements.map((item) => (
                     <li key={item} className="flex gap-2.5">
@@ -322,7 +338,10 @@ export default function Mission() {
               </Accordion>
             </Reveal>
             <Reveal delay={100}>
-              <Accordion title="L'accueil">
+              <Accordion
+                title="L'accueil"
+                teaser="Idéal pour les familles dès la première période d'intégration."
+              >
                 {missionIncubator.accueil}
               </Accordion>
             </Reveal>

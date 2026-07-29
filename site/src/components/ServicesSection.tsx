@@ -46,8 +46,8 @@ export default function ServicesSection() {
                     <ServiceIcon icon={s.icon} className="h-5 w-5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-heading text-[0.9375rem] font-semibold text-brand-blue-deep [overflow-wrap:anywhere]">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-heading text-[0.9375rem] font-semibold leading-snug text-brand-blue-deep [overflow-wrap:anywhere]">
                         {s.title}
                         {s.isNew && (
                           <span className="ml-1.5 inline-block rounded-full bg-brand-teal/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-brand-teal">
@@ -56,12 +56,17 @@ export default function ServicesSection() {
                         )}
                       </h3>
                       <span
-                        className={`shrink-0 text-brand-blue transition-transform ${open ? "rotate-180" : ""}`}
+                        className={`mt-0.5 shrink-0 text-brand-blue transition-transform ${open ? "rotate-180" : ""}`}
                         aria-hidden="true"
                       >
                         <Chevron />
                       </span>
                     </div>
+                    {!open && (
+                      <p className="mt-1 text-sm leading-snug text-gray-500 [overflow-wrap:anywhere]">
+                        {s.teaser}
+                      </p>
+                    )}
                     {open && (
                       <p className="mt-1.5 text-sm leading-relaxed text-gray-600 [overflow-wrap:anywhere]">
                         {s.description}

@@ -13,34 +13,39 @@ const mobileNavItems = mainNav.filter((item) => item.path !== "/nous-contacter")
 
 const navIcons: Record<string, ReactNode> = {
   "/": (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5Z" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-5.5h-5V21H5a1 1 0 0 1-1-1v-9.5Z" />
     </svg>
   ),
   "/mission": (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l2.9 6.9L22 9.8l-5 4.9 1.2 7.1L12 18.8 5.8 21.8 7 14.7 2 9.8l7.1-.9L12 2Z" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 21V4.5M5 4.5h11.5l-2.25 3.25L16.5 11H5" />
     </svg>
   ),
   "/lequipe": (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M16 11a4 4 0 1 0-8 0M3 20a7 7 0 0 1 14 0M19 8v6M22 11h-6" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <circle cx="9" cy="8" r="3" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.5 19a5.5 5.5 0 0 1 11 0" />
+      <circle cx="17" cy="9" r="2.25" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.5 19a4.2 4.2 0 0 1 5-4" />
     </svg>
   ),
   "/nos-villes": (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z" />
-      <circle cx="12" cy="10" r="2.5" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s6.5-4.2 6.5-10A6.5 6.5 0 1 0 5.5 11c0 5.8 6.5 10 6.5 10Z" />
+      <circle cx="12" cy="11" r="2" />
     </svg>
   ),
   "/temoignages-videos": (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 9.5v5l5-2.5L9 9.5ZM22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M10 9.5v5l4.5-2.5L10 9.5Z" />
     </svg>
   ),
   "/blog": (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6 4h9l3 3v13H6V4ZM6 8h6M6 12h10M6 16h10" />
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7 3.75h7.5L19 8.25v12A1.25 1.25 0 0 1 17.75 21.5H7A1.25 1.25 0 0 1 5.75 20.25V5A1.25 1.25 0 0 1 7 3.75Z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M14.5 3.75V8.5H19M8.5 12h7M8.5 15.5h7M8.5 19h4.5" />
     </svg>
   ),
 };

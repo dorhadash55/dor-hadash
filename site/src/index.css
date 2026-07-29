@@ -575,19 +575,18 @@ h1, h2, h3, h4 {
 
 .mobile-menu-icon {
   display: flex;
-  height: 2.5rem;
-  width: 2.5rem;
+  height: 2.25rem;
+  width: 2.25rem;
   shrink: 0;
   align-items: center;
   justify-content: center;
-  border-radius: 0.85rem;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 100%);
-  color: #29c4a9;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .mobile-menu-icon-active {
-  background: linear-gradient(135deg, rgba(0, 56, 184, 0.12) 0%, rgba(41, 196, 169, 0.15) 100%);
+  background: rgba(0, 56, 184, 0.1);
   color: #0038b8;
 }
 

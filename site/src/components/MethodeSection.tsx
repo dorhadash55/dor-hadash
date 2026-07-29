@@ -29,19 +29,23 @@ export default function MethodeSection() {
 
         {/* Mobile — accordion compact */}
         <Reveal delay={100} className="sm:hidden">
-          <div className="relative mt-8">
-            <div
-              className="absolute bottom-3 left-[1.375rem] top-3 w-px bg-gradient-to-b from-brand-blue via-brand-teal to-brand-coral"
-              aria-hidden="true"
-            />
+          <div className="mt-8">
             <div className="flex flex-col gap-2.5">
               {methodeSteps.map((s, i) => {
                 const theme = stepThemes[i];
                 const open = openStep === s.step;
+                const isLast = i === methodeSteps.length - 1;
                 return (
                   <article key={s.step} className="methode-step relative pl-12">
+                    {/* Segment vers l'étape suivante — s'arrête au 4 */}
+                    {!isLast && (
+                      <div
+                        className="absolute left-[1.375rem] top-8 bottom-[-2.625rem] w-px bg-gradient-to-b from-brand-blue via-brand-teal to-brand-coral"
+                        aria-hidden="true"
+                      />
+                    )}
                     <div
-                      className={`absolute left-0 top-2.5 flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br ${theme.badge} font-heading text-sm font-semibold text-white shadow-md ${theme.glow}`}
+                      className={`absolute left-0 top-2.5 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br ${theme.badge} font-heading text-sm font-semibold text-white shadow-md ${theme.glow}`}
                     >
                       {s.step}
                     </div>
@@ -49,12 +53,19 @@ export default function MethodeSection() {
                       type="button"
                       onClick={() => setOpenStep(open ? null : s.step)}
                       aria-expanded={open}
-                      className={`w-full rounded-2xl bg-white p-3.5 text-left shadow-sm ring-1 transition ${theme.ring}`}
+                      className={`relative w-full rounded-2xl bg-white p-3.5 text-left shadow-sm ring-1 transition ${theme.ring}`}
                     >
-                      <div className="flex items-center justify-between gap-2">
-                        <h3 className="font-heading text-base font-semibold text-brand-blue-deep">{s.title}</h3>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <h3 className="font-heading text-base font-semibold leading-snug text-brand-blue-deep">
+                            {s.title}
+                          </h3>
+                          {!open && (
+                            <p className="mt-1 text-sm leading-snug text-gray-500">{s.teaser}</p>
+                          )}
+                        </div>
                         <span
-                          className={`shrink-0 text-brand-blue transition-transform ${open ? "rotate-180" : ""}`}
+                          className={`mt-0.5 shrink-0 text-brand-blue transition-transform ${open ? "rotate-180" : ""}`}
                           aria-hidden="true"
                         >
                           <Chevron />
@@ -72,13 +83,14 @@ export default function MethodeSection() {
           </div>
         </Reveal>
 
-        {/* Desktop */}
+        {/* Desktop — timeline 4 étapes */}
         <div className="relative mt-16 hidden sm:block">
+          {/* Trait uniquement en 4 colonnes : centre pastille 1 → centre pastille 4 */}
           <div
-            className="pointer-events-none absolute left-[12.5%] right-[12.5%] top-7 h-px overflow-hidden bg-brand-blue/10 lg:block"
+            className="pointer-events-none absolute left-[12.5%] right-[12.5%] top-7 hidden h-0.5 lg:block"
             aria-hidden="true"
           >
-            <div className="methode-progress h-full w-full origin-left bg-gradient-to-r from-brand-blue via-brand-teal to-brand-coral" />
+            <div className="methode-progress h-full w-full origin-left rounded-full bg-gradient-to-r from-brand-blue via-brand-teal to-brand-coral" />
           </div>
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
@@ -86,7 +98,7 @@ export default function MethodeSection() {
               const theme = stepThemes[i];
               return (
                 <Reveal key={s.step} delay={i * 110} variant="up">
-                  <article className="methode-step group">
+                  <article className="methode-step group flex flex-col lg:items-center lg:text-center">
                     <div className="relative z-10 inline-flex">
                       <div
                         className={`flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br ${theme.badge} font-heading text-lg font-semibold text-white shadow-lg transition-transform duration-300 group-hover:scale-105 ${theme.glow}`}
@@ -95,7 +107,7 @@ export default function MethodeSection() {
                       </div>
                     </div>
                     <div
-                      className={`mt-6 rounded-2xl bg-white p-5 shadow-sm ring-1 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md ${theme.ring}`}
+                      className={`mt-6 w-full rounded-2xl bg-white p-5 shadow-sm ring-1 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md ${theme.ring}`}
                     >
                       <h3 className="font-heading text-lg font-semibold text-brand-blue-deep">{s.title}</h3>
                       <p className="mt-2 text-sm leading-relaxed text-gray-600">{s.description}</p>
