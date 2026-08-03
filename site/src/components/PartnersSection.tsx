@@ -18,7 +18,15 @@ export default function PartnersSection() {
           />
         </Reveal>
 
-        <div className={`mt-8 sm:mt-12 ${single ? "mx-auto max-w-3xl" : "grid gap-4 sm:grid-cols-2 lg:grid-cols-3"}`}>
+        <div
+          className={`mt-8 sm:mt-12 ${
+            partners.length === 1
+              ? "mx-auto max-w-3xl"
+              : partners.length === 2
+                ? "mx-auto grid max-w-4xl gap-4 sm:grid-cols-2"
+                : "grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          }`}
+        >
           {partners.map((partner, i) => (
             <Reveal key={partner.slug} delay={i * 80} variant="up">
               <Link

@@ -27,6 +27,25 @@ export const partnersIntro = {
 
 export const partners: Partner[] = [
   {
+    slug: "olimaid",
+    name: "OlimAid",
+    tagline: "Guides et outils IA gratuits pour réussir son Alya",
+    summary:
+      "OlimAid accompagne les olim francophones (et anglophones) avec des guides à jour et des outils pratiques : droits et aides (Sal Klita, Arnona, Koupat Holim), CV israélien, scanner de courriers en hébreu, générateur de lettres et aide au choix de ville. Une plateforme complémentaire à l'accompagnement humain de Dor Hadash.",
+    logo: "/images/partners/olimaid.png",
+    website: "https://www.olimaid.com/fr",
+    websiteLabel: "Découvrir OlimAid",
+    offer: "Outils IA gratuits — à jour 2026",
+    audience: "Futurs olim et olim déjà installés qui veulent gagner du temps sur les démarches et l'emploi.",
+    quote: "Des outils concrets pour avancer dans votre Alya, à votre rythme.",
+    highlights: [
+      "Guides droits & aides (Sal Klita, Arnona, santé…)",
+      "CV Builder israélien (hébreu / anglais)",
+      "Scanner et comprendre les courriers en hébreu",
+      "Lettres types et recommandation de ville",
+    ],
+  },
+  {
     slug: "le-pont-educatif",
     name: "Le Pont Éducatif",
     nameHe: "למענך",

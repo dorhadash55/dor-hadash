@@ -22,7 +22,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/partenaires": {
     title: "Nos partenaires | Dor Hadash",
     description:
-      "Découvrez les partenaires de Dor Hadash, dont Le Pont Éducatif (למענך), pour l'accompagnement scolaire des familles francophones en Israël.",
+      "Découvrez les partenaires de Dor Hadash : Le Pont Éducatif pour l'école, OlimAid pour les guides et outils Alya.",
   },
   "/nos-villes": {
     title: "Nos villes d'accueil | Dor Hadash",
