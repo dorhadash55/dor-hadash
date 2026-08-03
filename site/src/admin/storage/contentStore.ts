@@ -123,13 +123,20 @@ function persistLocalStorage() {
   }
 }
 
-function persistSiteContent() {
+type PersistFields = "videos" | "blogPosts" | "siteSettings";
+
+function persistSiteContent(fields: PersistFields[] = ["blogPosts", "siteSettings"]) {
   if (isFirebaseConfigured()) {
-    void saveSiteDocument({
-      videos: cache.videos,
-      blogPosts: cache.blogPosts,
-      siteSettings: cache.siteSettings,
-    }).catch((error) => {
+    const payload: {
+      videos?: VideoTestimonial[];
+      blogPosts?: BlogPost[];
+      siteSettings?: SiteSettings | null;
+    } = {};
+    if (fields.includes("videos")) payload.videos = cache.videos;
+    if (fields.includes("blogPosts")) payload.blogPosts = cache.blogPosts;
+    if (fields.includes("siteSettings")) payload.siteSettings = cache.siteSettings;
+
+    void saveSiteDocument(payload).catch((error) => {
       console.error("Erreur enregistrement Firestore:", error);
     });
     persistLocalStorage();
@@ -139,15 +146,23 @@ function persistSiteContent() {
   emit();
 }
 
-async function persistSiteContentAsync() {
+async function persistSiteContentAsync(
+  fields: PersistFields[] = ["blogPosts", "siteSettings"],
+  options?: { allowEmptyVideos?: boolean },
+) {
   firestoreWriteInFlight++;
   try {
     if (isFirebaseConfigured()) {
-      await saveSiteDocument({
-        videos: cache.videos,
-        blogPosts: cache.blogPosts,
-        siteSettings: cache.siteSettings,
-      });
+      const payload: {
+        videos?: VideoTestimonial[];
+        blogPosts?: BlogPost[];
+        siteSettings?: SiteSettings | null;
+      } = {};
+      if (fields.includes("videos")) payload.videos = cache.videos;
+      if (fields.includes("blogPosts")) payload.blogPosts = cache.blogPosts;
+      if (fields.includes("siteSettings")) payload.siteSettings = cache.siteSettings;
+
+      await saveSiteDocument(payload, options);
       persistLocalStorage();
     } else {
       persistLocalStorage();
@@ -167,11 +182,15 @@ function write(content: AdminContent) {
   cache = content;
   sortedContactSubmissions = sortSubmissions(content.contactSubmissions);
   if (isFirebaseConfigured()) {
+    // Protection anti-effacement active si videos est []
     void saveSiteDocument({
       videos: content.videos,
       blogPosts: content.blogPosts,
       siteSettings: content.siteSettings,
+    }).catch((error) => {
+      console.error("Erreur enregistrement Firestore:", error);
     });
+    persistLocalStorage();
   } else {
     persistLocalStorage();
   }
@@ -226,7 +245,10 @@ export function getSiteSettings(): SiteSettings {
 
 export function saveVideos(videos: VideoTestimonial[]) {
   cache = { ...cache, videos };
-  persistSiteContent();
+  void persistSiteContentAsync(["videos"], { allowEmptyVideos: true }).catch((error) => {
+    console.error("Erreur enregistrement vidéos:", error);
+  });
+  emit();
 }
 
 /** Enregistre les vidéos et attend la confirmation Firestore. */
@@ -237,7 +259,8 @@ export async function saveVideosAsync(
   emit();
 
   try {
-    await persistSiteContentAsync();
+    // allowEmptyVideos: suppression volontaire de toutes les vidéos depuis l'admin
+    await persistSiteContentAsync(["videos"], { allowEmptyVideos: true });
     return { ok: true };
   } catch (error) {
     return { ok: false, error: formatFirestoreError(error) };
@@ -246,7 +269,7 @@ export async function saveVideosAsync(
 
 export function saveBlogPosts(blogPosts: BlogPost[]) {
   cache = { ...cache, blogPosts };
-  persistSiteContent();
+  persistSiteContent(["blogPosts"]);
 }
 
 export function upsertBlogPost(post: BlogPost) {
@@ -255,12 +278,12 @@ export function upsertBlogPost(post: BlogPost) {
     ? cache.blogPosts.map((p) => (p.slug === post.slug ? post : p))
     : [post, ...cache.blogPosts];
   cache = { ...cache, blogPosts };
-  persistSiteContent();
+  persistSiteContent(["blogPosts"]);
 }
 
 export function deleteBlogPost(slug: string) {
   cache = { ...cache, blogPosts: cache.blogPosts.filter((p) => p.slug !== slug) };
-  persistSiteContent();
+  persistSiteContent(["blogPosts"]);
 }
 
 export async function addContactSubmission(
@@ -415,7 +438,7 @@ export async function upsertBlogPostAsync(post: BlogPost): Promise<
   cache = { ...cache, blogPosts };
 
   try {
-    await persistSiteContentAsync();
+    await persistSiteContentAsync(["blogPosts"]);
     return { ok: true };
   } catch (error) {
     const message = formatFirestoreError(error);

@@ -2,6 +2,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   onSnapshot,
   orderBy,
   query,
@@ -61,16 +62,17 @@ function normalizeVideos(raw: unknown): VideoTestimonial[] {
 }
 
 function buildSitePayload(data: {
-  videos: VideoTestimonial[];
-  blogPosts: BlogPost[];
-  siteSettings: SiteSettings | null;
+  videos?: VideoTestimonial[];
+  blogPosts?: BlogPost[];
+  siteSettings?: SiteSettings | null;
 }) {
-  return {
-    videos: data.videos,
-    blogPosts: data.blogPosts,
-    siteSettings: data.siteSettings,
+  const payload: Record<string, unknown> = {
     updatedAt: serverTimestamp(),
   };
+  if (data.videos !== undefined) payload.videos = data.videos;
+  if (data.blogPosts !== undefined) payload.blogPosts = data.blogPosts;
+  if (data.siteSettings !== undefined) payload.siteSettings = data.siteSettings;
+  return payload;
 }
 
 function isAdminUser(): boolean {
@@ -148,7 +150,15 @@ export function startFirestoreSync(
         applySeedLocally(applyContent, getSeedContent);
         if (isAdminUser()) {
           try {
-            await setDoc(siteRef, buildSitePayload(seed));
+            // Ne pas écrire videos: [] — évite d'initialiser un document qui écrase plus tard
+            await setDoc(
+              siteRef,
+              buildSitePayload({
+                blogPosts: seed.blogPosts,
+                siteSettings: seed.siteSettings,
+              }),
+              { merge: true },
+            );
           } catch (error) {
             console.warn("Firestore seed site/content:", error);
           }
@@ -170,10 +180,10 @@ export function startFirestoreSync(
       if (!autoSeedAttempted && !data.blogPosts?.length && isAdminUser()) {
         autoSeedAttempted = true;
         try {
+          // Seed blog uniquement — ne jamais renvoyer videos (risque d'écrasement)
           await setDoc(
             siteRef,
             buildSitePayload({
-              videos,
               blogPosts: seed.blogPosts,
               siteSettings: data.siteSettings ?? seed.siteSettings,
             }),
@@ -199,11 +209,24 @@ export function startFirestoreSync(
   }
 }
 
-export async function saveSiteDocument(data: {
-  videos: VideoTestimonial[];
-  blogPosts: BlogPost[];
-  siteSettings: SiteSettings | null;
-}) {
+type SaveSiteOptions = {
+  /** Autoriser l'écriture explicite de videos: [] (suppression volontaire dans l'admin vidéos). */
+  allowEmptyVideos?: boolean;
+};
+
+/**
+ * Écrit partiellement site/content.
+ * Protection : une liste videos vide n'écrase jamais des vidéos déjà présentes en Firebase,
+ * sauf si allowEmptyVideos=true (action volontaire depuis la page Vidéos).
+ */
+export async function saveSiteDocument(
+  data: {
+    videos?: VideoTestimonial[];
+    blogPosts?: BlogPost[];
+    siteSettings?: SiteSettings | null;
+  },
+  options: SaveSiteOptions = {},
+) {
   const db = getDb();
   if (!db) throw new Error("Firestore indisponible.");
 
@@ -215,9 +238,37 @@ export async function saveSiteDocument(data: {
   }
 
   const user = await ensureFirebaseAuthReady();
+  const siteRef = doc(db, "site", "content");
+  const payload = { ...data };
+
+  if (payload.videos !== undefined && payload.videos.length === 0 && !options.allowEmptyVideos) {
+    try {
+      const snap = await getDoc(siteRef);
+      const remoteVideos = normalizeVideos(snap.data()?.videos);
+      if (remoteVideos.length > 0) {
+        console.warn(
+          "[Dor Hadash] Protection anti-effacement : refus d'écraser",
+          remoteVideos.length,
+          "vidéo(s) Firebase avec une liste locale vide.",
+        );
+        delete payload.videos;
+      }
+    } catch (error) {
+      console.warn("[Dor Hadash] Impossible de vérifier les vidéos distantes:", error);
+      delete payload.videos;
+    }
+  }
+
+  if (
+    payload.videos === undefined &&
+    payload.blogPosts === undefined &&
+    payload.siteSettings === undefined
+  ) {
+    return;
+  }
 
   try {
-    await setDoc(doc(db, "site", "content"), buildSitePayload(data), { merge: true });
+    await setDoc(siteRef, buildSitePayload(payload), { merge: true });
   } catch (error) {
     const code = (error as { code?: string }).code;
     if (code === "permission-denied") {
@@ -252,6 +303,8 @@ export async function saveSiteSettingsDocument(settings: SiteSettings) {
 }
 
 export async function pushFullContentToFirestore(content: AdminContent) {
+  // Pas d'allowEmptyVideos : une sync globale ne doit jamais effacer des vidéos distantes
+  // si le cache local est encore vide (course au démarrage).
   await saveSiteDocument({
     videos: content.videos,
     blogPosts: content.blogPosts,
