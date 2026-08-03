@@ -30,6 +30,14 @@ const navIcons: Record<string, ReactNode> = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M15.5 19a4.2 4.2 0 0 1 5-4" />
     </svg>
   ),
+  "/partenaires": (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <circle cx="8" cy="8" r="2.75" />
+      <circle cx="16" cy="8" r="2.75" />
+      <circle cx="12" cy="16.25" r="2.75" />
+      <path strokeLinecap="round" d="M10.3 9.7 13.7 9.7M9.4 10.5 11 14.1M14.6 10.5 13 14.1" />
+    </svg>
+  ),
   "/nos-villes": (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s6.5-4.2 6.5-10A6.5 6.5 0 1 0 5.5 11c0 5.8 6.5 10 6.5 10Z" />

@@ -3,6 +3,7 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Mission from "./pages/Mission";
 import Equipe from "./pages/Equipe";
+import Partenaires from "./pages/Partenaires";
 import NosVilles from "./pages/NosVilles";
 import VillePage from "./pages/VillePage";
 import Blog from "./pages/Blog";
@@ -30,12 +31,8 @@ export const routes: RouteRecord[] = [
       { index: true, Component: Home },
       { path: "mission", Component: Mission },
       { path: "lequipe", Component: Equipe },
+      { path: "partenaires", Component: Partenaires },
       { path: "nos-villes", Component: NosVilles },
-      {
-        path: ":slug",
-        Component: VillePage,
-        getStaticPaths: () => cities.map((c) => c.slug),
-      },
       { path: "temoignages-videos", Component: TemoignagesVideos },
       { path: "blog", Component: Blog },
       {
@@ -44,6 +41,11 @@ export const routes: RouteRecord[] = [
         getStaticPaths: () => blogPosts.map((p) => `blog/${p.slug}`),
       },
       { path: "nous-contacter", Component: Contact },
+      {
+        path: ":slug",
+        Component: VillePage,
+        getStaticPaths: () => cities.map((c) => c.slug),
+      },
       { path: "*", Component: NotFound },
     ],
   },

@@ -447,36 +447,243 @@ export const cities: City[] = [
     testimonials: [],
   },
   {
-    slug: "ashdod",
-    name: "Ashdod",
-    tagline: "Grande ville côtière, l'une des plus grandes communautés francophones du pays",
-    image: "/images/cities/ashdod.jpg",
-    photoCredit: {
-      text: "Photo : Amos Meron, Wikimedia Commons (CC BY-SA 3.0)",
-      url: "https://commons.wikimedia.org/wiki/File:Ashdod_Marina_Aerial_View.jpg",
-    },
-    isDraft: true,
+    slug: "netivot",
+    name: "Netivot",
+    tagline: "Ville familiale du Neguev — croissance, avantages fiscaux et communauté francophone",
+    image: "/images/netivot.jpg",
+    gallery: [
+      {
+        src: "/images/cities/netivot/vue-aerienne.jpg",
+        caption: "Netivot, ville en plein essor",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/netivot/ville-familiale.jpg",
+        caption: "Une ville familiale",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/netivot/centre-ville.jpg",
+        caption: "Centre-ville et commerces",
+        fit: "contain",
+      },
+    ],
+    galleryMore: [
+      {
+        src: "/images/cities/netivot/bienvenue.jpg",
+        caption: "Présentation de Netivot",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/netivot/education.jpg",
+        caption: "Éducation",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/netivot/services-publics.jpg",
+        caption: "Services publics",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/netivot/travail.jpg",
+        caption: "Emploi et insertion",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/netivot/avantages.jpg",
+        caption: "Les avantages de vivre à Netivot",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/netivot/projets.jpg",
+        caption: "Projets à venir",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/netivot/quartiers.jpg",
+        caption: "Quartiers en construction",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/netivot/communautes.jpg",
+        caption: "Diverses communautés",
+        fit: "contain",
+      },
+      {
+        src: "/images/cities/netivot/contact.jpg",
+        caption: "Contact mairie — Yael Nahmias",
+        fit: "contain",
+      },
+    ],
     intro: [
-      "Dor Hadash à Ashdod : [à compléter avec vous — préciser l'organisation d'accueil et un éventuel partenariat municipal, comme pour Haïfa, Jérusalem et Nof HaGalil].",
-      "Ashdod est la 6ᵉ plus grande ville d'Israël, sur la côte méditerranéenne, à environ 30 km au sud de Tel Aviv. Ville portuaire (le plus grand port du pays), réputée pour ses larges plages et l'une des plus importantes communautés francophones d'Israël.",
+      "Fondée en 1956, Netivot a obtenu le statut de ville en 2001. Elle compte aujourd'hui environ 60 000 habitants.",
+      "Un accord d'extension prévoit 32 000 nouveaux logements, avec un objectif d'environ 140 000 habitants. Ville paisible et chaleureuse — connue comme la ville de Baba Salé — Netivot attire de plus en plus de familles francophones.",
     ],
     sections: [
       {
-        heading: "La ville",
+        heading: "Situation et avantages",
         paragraphs: [
-          "Urbanisme aéré organisé en quartiers (« rovot »), plages, parcs, pistes cyclables reliant les quartiers. Infrastructures communautaires francophones déjà bien implantées (synagogues, écoles, commerces).",
+          "Netivot est proche du centre du pays : environ 80 km de Tel Aviv, 90 km de Jérusalem, et 28 km de Beer Sheva et Ashkelon. Grâce à l'amélioration des lignes ferroviaires, le trajet jusqu'à Tel Aviv prend environ 60 minutes.",
+          "Avantages fiscaux pour les résidents : les salaires jusqu'à 16 000 shekels par mois ne sont pas soumis à l'impôt sur le revenu. Les loyers et les prix d'achat sont nettement inférieurs à ceux du centre et d'autres villes du sud.",
+          "Grâce à une nouvelle loi, les olim hadashim qui s'installent à Netivot peuvent bénéficier d'une aide au loyer allant jusqu'à 2 000 shekels par famille et par mois pendant 2 ans.",
         ],
       },
       {
-        heading: "Transports et commerces",
+        heading: "Éducation",
         paragraphs: [
-          "Ligne ferroviaire côtière reliant Tel Aviv, Ashkelon et le sud du pays, réseau de bus interne dense. [À compléter : temps de trajet, quartiers recommandés par Dor Hadash].",
+          "Netivot offre un large choix d'écoles et de maternelles correspondant aux différents niveaux religieux : haredi, torani, dati leumi, memlahti.",
+          "Les établissements proposent plusieurs parcours, notamment en sciences. La ville a développé un modèle de recherche urbaine en partenariat avec le ministère de l'Éducation : chaque école mène des projets adaptés à son public, avec l'appui d'entreprises, d'institutions académiques et d'enseignants spécialistes.",
+          "Un campus religieux (hommes et femmes séparés) permet des études supérieures — par exemple licence en travail social, économie et comptabilité, génie industriel et gestion, ou éducation.",
         ],
       },
       {
-        heading: "Logement, éducation, emploi",
+        heading: "Emploi",
         paragraphs: [
-          "[À compléter avec vous : loyers moyens, quartiers recommandés, écoles ou dispositifs spécifiques, bassin d'emploi local (port, industrie, zones commerciales)].",
+          "À Netivot et dans ses alentours, des services d'emploi accompagnent la recherche de travail. La ville développe des centres dédiés à l'essor de l'industrie et à la création d'emplois de qualité.",
+          "Le centre municipal d'opportunités d'emploi accompagne les résidents de 18 à 67 ans : diagnostic initial, accompagnement personnalisé, suivi jusqu'à l'insertion, formation professionnelle et mise en relation avec les employeurs.",
+          "Des débouchés existent notamment dans l'éducation, la comptabilité et l'industrie.",
+        ],
+      },
+      {
+        heading: "Vie familiale et services",
+        paragraphs: [
+          "Chaque quartier dispose de plusieurs parcs. On y trouve un lac artificiel idéal pour les pique-niques, des terrains de foot et de basket, une promenade piétonne et cyclable, une aire de jeux et un pumptrack.",
+          "Dans le complexe résidentiel Manhattan, un espace de jeux spectaculaire avec jets d'eau. Un parc commémoratif rénové accueille des événements pour les écoles et le public. La ville compte aussi deux piscines municipales, dont une avec horaires séparés.",
+          "Bibliothèque, conservatoire (cours de musique et concerts), Mishkan Apais pour les spectacles, salle de jeux pour enfants : un large choix d'activités toute l'année, y compris extrascolaires.",
+        ],
+      },
+      {
+        heading: "Logement et projets",
+        paragraphs: [
+          "Ces dernières années, 17 000 logements ont été commercialisés dans les quartiers ouest. Un second accord-cadre pour 32 000 logements vise 140 000 habitants d'ici dix ans. Les prix restent nettement plus bas que dans le centre ou d'autres villes du sud.",
+          "Début 2026, l'hôpital Hadassah ouvrira ses portes avec des urgences et d'autres services. Un grand country club familial est en construction. La synagogue francophone, avec son centre d'étude, devrait être achevée d'ici environ un an et demi.",
+        ],
+      },
+      {
+        heading: "Communauté francophone",
+        paragraphs: [
+          "Ville de Baba Salé : une ville centrée sur la foi, avec de nombreuses synagogues, mikvés, cours de Torah et activités pour toute la famille.",
+          "Vous y trouverez un large éventail de communautés — une belle et grande communauté francophone, ainsi que des communautés haredim ashkénazes ou séfarades, dati leumi… Chaque communauté propose des activités pour les fêtes et tout au long de l'année.",
+          "La communauté francophone, en partenariat avec la mairie, propose études, cours de Torah, soirées femmes pour Roch Hodech et activités pendant les vacances scolaires.",
+        ],
+      },
+      {
+        heading: "Contact mairie",
+        paragraphs: [
+          "Yael Nahmias, coordinatrice des olim hadashim pour la mairie de Netivot — 054-945-2055 · yael.n@netivot.muni.il",
+        ],
+      },
+    ],
+    testimonials: [],
+  },
+  {
+    slug: "ashdod",
+    name: "Ashdod",
+    tagline: "La Méditerranée, une communauté chaleureuse, une ville où construire son avenir",
+    image: "/images/cities/ashdod.jpg",
+    gallery: [
+      {
+        src: "/images/cities/ashdod/parc-yam.jpg",
+        caption: "Parc Ashdod-Yam — lac et front de mer",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/ashdod/parc-lac.jpg",
+        caption: "Promenade et lac du parc Yam",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/ashdod/plage.jpg",
+        caption: "Plages d'Ashdod",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/ashdod/marina-soleil.jpg",
+        caption: "Marina d'Ashdod au coucher du soleil",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/ashdod/promenade-nuit.jpg",
+        caption: "Front de mer illuminé",
+        fit: "cover",
+      },
+    ],
+    galleryMore: [
+      {
+        src: "/images/cities/ashdod/fontaines.jpg",
+        caption: "Espaces de loisirs en bord de mer",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/ashdod/marina.jpg",
+        caption: "Marina et vie nautique",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/ashdod/kitesurf.jpg",
+        caption: "Sports et activités sur la plage",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/ashdod/sculpture.jpg",
+        caption: "Ashdod — landmarks et vie urbaine",
+        fit: "contain",
+      },
+    ],
+    intro: [
+      "Ashdod séduit par son équilibre rare : une grande ville israélienne ouverte sur la mer, dynamique et familiale, où chacun peut trouver sa place. Son identité s'est construite grâce aux vagues d'Alya successives, qui ont créé une mosaïque humaine riche, une vie juive plurielle et un véritable esprit d'entraide.",
+      "À une quarantaine de kilomètres de Tel-Aviv, la ville associe plages, parcs, équipements culturels et sportifs, services de santé modernes et bassins d'emploi diversifiés. Sa communauté francophone déjà bien implantée permet aux nouveaux olim d'être entourés dès leur arrivée, tout en avançant progressivement vers une intégration pleine dans la société israélienne.",
+    ],
+    sections: [
+      {
+        heading: "Une ville pensée pour la vie quotidienne",
+        paragraphs: [
+          "Ville portuaire majeure, Ashdod est aussi une ville de quartiers : chaque secteur possède ses commerces, établissements scolaires, synagogues, espaces verts et services de proximité. Cette organisation facilite la vie des familles et permet de choisir un environnement adapté à son mode de vie — laïc, traditionnel ou religieux.",
+        ],
+      },
+      {
+        heading: "Un cadre de vie méditerranéen",
+        paragraphs: [
+          "Un vaste littoral, des plages accessibles, une promenade maritime et une marina. De grands espaces verts, notamment le parc Ashdod-Yam et le parc du Lakhish.",
+          "Une programmation culturelle variée : spectacles, musées, festivals, médiathèques et activités municipales. De nombreux équipements sportifs, centres communautaires et activités pour tous les âges.",
+        ],
+      },
+      {
+        heading: "Une ville connectée et équipée",
+        paragraphs: [
+          "La gare Ashdod Ad Halom relie la ville au centre du pays et au sud ; un réseau de bus dessert les quartiers. Le port et les zones industrielles soutiennent un important bassin économique et logistique.",
+          "L'hôpital public universitaire Assuta Ashdod renforce l'offre médicale locale, aux côtés des quatre caisses de santé.",
+        ],
+      },
+      {
+        heading: "Une ville d'Alya",
+        paragraphs: [
+          "Ashdod accueille depuis toujours des populations venues de nombreux pays. La municipalité dispose d'un service dédié à l'Alya et à la Klita, avec des coordinateurs parlant notamment français. Les nouveaux immigrants peuvent y recevoir une première orientation, une aide pour certaines démarches en hébreu et un accompagnement vers les services municipaux et nationaux.",
+          "Pour un nouvel olé francophone, cette présence institutionnelle, associative et communautaire constitue un appui précieux — sans remplacer l'apprentissage de l'hébreu, clé de l'autonomie et de l'intégration durable.",
+        ],
+      },
+      {
+        heading: "Dor Hadash à Ashdod",
+        paragraphs: [
+          "Dor Hadash prépare chaque famille en amont, sécurise son installation et reste présente après l'arrivée. À Ashdod, cet accompagnement s'appuie sur la connaissance du terrain, un réseau de bénévoles et des partenaires spécialisés.",
+          "Avant l'Alya : étude personnalisée du projet (composition familiale, budget, emploi, scolarité, santé et choix du quartier), préparation administrative, Oulpan Zahav pour adultes et enfants, et préparation professionnelle.",
+          "À l'arrivée : orientation vers les premières formalités (banque, caisse de santé, ministère de l'Alya et de l'Intégration, Bituah Leumi, municipalité), aide à la recherche d'un logement, inscriptions scolaires et mise en relation avec la communauté locale.",
+          "Dans la durée : suivi de l'intégration familiale, scolaire et professionnelle ; Pont Éducatif pour l'école israélienne ; point financier au huitième mois ; orientation vers les bons interlocuteurs selon les besoins.",
+        ],
+      },
+      {
+        heading: "Les 4 piliers de votre installation",
+        paragraphs: [
+          "Logement : définition des quartiers compatibles avec votre budget et votre mode de vie ; recherche à distance ou sur place ; lecture des conditions du bail et anticipation des garanties demandées.",
+          "Immersion : oulpan, pratique quotidienne de l'hébreu, activités municipales, bénévolat et rencontres avec des familles déjà installées — pour créer rapidement des repères et un réseau local.",
+          "Éducation : orientation vers les établissements adaptés — publics, publics religieux ou autres cadres reconnus — puis suivi des inscriptions et de l'adaptation scolaire grâce au Pont Éducatif.",
+          "Emploi : clarification du projet professionnel, adaptation du CV au marché israélien, activation des réseaux, orientation vers la formation, l'emploi salarié ou la création d'activité.",
+        ],
+      },
+      {
+        heading: "Partenaires et relais",
+        paragraphs: [
+          "Agence Juive pour Israël, Ministère de l'Alya et de l'Intégration, municipalité d'Ashdod, partenaires associatifs et professionnels.",
         ],
       },
     ],

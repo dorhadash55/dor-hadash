@@ -251,8 +251,8 @@ export default function AdminSettingsPage() {
                   <code className="rounded bg-gray-100 px-1">dor-hadash.com</code>
                 </li>
                 <li>
-                  Variables Vercel : <code className="rounded bg-gray-100 px-1">VITE_ADMIN_PASSWORD</code>,{" "}
-                  <code className="rounded bg-gray-100 px-1">VITE_ADMIN_EMAIL</code>, toutes les{" "}
+                  Variables Vercel : <code className="rounded bg-gray-100 px-1">VITE_ADMIN_EMAIL</code>{" "}
+                  (emails Google autorisés), toutes les{" "}
                   <code className="rounded bg-gray-100 px-1">VITE_FIREBASE_*</code>
                 </li>
                 <li>App Check → Firestore → <strong>Unenforced</strong> si erreur permission-denied</li>

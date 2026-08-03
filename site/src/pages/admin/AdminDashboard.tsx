@@ -3,7 +3,6 @@ import AdminHeader from "../../admin/components/AdminHeader";
 import {
   AdminCard,
   AdminLinkButton,
-  AdminPageIntro,
   AdminStatCard,
   AdminBadge,
 } from "../../admin/components/AdminUi";
@@ -22,7 +21,7 @@ export default function AdminDashboard() {
   const checklist = [
     { label: "Firebase configuré", done: isFirebaseConfigured(), link: "/admin/settings" },
     {
-      label: "Connexion Google (enregistrement)",
+      label: "Connecté avec Google",
       done: !usesFirebaseAuth || canWriteToFirestore,
       link: "/admin/login",
     },
@@ -42,13 +41,6 @@ export default function AdminDashboard() {
         description="Vue d'ensemble du contenu du site et des demandes de contact."
       />
       <main className="flex-1 space-y-6 p-4 sm:p-6">
-        {!canWriteToFirestore && usesFirebaseAuth && (
-          <AdminPageIntro
-            title="Action requise"
-            description="Connectez-vous avec Google pour pouvoir enregistrer vidéos, articles et paramètres dans Firebase. Le mot de passe seul donne un accès en lecture."
-          />
-        )}
-
         <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
           <AdminStatCard label="Vidéos" value={stats.videos} to="/admin/videos" hint="YouTube (témoignages & programme)" />
           <AdminStatCard label="Articles blog" value={stats.blogPosts} to="/admin/blog" />

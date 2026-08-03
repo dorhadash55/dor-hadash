@@ -33,9 +33,9 @@ export const methodeSteps: MethodeStep[] = [
   {
     step: "03",
     title: "Installation à l'arrivée",
-    teaser: "Logement, papiers et accueil francophone dès le premier jour.",
+    teaser: "Logement, démarches et accueil dès votre arrivée.",
     description:
-      "Logement, démarches administratives et accueil personnalisé par un coordinateur francophone dès votre arrivée en Israël.",
+      "Aide à la recherche d'un logement, accompagnement dans les démarches administratives, et accueil personnalisé par un coordinateur francophone dès votre arrivée en Israël.",
   },
   {
     step: "04",

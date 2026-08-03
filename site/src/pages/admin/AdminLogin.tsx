@@ -1,8 +1,8 @@
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect } from "react";
 import { Head } from "vite-react-ssg";
 import { Link, Navigate, useLocation } from "react-router-dom";
-import { getAllowedAdminEmails } from "../../admin/auth/adminAccess";
 import { useAuth, formatGoogleAuthError, GOOGLE_AUTH_ERROR_KEY } from "../../admin/auth/AuthContext";
+import { isFirebaseConfigured } from "../../admin/firebase/config";
 
 function GoogleIcon() {
   return (
@@ -28,11 +28,9 @@ function GoogleIcon() {
 }
 
 export default function AdminLogin() {
-  const { isAuthenticated, isLoading, login, loginWithGoogle, usesFirebaseAuth } = useAuth();
+  const { isAuthenticated, isLoading, loginWithGoogle, usesFirebaseAuth } = useAuth();
   const location = useLocation();
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [submitting, setSubmitting] = useState(false);
   const [googleSubmitting, setGoogleSubmitting] = useState(false);
 
   useEffect(() => {
@@ -44,7 +42,6 @@ export default function AdminLogin() {
   }, []);
 
   const from = (location.state as { from?: string } | null)?.from ?? "/admin";
-  const busy = submitting || googleSubmitting;
 
   if (isLoading) {
     return (
@@ -56,19 +53,6 @@ export default function AdminLogin() {
 
   if (isAuthenticated) return <Navigate to={from} replace />;
 
-  const handlePasswordLogin = async (e: FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setError("");
-
-    const result = await login({ password });
-    setSubmitting(false);
-
-    if (!result.ok && result.reason !== "cancelled") {
-      setError("Mot de passe incorrect.");
-    }
-  };
-
   const handleGoogleLogin = async () => {
     setGoogleSubmitting(true);
     setError("");
@@ -79,11 +63,11 @@ export default function AdminLogin() {
         if (result.reason === "unauthorized") {
           setError(result.message ?? "Ce compte Google n'est pas autorisé.");
         } else if (result.reason !== "cancelled") {
-          setError(result.message ?? "Connexion Google impossible. Réessayez ou utilisez le mot de passe.");
+          setError(result.message ?? "Connexion Google impossible. Réessayez.");
         }
       }
-    } catch (error) {
-      setError(formatGoogleAuthError(error));
+    } catch (err) {
+      setError(formatGoogleAuthError(err));
     } finally {
       setGoogleSubmitting(false);
     }
@@ -100,67 +84,31 @@ export default function AdminLogin() {
         <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl sm:p-8">
           <div className="text-center">
             <img src="/images/logo.png" alt="Dor Hadash" className="mx-auto h-14 w-auto" />
-            <h1 className="mt-4 font-heading text-xl font-semibold text-brand-blue-deep sm:text-2xl">Admin</h1>
-            <p className="mt-1 text-sm text-gray-500">Gestion du site Dor Hadash</p>
-            {usesFirebaseAuth && (
-              <p className="mt-2 text-xs leading-relaxed text-gray-400">
-                Mot de passe = accès admin. Google ({getAllowedAdminEmails().join(" ou ")}) =
-                enregistrement Firebase.
-              </p>
-            )}
+            <h1 className="mt-4 font-heading text-xl font-semibold text-brand-blue-deep sm:text-2xl">
+              Espace admin
+            </h1>
+            <p className="mt-1 text-sm text-gray-500">Connexion sécurisée avec Google</p>
           </div>
 
-          <form className="mt-8 space-y-4" onSubmit={handlePasswordLogin}>
-            <div>
-              <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-gray-700">
-                Mot de passe
-              </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
-                required
-                placeholder="Entrez le mot de passe admin"
-                className="w-full rounded-xl border border-gray-300 px-4 py-3 text-base focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
-              />
-            </div>
+          {error && (
+            <p className="mt-6 rounded-lg bg-brand-coral/10 px-3 py-2 text-sm text-brand-coral">{error}</p>
+          )}
 
-            {error && (
-              <p className="rounded-lg bg-brand-coral/10 px-3 py-2 text-sm text-brand-coral">{error}</p>
-            )}
-
+          {!isFirebaseConfigured() || !usesFirebaseAuth ? (
+            <p className="mt-8 rounded-lg bg-amber-50 px-3 py-3 text-sm text-amber-900">
+              Firebase n&apos;est pas configuré. Ajoutez les variables <code>VITE_FIREBASE_*</code> pour
+              activer l&apos;admin.
+            </p>
+          ) : (
             <button
-              type="submit"
-              disabled={busy}
-              className="w-full rounded-full bg-brand-blue py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-blue-dark disabled:opacity-60"
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={googleSubmitting}
+              className="mt-8 flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-sm font-semibold text-gray-800 shadow-sm transition-colors hover:bg-gray-50 disabled:opacity-60"
             >
-              {submitting ? "Connexion…" : "Se connecter"}
+              <GoogleIcon />
+              {googleSubmitting ? "Connexion…" : "Continuer avec Google"}
             </button>
-          </form>
-
-          {usesFirebaseAuth && (
-            <>
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200" />
-                </div>
-                <div className="relative flex justify-center text-xs text-gray-400">
-                  <span className="bg-white px-3">ou</span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleGoogleLogin}
-                disabled={busy}
-                className="flex w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:opacity-60"
-              >
-                <GoogleIcon />
-                {googleSubmitting ? "Connexion Google…" : "Continuer avec Google"}
-              </button>
-            </>
           )}
 
           <p className="mt-6 text-center">

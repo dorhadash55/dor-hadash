@@ -19,10 +19,15 @@ export const seoByPath: Record<string, SeoEntry> = {
     description:
       "Rencontrez l'équipe de l'association Dor Hadash : présidente, trésorier, avocat et commissions dédiées, au service de votre projet d'Alya.",
   },
+  "/partenaires": {
+    title: "Nos partenaires | Dor Hadash",
+    description:
+      "Découvrez les partenaires de Dor Hadash, dont Le Pont Éducatif (למענך), pour l'accompagnement scolaire des familles francophones en Israël.",
+  },
   "/nos-villes": {
     title: "Nos villes d'accueil | Dor Hadash",
     description:
-      "Découvrez les villes partenaires de Dor Hadash pour votre Alya : Karmiel, Haïfa, Jérusalem, Nof HaGalil, Ashdod et Bat Yam. Trouvez la ville qui vous correspond.",
+      "Découvrez les villes partenaires de Dor Hadash pour votre Alya : Karmiel, Haïfa, Jérusalem, Nof HaGalil, Netivot, Ashdod et Bat Yam. Trouvez la ville qui vous correspond.",
   },
   "/karmiel": {
     title: "Faire son Alya à Karmiel | Dor Hadash",
@@ -44,10 +49,15 @@ export const seoByPath: Record<string, SeoEntry> = {
     description:
       "Nof HaGalil, ville en plein développement au cœur de la Galilée : avantages fiscaux jusqu'à 18 %, aide au loyer, cadre familial et accompagnement Dor Hadash pour réussir votre Alya.",
   },
+  "/netivot": {
+    title: "Faire son Alya à Netivot | Dor Hadash",
+    description:
+      "Netivot, ville familiale du Neguev : avantages fiscaux, aide au loyer pour olim, éducation, emploi et communauté francophone. Découvrez le programme Dor Hadash.",
+  },
   "/ashdod": {
     title: "Faire son Alya à Ashdod | Dor Hadash",
     description:
-      "Ashdod, grande ville côtière et l'une des plus importantes communautés francophones d'Israël. Découvrez le programme Dor Hadash (contenu en cours de finalisation).",
+      "Ashdod, ville méditerranéenne familiale : plages, marina, communauté francophone et accompagnement Dor Hadash avant, pendant et après l'Alya.",
   },
   "/bat-yam": {
     title: "Faire son Alya à Bat Yam | Dor Hadash",

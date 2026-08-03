@@ -23,6 +23,7 @@ export const mainNav: NavItem[] = [
   { label: "Accueil", path: "/" },
   { label: "Mission", path: "/mission" },
   { label: "L'équipe", path: "/lequipe" },
+  { label: "Partenaires", path: "/partenaires" },
   {
     label: "Nos Villes",
     path: "/nos-villes",
@@ -31,6 +32,7 @@ export const mainNav: NavItem[] = [
       { label: "Haïfa", path: "/haifa" },
       { label: "Jérusalem", path: "/jerusalem" },
       { label: "Nof HaGalil", path: "/nof-hagalil" },
+      { label: "Netivot", path: "/netivot" },
       { label: "Ashdod", path: "/ashdod" },
       { label: "Bat Yam", path: "/bat-yam" },
     ],

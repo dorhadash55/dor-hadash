@@ -3,6 +3,7 @@ import Hero from "../components/Hero";
 import HomeStats from "../components/HomeStats";
 import MethodeSection from "../components/MethodeSection";
 import ServicesSection from "../components/ServicesSection";
+import PartnersSection from "../components/PartnersSection";
 import CitiesTeaser from "../components/CitiesTeaser";
 import VideoTeaser from "../components/VideoTeaser";
 import BlogTeaser from "../components/BlogTeaser";
@@ -16,6 +17,7 @@ export default function Home() {
       <HomeStats />
       <MethodeSection />
       <ServicesSection />
+      <PartnersSection />
       <CitiesTeaser />
       <VideoTeaser />
       <BlogTeaser />

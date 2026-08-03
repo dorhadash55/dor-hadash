@@ -710,13 +710,83 @@ h1, h2, h3, h4 {
   }
 }
 
+/* ── Pages villes ── */
+
+.city-hero-img {
+  animation: cityKenBurns 18s ease-out both;
+  transform-origin: center 40%;
+}
+
+.city-hero-in {
+  animation: cityHeroIn 0.8s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+.city-pillar {
+  animation: cityPillarIn 0.65s cubic-bezier(0.32, 0.72, 0, 1) both;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.city-pillar:active {
+  transform: scale(0.98);
+}
+
+.city-cta {
+  animation: cityCtaIn 0.75s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes cityKenBurns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.07);
+  }
+}
+
+@keyframes cityHeroIn {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cityPillarIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes cityCtaIn {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .methode-pulse,
   .methode-step,
   .methode-progress,
   .mission-hero-img,
   .mission-hero-in,
-  .mission-pillar {
+  .mission-pillar,
+  .city-hero-img,
+  .city-hero-in,
+  .city-pillar,
+  .city-cta {
     animation: none;
     opacity: 1;
     transform: none;

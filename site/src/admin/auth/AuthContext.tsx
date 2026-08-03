@@ -13,22 +13,16 @@ import {
   getRedirectResult,
   onAuthStateChanged,
   setPersistence,
-  signInWithEmailAndPassword,
   signInWithPopup,
   signInWithRedirect,
   signOut,
   type User,
 } from "firebase/auth";
 import { getFirebaseAuth, isFirebaseConfigured } from "../firebase/config";
-import { getDefaultAdminEmail, isAllowedAdminEmail } from "./adminAccess";
+import { isAllowedAdminEmail } from "./adminAccess";
 
-const AUTH_KEY = "dor-hadash:admin-auth";
 export const GOOGLE_AUTH_ERROR_KEY = "dor-hadash:google-auth-error";
-const DEFAULT_PASSWORD = "dorhadash-admin";
-
-type LoginInput = {
-  password: string;
-};
+const GOOGLE_REDIRECT_PENDING_KEY = "dor-hadash:google-redirect-pending";
 
 export type LoginResult =
   | { ok: true }
@@ -40,28 +34,12 @@ type AuthContextValue = {
   usesFirebaseAuth: boolean;
   canWriteToFirestore: boolean;
   userEmail: string | null;
-  login: (input: LoginInput) => Promise<LoginResult>;
   loginWithGoogle: () => Promise<LoginResult>;
   connectGoogleForFirestore: () => Promise<LoginResult>;
   logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
-
-function readPasswordSession(): boolean {
-  if (typeof window === "undefined") return false;
-  return sessionStorage.getItem(AUTH_KEY) === "1";
-}
-
-function setPasswordSession(active: boolean) {
-  if (typeof window === "undefined") return;
-  if (active) sessionStorage.setItem(AUTH_KEY, "1");
-  else sessionStorage.removeItem(AUTH_KEY);
-}
-
-function getExpectedPassword() {
-  return (import.meta.env.VITE_ADMIN_PASSWORD as string | undefined) || DEFAULT_PASSWORD;
-}
 
 async function ensureAllowedAdmin(user: User | null): Promise<LoginResult> {
   const auth = getFirebaseAuth();
@@ -72,11 +50,10 @@ async function ensureAllowedAdmin(user: User | null): Promise<LoginResult> {
     return {
       ok: false,
       reason: "unauthorized",
-      message: `Ce compte Google (${user.email}) n'est pas autorisé. Utilisez ${getDefaultAdminEmail()}.`,
+      message: `Ce compte Google (${user.email}) n'est pas autorisé.`,
     };
   }
 
-  setPasswordSession(false);
   return { ok: true };
 }
 
@@ -88,8 +65,6 @@ function isPopupFallbackError(code: string) {
     code === "auth/cancelled-popup-request"
   );
 }
-
-const GOOGLE_REDIRECT_PENDING_KEY = "dor-hadash:google-redirect-pending";
 
 export function formatGoogleAuthError(error: unknown): string {
   const code = (error as { code?: string }).code ?? "";
@@ -107,18 +82,15 @@ export function formatGoogleAuthError(error: unknown): string {
 
   const message = error instanceof Error ? error.message : "";
   if (message) return message;
-  return "Connexion Google impossible. Réessayez ou utilisez le mot de passe.";
+  return "Connexion Google impossible. Réessayez.";
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const usesFirebaseAuth = isFirebaseConfigured();
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
-  const [passwordSession, setPasswordSessionState] = useState(() =>
-    usesFirebaseAuth ? readPasswordSession() : readPasswordSession(),
-  );
   const [isLoading, setIsLoading] = useState(usesFirebaseAuth);
 
-  const isAuthenticated = Boolean(firebaseUser) || passwordSession;
+  const isAuthenticated = Boolean(firebaseUser);
   const canWriteToFirestore = Boolean(firebaseUser);
   const userEmail = firebaseUser?.email ?? null;
 
@@ -141,14 +113,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (user && !isAllowedAdminEmail(user.email)) {
         sessionStorage.setItem(
           GOOGLE_AUTH_ERROR_KEY,
-          `Ce compte Google (${user.email}) n'est pas autorisé. Utilisez ${getDefaultAdminEmail()}.`,
+          `Ce compte Google (${user.email}) n'est pas autorisé.`,
         );
         void signOut(auth);
         setFirebaseUser(null);
         return;
       }
 
-      if (user) setPasswordSession(false);
       setFirebaseUser(user);
     };
 
@@ -157,6 +128,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await setPersistence(auth, browserLocalPersistence);
       } catch (error) {
         console.warn("[Dor Hadash] Auth persistence:", error);
+      }
+
+      // Nettoyage d'anciennes sessions mot de passe (plus utilisées)
+      try {
+        sessionStorage.removeItem("dor-hadash:admin-auth");
+      } catch {
+        /* ignore */
       }
 
       const redirectPending =
@@ -176,8 +154,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else if (redirectPending) {
           sessionStorage.setItem(
             GOOGLE_AUTH_ERROR_KEY,
-            "La connexion Google n'a pas pu être finalisée (redirect). Réessayez — une fenêtre popup va s'ouvrir. " +
-              "Vérifiez aussi Firebase → Authentication → Authorized domains (dor-hadash.vercel.app).",
+            "La connexion Google n'a pas pu être finalisée. Réessayez — une fenêtre popup va s'ouvrir. " +
+              "Vérifiez aussi Firebase → Authentication → Authorized domains.",
           );
         }
       } catch (error) {
@@ -199,41 +177,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, [usesFirebaseAuth]);
 
-  const login = useCallback(
-    async ({ password }: LoginInput): Promise<LoginResult> => {
-      if (password !== getExpectedPassword()) {
-        return { ok: false, reason: "invalid" };
-      }
-
-      if (usesFirebaseAuth) {
-        const auth = getFirebaseAuth();
-        const email = getDefaultAdminEmail();
-
-        if (auth) {
-          try {
-            const credential = await signInWithEmailAndPassword(auth, email, password);
-            return ensureAllowedAdmin(credential.user);
-          } catch {
-            // Mot de passe admin OK — accès UI sans Firebase Auth email/password configuré
-            setPasswordSession(true);
-            setPasswordSessionState(true);
-            return { ok: true };
-          }
-        }
-      }
-
-      setPasswordSession(true);
-      setPasswordSessionState(true);
-      return { ok: true };
-    },
-    [usesFirebaseAuth],
-  );
-
   const signInWithGoogleProvider = useCallback(async (): Promise<LoginResult> => {
-    if (!usesFirebaseAuth) return { ok: false, reason: "invalid" };
+    if (!usesFirebaseAuth) {
+      return {
+        ok: false,
+        reason: "invalid",
+        message: "Firebase n'est pas configuré. Ajoutez les variables VITE_FIREBASE_* .",
+      };
+    }
 
     const auth = getFirebaseAuth();
-    if (!auth) return { ok: false, reason: "invalid" };
+    if (!auth) return { ok: false, reason: "invalid", message: "Firebase Auth indisponible." };
 
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account" });
@@ -245,8 +199,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     try {
-      // Toujours popup d'abord (comme en local). Le redirect casse souvent sur Vercel
-      // à cause du blocage des cookies tiers entre le site et *.firebaseapp.com.
       const result = await signInWithPopup(auth, provider);
       const loginResult = await ensureAllowedAdmin(result.user);
       if (!loginResult.ok && loginResult.message) {
@@ -286,15 +238,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const connectGoogleForFirestore = signInWithGoogleProvider;
 
   const logout = useCallback(async () => {
-    setPasswordSession(false);
-    setPasswordSessionState(false);
-
     if (usesFirebaseAuth) {
       const auth = getFirebaseAuth();
       if (auth) await signOut(auth);
-      setFirebaseUser(null);
-      return;
     }
+    setFirebaseUser(null);
   }, [usesFirebaseAuth]);
 
   const value = useMemo(
@@ -304,7 +252,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       usesFirebaseAuth,
       canWriteToFirestore,
       userEmail,
-      login,
       loginWithGoogle,
       connectGoogleForFirestore,
       logout,
@@ -315,7 +262,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       usesFirebaseAuth,
       canWriteToFirestore,
       userEmail,
-      login,
       loginWithGoogle,
       connectGoogleForFirestore,
       logout,
