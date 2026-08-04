@@ -692,34 +692,89 @@ export const cities: City[] = [
   {
     slug: "bat-yam",
     name: "Bat Yam",
-    tagline: "La mer aux portes de Tel Aviv",
+    tagline: "La Méditerranée aux portes de Tel-Aviv, une ville en pleine transformation",
     image: "/images/cities/bat-yam.jpg",
-    photoCredit: {
-      text: "Photo : Ynhockey, Wikimedia Commons (CC BY-SA 4.0)",
-      url: "https://commons.wikimedia.org/wiki/File:City_Park_Bat_Yam_05.jpg",
-    },
-    isDraft: true,
+    gallery: [
+      {
+        src: "/images/cities/bat-yam/fleurs-mer.jpg",
+        caption: "La Méditerranée vue depuis Bat Yam",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/bat-yam/promenade-sculpture.jpg",
+        caption: "Promenade maritime — Bat Yam 100 ans",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/bat-yam/paddle.jpg",
+        caption: "Plages et sports nautiques",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/bat-yam/tours.jpg",
+        caption: "Renouvellement urbain et nouveaux quartiers",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/bat-yam/promenade-coucher.jpg",
+        caption: "Promenade au coucher du soleil",
+        fit: "cover",
+      },
+    ],
     intro: [
-      "Dor Hadash à Bat Yam : [à compléter avec vous — préciser l'organisation d'accueil et un éventuel partenariat municipal].",
-      "Bat Yam est une ville côtière contiguë à Tel Aviv, en plein renouveau urbain : rénovation du front de mer, nouvelles tours résidentielles. Elle attire de plus en plus de francophones grâce à des prix plus accessibles que Tel Aviv, tout en gardant l'ambiance de bord de mer.",
+      "Bat Yam offre un cadre rare au cœur du Goush Dan : une ville méditerranéenne, familiale et populaire, directement reliée à Tel-Aviv. En 2026, elle célèbre son centenaire et affirme une identité tournée vers la mer, la vie de quartier et le renouvellement urbain.",
+      "Avec plus de 125 000 habitants, Bat Yam réunit plages, promenade maritime, équipements culturels, écoles et services de proximité sur un territoire compact. Sa situation permet de profiter des opportunités professionnelles, universitaires et médicales de toute la métropole, tout en conservant une atmosphère plus accessible et communautaire.",
     ],
     sections: [
       {
-        heading: "La ville",
+        heading: "Bat Yam, la Méditerranée au cœur du Goush Dan",
         paragraphs: [
-          "Accès direct à la plage sur toute la façade, promenade très fréquentée, vie de quartier dense, à quelques minutes de Tel Aviv.",
+          "Bat Yam est une ville dense et vivante, organisée autour de quartiers aux identités distinctes. Commerces, écoles, synagogues, centres communautaires et transports sont généralement proches, ce qui simplifie le quotidien et permet de choisir un environnement correspondant à son mode de vie — laïc, traditionnel ou religieux.",
         ],
       },
       {
-        heading: "Transports",
+        heading: "Un cadre de vie tourné vers la mer",
         paragraphs: [
-          "Réseau de bus dense vers Tel Aviv et le Goush Dan, extensions progressives du métro léger de Tel Aviv desservant la région. [À compléter : lignes précises, temps de trajet].",
+          "Une promenade maritime animée et des plages accessibles pour la baignade, le sport et les sorties en famille. Un littoral en renouvellement, des espaces publics réaménagés et une vie de quartier à taille humaine.",
+          "Une offre culturelle active : Palais de la culture, réseau de bibliothèques, musées de Bat Yam, conservatoire, spectacles et festivals. Des centres communautaires, équipements sportifs et activités municipales pour les enfants, les jeunes, les familles et les seniors.",
         ],
       },
       {
-        heading: "Logement, éducation, emploi",
+        heading: "Une ville connectée à toute la métropole",
         paragraphs: [
-          "[À compléter avec vous : loyers moyens, quartiers recommandés, écoles locales, dispositifs d'accompagnement à l'emploi — proximité immédiate du bassin d'emploi de Tel Aviv].",
+          "La ligne rouge du tramway dessert Bat Yam par dix stations et la relie directement à Tel-Aviv, Ramat Gan, Bnei Brak et Petah Tikva. Les gares Bat Yam–Yoseftal et Bat Yam–Komemiyut, les bus et l'accès à l'Ayalon complètent les déplacements vers le centre du pays.",
+          "Les quatre caisses de santé sont présentes en ville ; l'hôpital Wolfson à Holon et les grands centres médicaux de Tel-Aviv sont rapidement accessibles.",
+        ],
+      },
+      {
+        heading: "Une ville d'Alya et de diversité",
+        paragraphs: [
+          "Bat Yam s'est construite grâce à plusieurs vagues d'Alya et accueille des habitants venus de nombreux pays. Le service municipal de l'Alya et de la Klita accompagne les nouveaux immigrants, les oriente dans leurs démarches et propose des activités favorisant l'intégration sociale et communautaire.",
+          "Pour un nouvel olé francophone, la proximité de Tel-Aviv et la présence de services municipaux et communautaires constituent de vrais atouts — sans remplacer l'apprentissage de l'hébreu, clé de l'autonomie et de l'intégration durable.",
+        ],
+      },
+      {
+        heading: "Dor Hadash à Bat Yam",
+        paragraphs: [
+          "Dor Hadash prépare chaque famille en amont, sécurise son installation et reste présente après l'arrivée. À Bat Yam, cet accompagnement tient compte des réalités du Goush Dan : marché locatif tendu, déplacements métropolitains, scolarité, emploi et construction rapide d'un réseau local.",
+          "Avant l'Alya : étude personnalisée du projet (composition familiale, budget, emploi, scolarité, santé et choix du quartier), préparation administrative, Oulpan Zahav pour adultes et enfants, et préparation professionnelle.",
+          "À l'arrivée : orientation vers les premières formalités (banque, caisse de santé, ministère de l'Alya et de l'Intégration, Bituah Leumi, municipalité), aide à la recherche d'un logement, inscriptions scolaires et mise en relation avec la communauté locale.",
+          "Dans la durée : suivi de l'intégration familiale, scolaire et professionnelle ; Pont Éducatif pour l'école israélienne ; point financier au huitième mois ; orientation vers les bons interlocuteurs selon les besoins.",
+        ],
+      },
+      {
+        heading: "Les 4 piliers de votre installation",
+        paragraphs: [
+          "Logement : choix du quartier selon le budget, le mode de vie et l'accès aux transports ; recherche à distance ou sur place ; lecture du bail, vérification du contexte de rénovation urbaine et anticipation des garanties demandées.",
+          "Immersion : oulpan, pratique quotidienne de l'hébreu, activités municipales, bénévolat et rencontres avec des familles déjà installées — pour créer rapidement des repères et un réseau local.",
+          "Éducation : orientation vers les établissements adaptés — publics, publics religieux ou autres cadres reconnus — puis suivi des inscriptions et de l'adaptation scolaire grâce au Pont Éducatif.",
+          "Emploi : clarification du projet professionnel, adaptation du CV au marché israélien, activation des réseaux et accès aux opportunités de Bat Yam, Holon, Tel-Aviv et de l'ensemble du Goush Dan.",
+        ],
+      },
+      {
+        heading: "Partenaires et relais",
+        paragraphs: [
+          "Agence Juive pour Israël, Ministère de l'Alya et de l'Intégration, municipalité de Bat Yam, partenaires associatifs et professionnels.",
         ],
       },
     ],

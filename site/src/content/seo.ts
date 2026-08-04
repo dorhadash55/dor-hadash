@@ -7,7 +7,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/": {
     title: "Dor Hadash | Incubateur d'Alya francophone en Israël",
     description:
-      "Dor Hadash accompagne les francophones dans leur Alya en Israël : logement, immersion, éducation, emploi. Un accompagnement complet pour réussir votre intégration.",
+      "Dor Hadash accompagne les francophones dans leur Alya en Israël : logement, immersion, éducation, emploi. Un parcours complet pour réussir votre intégration.",
   },
   "/mission": {
     title: "Notre mission | Dor Hadash",
@@ -27,7 +27,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/nos-villes": {
     title: "Nos villes d'accueil | Dor Hadash",
     description:
-      "Découvrez les villes partenaires de Dor Hadash pour votre Alya : Karmiel, Haïfa, Jérusalem, Nof HaGalil, Netivot, Ashdod et Bat Yam. Trouvez la ville qui vous correspond.",
+      "Villes partenaires Dor Hadash pour votre Alya : Karmiel, Haïfa, Jérusalem, Nof HaGalil, Netivot, Ashdod et Bat Yam.",
   },
   "/karmiel": {
     title: "Faire son Alya à Karmiel | Dor Hadash",
@@ -47,7 +47,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/nof-hagalil": {
     title: "Faire son Alya à Nof HaGalil | Dor Hadash",
     description:
-      "Nof HaGalil, ville en plein développement au cœur de la Galilée : avantages fiscaux jusqu'à 18 %, aide au loyer, cadre familial et accompagnement Dor Hadash pour réussir votre Alya.",
+      "Nof HaGalil, au cœur de la Galilée : avantages fiscaux jusqu'à 18 %, aide au loyer, cadre familial et accompagnement Dor Hadash.",
   },
   "/netivot": {
     title: "Faire son Alya à Netivot | Dor Hadash",
@@ -62,7 +62,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/bat-yam": {
     title: "Faire son Alya à Bat Yam | Dor Hadash",
     description:
-      "Bat Yam, ville côtière aux portes de Tel Aviv. Découvrez le programme Dor Hadash pour votre Alya (contenu en cours de finalisation).",
+      "Bat Yam, Méditerranée aux portes de Tel-Aviv : plages, tram ligne rouge, vie de quartier et accompagnement Dor Hadash avant, pendant et après l'Alya.",
   },
   "/blog": {
     title: "Blog | Conseils et actualités Alya - Dor Hadash",

@@ -3,13 +3,15 @@
   <url><loc>https://www.dor-hadash.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://www.dor-hadash.com/mission</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.dor-hadash.com/lequipe</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.dor-hadash.com/partenaires</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.dor-hadash.com/nos-villes</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.dor-hadash.com/karmiel</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.dor-hadash.com/haifa</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.dor-hadash.com/jerusalem</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.dor-hadash.com/nof-hagalil</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.dor-hadash.com/ashdod</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.dor-hadash.com/bat-yam</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.dor-hadash.com/netivot</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.dor-hadash.com/ashdod</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.dor-hadash.com/bat-yam</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://www.dor-hadash.com/temoignages-videos</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://www.dor-hadash.com/blog</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://www.dor-hadash.com/blog/faire-son-alya-en-famille-une-aventure-magnifique-qui-se-prepare</loc><lastmod>2026-03-17</lastmod><priority>0.6</priority></url>

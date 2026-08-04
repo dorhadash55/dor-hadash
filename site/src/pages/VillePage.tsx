@@ -132,17 +132,20 @@ export default function VillePage() {
   const galleryMore = city.galleryMore ?? [];
   const hasGallery = gallery.length > 0;
   const heroSrc = gallery[0]?.src ?? city.image;
+  const ogImage = heroSrc
+    ? `https://www.dor-hadash.com${heroSrc.startsWith("/") ? heroSrc : `/${heroSrc}`}`
+    : undefined;
 
   return (
     <>
-      <SeoHead />
+      <SeoHead image={ogImage} />
 
       {/* Hero immersif */}
       <section className="relative min-h-[58vh] overflow-hidden text-white sm:min-h-[62vh]">
         {heroSrc ? (
           <img
             src={heroSrc}
-            alt=""
+            alt={`${city.name} — ${city.tagline}`}
             className="city-hero-img absolute inset-0 h-full w-full object-cover"
           />
         ) : (
@@ -189,34 +192,6 @@ export default function VillePage() {
         </div>
       </section>
 
-      {hasGallery && (
-        <Reveal variant="fade">
-          <CityGalleryCarousel
-            images={gallery}
-            title={city.slug === "jerusalem" ? "Pisgat Ze'ev" : city.name}
-            variant="banner"
-          />
-        </Reveal>
-      )}
-
-      {!hasGallery && !city.lowResImage && city.image && (
-        <Reveal variant="fade">
-          <div className="relative aspect-[16/9] max-h-[380px] w-full overflow-hidden">
-            <CityImage city={city} className="h-full w-full" />
-            {city.photoCredit && (
-              <a
-                href={city.photoCredit.url}
-                target="_blank"
-                rel="noreferrer"
-                className="absolute bottom-2 right-3 rounded bg-black/40 px-2 py-1 text-[11px] text-white/90 hover:text-white"
-              >
-                {city.photoCredit.text}
-              </a>
-            )}
-          </div>
-        </Reveal>
-      )}
-
       <section id="ville-contenu" className="scroll-mt-20 bg-brand-cream">
         <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
           <Reveal>
@@ -235,22 +210,6 @@ export default function VillePage() {
           </div>
         </div>
       </section>
-
-      {/* Galerie secondaire plus tôt sur mobile — rythme visuel */}
-      {galleryMore.length > 0 && (
-        <Reveal variant="up">
-          <section className="bg-white px-2 py-8 sm:px-6 sm:py-12">
-            <div className="mx-auto max-w-5xl">
-              <CityGalleryCarousel
-                images={galleryMore}
-                title={`${city.name} en images`}
-                subtitle="Glissez pour parcourir — appuyez pour agrandir."
-                variant="section"
-              />
-            </div>
-          </section>
-        </Reveal>
-      )}
 
       <section className="bg-white">
         <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
@@ -297,6 +256,55 @@ export default function VillePage() {
           )}
         </div>
       </section>
+
+      {/* Galeries en bas de page — après le contenu */}
+      {hasGallery && (
+        <Reveal variant="fade">
+          <section className="bg-white px-2 pb-4 pt-2 sm:px-6 sm:pb-6">
+            <div className="mx-auto max-w-5xl">
+              <CityGalleryCarousel
+                images={gallery}
+                title={city.slug === "jerusalem" ? "Pisgat Ze'ev" : `${city.name} en images`}
+                subtitle="Glissez pour parcourir — appuyez pour agrandir."
+                variant="section"
+              />
+            </div>
+          </section>
+        </Reveal>
+      )}
+
+      {!hasGallery && !city.lowResImage && city.image && (
+        <Reveal variant="fade">
+          <div className="relative aspect-[16/9] max-h-[380px] w-full overflow-hidden">
+            <CityImage city={city} className="h-full w-full" />
+            {city.photoCredit && (
+              <a
+                href={city.photoCredit.url}
+                target="_blank"
+                rel="noreferrer"
+                className="absolute bottom-2 right-3 rounded bg-black/40 px-2 py-1 text-[11px] text-white/90 hover:text-white"
+              >
+                {city.photoCredit.text}
+              </a>
+            )}
+          </div>
+        </Reveal>
+      )}
+
+      {galleryMore.length > 0 && (
+        <Reveal variant="up">
+          <section className="bg-white px-2 py-8 sm:px-6 sm:py-12">
+            <div className="mx-auto max-w-5xl">
+              <CityGalleryCarousel
+                images={galleryMore}
+                title={`${city.name} — suite`}
+                subtitle="Glissez pour parcourir — appuyez pour agrandir."
+                variant="section"
+              />
+            </div>
+          </section>
+        </Reveal>
+      )}
 
       <section className="bg-brand-cream px-4 py-12 sm:px-6 sm:py-16">
         <Reveal variant="blur">
