@@ -5,6 +5,17 @@ export type PartnerCategory =
   | "municipal"
   | "sante";
 
+export type PartnerHighlightIcon =
+  | "scan"
+  | "letter"
+  | "cv"
+  | "rights"
+  | "guides"
+  | "school"
+  | "kids"
+  | "dialog"
+  | "help";
+
 export type Partner = {
   slug: string;
   name: string;
@@ -21,7 +32,7 @@ export type Partner = {
   offer?: string;
   audience?: string;
   quote?: string;
-  highlights?: string[];
+  highlights?: { text: string; icon: PartnerHighlightIcon }[];
 };
 
 export const partnersIntro = {
@@ -100,14 +111,14 @@ export const partners: Partner[] = [
     logo: "/images/partners/olimaid.png",
     website: "https://www.olimaid.com/fr",
     websiteLabel: "Essayer OlimAid — c'est gratuit",
-    offer: "7 outils IA + 17 guides · gratuit · à jour 2026",
+    offer: "7 outils IA + 17 guides · gratuit · mis à jour chaque semaine",
     quote: "Courrier en hébreu, droits Olim, CV, démarches : tout devient clair en quelques clics.",
     highlights: [
-      "Scanner un courrier hébreu → résumé en français",
-      "Lettre officielle en hébreu en 30 secondes",
-      "CV israélien prêt à envoyer",
-      "Vos droits Olim (Sal Klita, Arnona…)",
-      "Guides pratiques + assistant en français",
+      { text: "Scanner un courrier hébreu → résumé en français", icon: "scan" },
+      { text: "Rédiger une lettre officielle en hébreu en 30 secondes", icon: "letter" },
+      { text: "Créer un CV israélien prêt à envoyer", icon: "cv" },
+      { text: "Vérifier vos droits Olim (Sal Klita, Arnona…)", icon: "rights" },
+      { text: "Explorer les guides + assistant en français", icon: "guides" },
     ],
   },
   {
@@ -172,10 +183,10 @@ export const partners: Partner[] = [
     offer: "Jusqu'à 3 h d'accompagnement offert",
     quote: "Réussir son Alya, c'est aussi réussir l'école de ses enfants.",
     highlights: [
-      "Comprendre l'école israélienne",
-      "Préparer l'intégration des enfants",
-      "Faciliter le dialogue parents–école",
-      "Aide en cas de difficulté",
+      { text: "Comprendre l'école israélienne", icon: "school" },
+      { text: "Préparer l'intégration des enfants", icon: "kids" },
+      { text: "Faciliter le dialogue parents–école", icon: "dialog" },
+      { text: "Aide en cas de difficulté", icon: "help" },
     ],
   },
   {

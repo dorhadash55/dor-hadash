@@ -11,6 +11,7 @@ import {
   getPartnerBySlug,
   type Partner,
   type PartnerCategory,
+  type PartnerHighlightIcon,
 } from "../content/partners";
 
 const SECTION_ORDER: PartnerCategory[] = [
@@ -20,6 +21,83 @@ const SECTION_ORDER: PartnerCategory[] = [
   "sante",
   "municipal",
 ];
+
+function HighlightIcon({ name }: { name: PartnerHighlightIcon }) {
+  const common = {
+    className: "h-3.5 w-3.5",
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    "aria-hidden": true as const,
+  };
+  switch (name) {
+    case "scan":
+      return (
+        <svg {...common}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V6a2 2 0 012-2h2M4 16v2a2 2 0 002 2h2m8-16h2a2 2 0 012 2v2m0 8v2a2 2 0 01-2 2h-2" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h8" />
+        </svg>
+      );
+    case "letter":
+      return (
+        <svg {...common}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16v12H4z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 7l8 6 8-6" />
+        </svg>
+      );
+    case "cv":
+      return (
+        <svg {...common}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8 4h8a2 2 0 012 2v12a2 2 0 01-2 2H8a2 2 0 01-2-2V6a2 2 0 012-2z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 9h6M9 13h6M9 17h3" />
+        </svg>
+      );
+    case "rights":
+      return (
+        <svg {...common}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 7h6M9 11h6M9 15h3" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7 4h10a2 2 0 012 2v14l-3-2-3 2-3-2-3 2V6a2 2 0 012-2z" />
+        </svg>
+      );
+    case "guides":
+      return (
+        <svg {...common}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 5a2 2 0 012-2h5v16H6a2 2 0 01-2-2V5z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13 3h5a2 2 0 012 2v12a2 2 0 01-2 2h-5V3z" />
+        </svg>
+      );
+    case "school":
+      return (
+        <svg {...common}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 10l9-5 9 5-9 5-9-5z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7 12v4c2 1.5 4 2.5 5 2.5S14 17.5 16 16v-4" />
+        </svg>
+      );
+    case "kids":
+      return (
+        <svg {...common}>
+          <circle cx="9" cy="8" r="2.5" />
+          <circle cx="15" cy="8" r="2.5" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 18c.8-2.5 2.6-4 4.5-4s3.7 1.5 4.5 4M10.5 18c.8-2.5 2.6-4 4.5-4s3.7 1.5 4.5 4" />
+        </svg>
+      );
+    case "dialog":
+      return (
+        <svg {...common}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 6h10a2 2 0 012 2v5a2 2 0 01-2 2H9l-4 3v-3H5a2 2 0 01-2-2V8a2 2 0 012-2z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 10h2a2 2 0 012 2v4a2 2 0 01-2 2h-1v2l-3-2" />
+        </svg>
+      );
+    case "help":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="9" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.5 9.5a2.5 2.5 0 114 2c-.7.5-1.5 1-1.5 2.5M12 17h.01" />
+        </svg>
+      );
+  }
+}
 
 function PartnerLogo({
   partner,
@@ -187,16 +265,16 @@ function PartnerModal({
                   ? "Ce que vous pouvez faire avec OlimAid"
                   : "Ils vous aident à"}
               </p>
-              <ol className="mt-2.5 divide-y divide-brand-sand overflow-hidden rounded-xl ring-1 ring-brand-sand">
-                {highlights.map((item, index) => (
-                  <li key={item} className="flex gap-2.5 bg-brand-cream/40 px-3 py-2.5">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-blue text-[11px] font-bold text-white">
-                      {index + 1}
+              <ul className="mt-2.5 divide-y divide-brand-sand overflow-hidden rounded-xl ring-1 ring-brand-sand">
+                {highlights.map((item) => (
+                  <li key={item.text} className="flex gap-2.5 bg-brand-cream/40 px-3 py-2.5">
+                    <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-blue text-white">
+                      <HighlightIcon name={item.icon} />
                     </span>
-                    <span className="pt-0.5 text-sm leading-snug text-gray-700">{item}</span>
+                    <span className="pt-1 text-sm leading-snug text-gray-700">{item.text}</span>
                   </li>
                 ))}
-              </ol>
+              </ul>
             </div>
           )}
         </div>
