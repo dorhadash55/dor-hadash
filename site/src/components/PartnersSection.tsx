@@ -58,16 +58,16 @@ export default function PartnersSection() {
           />
         </Reveal>
 
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-10 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
+        <div className="mt-8 grid grid-cols-2 gap-2.5 sm:mt-10 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
           {preview.map((partner, i) => (
             <Reveal key={partner.slug} delay={Math.min(i * 50, 220)} variant="up">
               <button
                 type="button"
                 onClick={() => setActive(partner)}
-                className="group flex h-full w-full flex-col items-center rounded-2xl bg-white p-4 text-center ring-1 ring-brand-sand transition-shadow hover:shadow-md sm:p-5"
+                className="group flex h-full w-full flex-col items-center rounded-2xl bg-white p-3 text-center ring-1 ring-brand-sand transition-shadow hover:shadow-md sm:p-5"
               >
                 <PartnerLogoMark partner={partner} />
-                <p className="mt-3 font-heading text-sm font-semibold leading-snug text-brand-blue-deep">
+                <p className="mt-2.5 font-heading text-[13px] font-semibold leading-snug text-brand-blue-deep [overflow-wrap:anywhere] sm:mt-3 sm:text-sm">
                   {partner.name}
                 </p>
               </button>
@@ -78,18 +78,21 @@ export default function PartnersSection() {
         <Reveal delay={120} className="mt-8">
           <Link
             to="/partenaires"
-            className="group flex flex-col items-center justify-between gap-4 rounded-2xl border border-dashed border-brand-blue/25 bg-white/70 px-5 py-5 text-center transition-colors hover:border-brand-teal/50 hover:bg-white sm:flex-row sm:px-7 sm:text-left"
+            className="group flex flex-col items-stretch gap-4 rounded-2xl border border-dashed border-brand-blue/25 bg-white/70 px-5 py-5 text-center transition-colors hover:border-brand-teal/50 hover:bg-white sm:flex-row sm:items-center sm:justify-between sm:px-7 sm:text-left"
           >
             <div>
               <p className="font-heading text-base font-semibold text-brand-blue-deep sm:text-lg">
                 Voir tous nos partenaires
               </p>
               <p className="mt-1 text-sm text-gray-500">
-                {partners.length} partenaires institutionnels et opérationnels
-                {moreCount > 0 ? ` — dont ${moreCount} de plus sur la page dédiée` : ""}.
+                <span className="sm:hidden">{partners.length} partenaires — page dédiée</span>
+                <span className="hidden sm:inline">
+                  {partners.length} partenaires institutionnels et opérationnels
+                  {moreCount > 0 ? ` — dont ${moreCount} de plus sur la page dédiée` : ""}.
+                </span>
               </p>
             </div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white transition-transform group-hover:translate-x-0.5">
+            <span className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white transition-transform group-hover:translate-x-0.5 sm:w-auto">
               Page partenaires
               <span aria-hidden>→</span>
             </span>

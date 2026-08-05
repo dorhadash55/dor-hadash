@@ -125,9 +125,11 @@ export default function PartnerModal({
     };
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    document.body.classList.add("partner-modal-open");
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = prev;
+      document.body.classList.remove("partner-modal-open");
       window.removeEventListener("keydown", onKey);
     };
   }, [onClose]);
@@ -136,14 +138,14 @@ export default function PartnerModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[300] flex items-center justify-center bg-black/45 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] backdrop-blur-[2px]"
+      className="fixed inset-0 z-[300] flex items-end justify-center bg-black/45 p-3 pb-3 pt-3 backdrop-blur-[2px] sm:items-center sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby={`partner-modal-${partner.slug}`}
       onClick={onClose}
     >
       <div
-        className="flex max-h-[min(78vh,640px)] w-full max-w-md flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+        className="flex max-h-[min(78dvh,640px)] w-full max-w-md flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl sm:max-h-[min(78vh,640px)] sm:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex shrink-0 items-start gap-3 border-b border-brand-sand px-4 py-3.5 sm:px-5">
@@ -154,7 +156,7 @@ export default function PartnerModal({
             </p>
             <h2
               id={`partner-modal-${partner.slug}`}
-              className="mt-0.5 font-heading text-lg font-semibold leading-tight text-brand-blue-deep sm:text-xl"
+              className="mt-0.5 font-heading text-lg font-semibold leading-tight text-brand-blue-deep [overflow-wrap:anywhere] sm:text-xl"
             >
               {partner.name}
             </h2>
@@ -208,7 +210,9 @@ export default function PartnerModal({
                     <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-blue text-white">
                       <HighlightIcon name={item.icon} />
                     </span>
-                    <span className="pt-1 text-sm leading-snug text-gray-700">{item.text}</span>
+                    <span className="min-w-0 pt-1 text-sm leading-snug text-gray-700 [overflow-wrap:anywhere]">
+                      {item.text}
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -222,7 +226,7 @@ export default function PartnerModal({
               href={partner.website}
               target="_blank"
               rel="noreferrer"
-              className="btn-primary w-full justify-center sm:flex-1"
+              className="btn-primary w-full justify-center px-4 py-3 text-sm sm:flex-1"
             >
               {partner.websiteLabel ?? "En savoir plus"}
             </a>
@@ -230,10 +234,12 @@ export default function PartnerModal({
           {partner.phone && (
             <a
               href={`tel:${partner.phone}`}
-              className="btn-outline w-full justify-center border border-brand-sand bg-white sm:flex-1"
+              className="inline-flex w-full items-center justify-center rounded-full border border-brand-sand bg-white px-4 py-3 text-center text-sm font-semibold text-brand-blue sm:flex-1"
             >
-              {partner.contactName ? `${partner.contactName} · ` : ""}
-              {partner.phoneDisplay ?? partner.phone}
+              <span className="truncate">
+                {partner.contactName ? `${partner.contactName} · ` : ""}
+                {partner.phoneDisplay ?? partner.phone}
+              </span>
             </a>
           )}
           {!partner.website && !partner.phone && (

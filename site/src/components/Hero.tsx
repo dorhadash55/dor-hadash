@@ -21,7 +21,7 @@ export default function Hero() {
           decoding="async"
           fetchPriority="high"
           sizes="100vw"
-          className="hero-img-in block h-auto max-h-[52vh] w-full object-cover object-center lg:h-full lg:max-h-none"
+          className="hero-img-in block h-auto max-h-[36vh] w-full object-cover object-center sm:max-h-[52vh] lg:h-full lg:max-h-none"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep via-brand-blue-deep/55 to-brand-blue-deep/15 lg:bg-gradient-to-r lg:from-brand-blue-deep/95 lg:via-brand-blue-deep/72 lg:via-45% lg:to-brand-blue-light/15" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep/90 via-transparent to-transparent lg:from-brand-blue-deep/50" />
@@ -36,39 +36,45 @@ export default function Hero() {
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto flex min-h-0 max-w-7xl flex-col justify-end px-4 pb-10 pt-6 sm:px-6 sm:pb-14 lg:min-h-[88vh] lg:justify-center lg:py-24">
+      <div className="relative mx-auto flex min-h-0 max-w-7xl flex-col justify-end px-4 pb-8 pt-4 sm:px-6 sm:pb-14 lg:min-h-[88vh] lg:justify-center lg:py-24">
         <div className="grid items-end gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16">
           <div className="max-w-2xl">
             <p
-              className="hero-in font-accent text-xs uppercase tracking-[0.28em] text-brand-teal sm:text-sm"
+              className="hero-in font-accent text-[11px] uppercase tracking-[0.28em] text-brand-teal sm:text-sm"
               style={{ animationDelay: "120ms" }}
             >
               {hero.eyebrow || defaultHero.eyebrow}
             </p>
             <h1
-              className="hero-in mt-3 font-heading text-[2rem] font-semibold leading-[1.08] text-balance sm:text-4xl lg:text-5xl xl:text-[3.35rem]"
+              className="hero-in mt-2 font-heading text-[1.65rem] font-semibold leading-[1.12] text-balance sm:mt-3 sm:text-4xl lg:text-5xl xl:text-[3.35rem]"
               style={{ animationDelay: "280ms" }}
             >
               {hero.title || defaultHero.title}
             </h1>
             <p
-              className="hero-in mt-4 max-w-xl text-base leading-relaxed text-white/88 sm:mt-5 sm:text-lg lg:text-xl"
+              className="hero-in mt-2.5 max-w-xl text-sm leading-relaxed text-white/88 sm:mt-5 sm:text-lg lg:text-xl"
               style={{ animationDelay: "420ms" }}
             >
               {hero.subtitle || defaultHero.subtitle}
             </p>
 
             <div
-              className="hero-in mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
+              className="hero-in mt-5 flex w-full flex-col gap-2.5 sm:mt-8 sm:w-auto sm:flex-row sm:flex-wrap sm:gap-3"
               style={{ animationDelay: "580ms" }}
             >
-              <Link to={defaultHero.ctaPrimary.href} className="btn-primary hero-cta-pulse group relative">
+              <Link
+                to={defaultHero.ctaPrimary.href}
+                className="btn-primary hero-cta-pulse group relative w-full justify-center px-5 py-2.5 text-sm sm:w-auto sm:px-7 sm:py-3.5 sm:text-[0.9375rem]"
+              >
                 {defaultHero.ctaPrimary.label}
                 <span className="inline-block transition-transform group-hover:translate-x-0.5" aria-hidden="true">
                   →
                 </span>
               </Link>
-              <a href={defaultHero.ctaSecondary.href} className="btn-ghost">
+              <a
+                href={defaultHero.ctaSecondary.href}
+                className="btn-ghost w-full justify-center px-5 py-2.5 text-sm sm:w-auto sm:px-7 sm:py-3.5 sm:text-[0.9375rem]"
+              >
                 {defaultHero.ctaSecondary.label}
               </a>
             </div>

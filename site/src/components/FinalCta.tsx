@@ -21,7 +21,7 @@ export default function FinalCta() {
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-24">
+      <div className="relative mx-auto max-w-7xl px-4 py-10 pb-16 sm:px-6 sm:py-24 sm:pb-24">
         <Reveal variant="blur" className="mx-auto max-w-2xl text-center text-white">
           <p className="font-accent text-xs uppercase tracking-[0.24em] text-brand-teal">Prochaine étape</p>
           <h2 className="mt-2 font-heading text-2xl font-semibold text-balance sm:mt-3 sm:text-4xl lg:text-5xl">
@@ -30,11 +30,11 @@ export default function FinalCta() {
           <p className="mt-2 text-sm leading-relaxed text-white/85 sm:mt-4 sm:text-lg">
             Inscription gratuite — accompagnement dès le premier contact.
           </p>
-          <div className="mt-5 flex flex-col items-center justify-center gap-3 sm:mt-8 sm:flex-row">
+          <div className="mt-5 flex w-full flex-col items-stretch justify-center gap-2.5 sm:mt-8 sm:flex-row sm:items-center sm:gap-3">
             <Link to="/nous-contacter" className="btn-primary hidden sm:inline-flex">
               M'inscrire gratuitement →
             </Link>
-            <a href="#methode" className="btn-ghost text-sm sm:text-base">
+            <a href="#methode" className="btn-ghost w-full justify-center px-5 py-3 text-sm sm:w-auto sm:text-base">
               Revoir la méthode
             </a>
           </div>

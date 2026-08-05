@@ -154,7 +154,7 @@ export default function VillePage() {
         <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep via-brand-blue-deep/55 to-brand-blue-deep/25" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(41,196,169,0.18),transparent_55%)]" />
 
-        <div className="relative mx-auto flex min-h-[58vh] max-w-7xl flex-col justify-end px-4 pb-10 pt-24 sm:min-h-[62vh] sm:px-6 sm:pb-14">
+        <div className="relative mx-auto flex min-h-[58vh] max-w-7xl flex-col justify-end px-4 pb-[7.5rem] pt-24 sm:min-h-[62vh] sm:px-6 sm:pb-14">
           <p
             className="city-hero-in font-accent text-[11px] uppercase tracking-[0.22em] text-brand-teal"
             style={{ animationDelay: "40ms" }}
@@ -162,13 +162,13 @@ export default function VillePage() {
             Nos villes
           </p>
           <h1
-            className="city-hero-in mt-2 font-heading text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl"
+            className="city-hero-in mt-2 font-heading text-[1.85rem] font-semibold leading-tight sm:text-5xl lg:text-6xl"
             style={{ animationDelay: "120ms" }}
           >
             {city.name}
           </h1>
           <p
-            className="city-hero-in mt-3 max-w-xl text-base leading-relaxed text-white/88 sm:text-lg"
+            className="city-hero-in mt-3 max-w-xl text-sm leading-relaxed text-white/88 sm:text-lg"
             style={{ animationDelay: "220ms" }}
           >
             {city.tagline}
@@ -181,11 +181,17 @@ export default function VillePage() {
               Contenu en cours de finalisation
             </span>
           )}
-          <div className="city-hero-in mt-6 flex flex-wrap gap-2" style={{ animationDelay: "340ms" }}>
-            <a href="#ville-contenu" className="btn-primary text-sm">
+          <div
+            className="city-hero-in mt-5 flex w-full flex-col gap-2.5 sm:mt-6 sm:w-auto sm:flex-row sm:flex-wrap sm:gap-2"
+            style={{ animationDelay: "340ms" }}
+          >
+            <a href="#ville-contenu" className="btn-primary w-full justify-center px-5 py-3 text-sm sm:w-auto">
               Découvrir {city.name}
             </a>
-            <Link to="/nous-contacter" className="btn-outline border-white/30 text-sm text-white hover:text-brand-teal">
+            <Link
+              to="/nous-contacter"
+              className="btn-ghost w-full justify-center px-5 py-3 text-sm sm:w-auto"
+            >
               Parler à un coordinateur
             </Link>
           </div>
@@ -316,7 +322,7 @@ export default function VillePage() {
             <p className="mx-auto mt-3 max-w-md text-sm text-white/80">
               Parlons-en avec un coordinateur — sans engagement.
             </p>
-            <Link to="/nous-contacter" className="btn-primary mt-6 inline-flex bg-brand-teal text-brand-blue-deep hover:bg-white">
+            <Link to="/nous-contacter" className="btn-primary mt-6 inline-flex w-full justify-center bg-brand-teal px-5 py-3 text-brand-blue-deep hover:bg-white sm:w-auto">
               Nous contacter
             </Link>
           </div>

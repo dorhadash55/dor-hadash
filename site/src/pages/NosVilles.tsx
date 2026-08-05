@@ -20,7 +20,7 @@ export default function NosVilles() {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep via-brand-blue-deep/60 to-brand-blue-deep/30" />
 
-        <div className="relative mx-auto flex min-h-[52vh] max-w-7xl flex-col justify-end px-4 pb-10 pt-24 sm:min-h-[56vh] sm:px-6 sm:pb-14">
+        <div className="relative mx-auto flex min-h-[52vh] max-w-7xl flex-col justify-end px-4 pb-[7.5rem] pt-24 sm:min-h-[56vh] sm:px-6 sm:pb-14">
           <p
             className="city-hero-in font-accent text-[11px] uppercase tracking-[0.22em] text-brand-teal"
             style={{ animationDelay: "40ms" }}

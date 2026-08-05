@@ -90,12 +90,12 @@ export default function ServicesSection() {
                 className="aspect-[21/8] w-full object-cover lg:aspect-[21/7]"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-brand-blue-deep/92 via-brand-blue-deep/55 to-transparent" />
-              <div className="absolute inset-0 flex flex-col justify-center px-8 py-10 lg:px-12">
+              <div className="absolute inset-0 flex flex-col justify-end px-5 py-8 sm:justify-center sm:px-8 sm:py-10 lg:px-12">
                 <p className="font-accent text-xs uppercase tracking-[0.22em] text-brand-teal">Dor Hadash</p>
-                <p className="mt-2 max-w-lg font-heading text-2xl font-semibold leading-snug text-white lg:text-3xl">
+                <p className="mt-2 max-w-lg font-heading text-xl font-semibold leading-snug text-white sm:text-2xl lg:text-3xl">
                   Un parcours pensé pour vous — pas un catalogue de services.
                 </p>
-                <Link to="/nous-contacter" className="btn-outline mt-5 w-fit text-white hover:text-brand-teal">
+                <Link to="/nous-contacter" className="btn-ghost mt-5 w-full justify-center text-sm sm:w-fit">
                   Parler à un coordinateur →
                 </Link>
               </div>
