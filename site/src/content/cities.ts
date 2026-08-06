@@ -38,26 +38,23 @@ export const cities: City[] = [
     name: "Karmiel",
     tagline: "Le cœur de la Galilée — plus belle ville d'Israël… après Jérusalem !",
     image: "/images/karmiel.jpg",
-    // Haut de page : 3 photos larges
-    gallery: [
+    // Pas de gallery hero : photo propre via `image` (les slides PPT ont du texte intégré)
+    galleryMore: [
       {
         src: "/images/cities/karmiel/bienvenue.jpg",
         caption: "Bienvenue à Karmiel",
-        fit: "cover",
+        fit: "contain",
       },
       {
         src: "/images/cities/karmiel/coeur-galilee.jpg",
         caption: "Karmiel, le cœur de la Galilée",
-        fit: "cover",
+        fit: "contain",
       },
       {
         src: "/images/cities/karmiel/culture-loisirs.jpg",
         caption: "Culture et loisirs à Karmiel",
-        fit: "cover",
+        fit: "contain",
       },
-    ],
-    // Plus bas : slides détaillées (lisibles en grand, une par une sur mobile)
-    galleryMore: [
       {
         src: "/images/cities/karmiel/centre-galilee.jpg",
         caption: "Au centre de la Galilée",

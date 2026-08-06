@@ -21,7 +21,7 @@ export default function Hero() {
           decoding="async"
           fetchPriority="high"
           sizes="100vw"
-          className="hero-img-in block h-auto max-h-[36vh] w-full object-cover object-center sm:max-h-[52vh] lg:h-full lg:max-h-none"
+          className="hero-img-in block h-auto max-h-[30vh] w-full object-cover object-center sm:max-h-[52vh] lg:h-full lg:max-h-none"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep via-brand-blue-deep/55 to-brand-blue-deep/15 lg:bg-gradient-to-r lg:from-brand-blue-deep/95 lg:via-brand-blue-deep/72 lg:via-45% lg:to-brand-blue-light/15" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep/90 via-transparent to-transparent lg:from-brand-blue-deep/50" />
@@ -52,14 +52,14 @@ export default function Hero() {
               {hero.title || defaultHero.title}
             </h1>
             <p
-              className="hero-in mt-2.5 max-w-xl text-sm leading-relaxed text-white/88 sm:mt-5 sm:text-lg lg:text-xl"
+              className="hero-in mt-2.5 max-w-xl text-sm leading-snug text-white/88 line-clamp-3 sm:mt-5 sm:line-clamp-none sm:text-lg sm:leading-relaxed lg:text-xl"
               style={{ animationDelay: "420ms" }}
             >
               {hero.subtitle || defaultHero.subtitle}
             </p>
 
             <div
-              className="hero-in mt-5 flex w-full flex-col gap-2.5 sm:mt-8 sm:w-auto sm:flex-row sm:flex-wrap sm:gap-3"
+              className="hero-in mt-4 flex w-full flex-col gap-2 sm:mt-8 sm:w-auto sm:flex-row sm:flex-wrap sm:gap-3"
               style={{ animationDelay: "580ms" }}
             >
               <Link

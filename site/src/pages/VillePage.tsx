@@ -130,8 +130,10 @@ export default function VillePage() {
 
   const gallery = city.gallery ?? [];
   const galleryMore = city.galleryMore ?? [];
-  const hasGallery = gallery.length > 0;
   const heroSrc = gallery[0]?.src ?? city.image;
+  // Évite un carrousel redondant si la seule image galerie = déjà le hero
+  const galleryForCarousel = gallery.filter((img) => img.src !== heroSrc);
+  const hasGallery = galleryForCarousel.length > 0;
   const ogImage = heroSrc
     ? `https://www.dor-hadash.com${heroSrc.startsWith("/") ? heroSrc : `/${heroSrc}`}`
     : undefined;
@@ -146,7 +148,7 @@ export default function VillePage() {
           <img
             src={heroSrc}
             alt={`${city.name} — ${city.tagline}`}
-            className="city-hero-img absolute inset-0 h-full w-full object-cover"
+            className="city-hero-img absolute inset-0 h-full w-full object-cover object-center"
           />
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-brand-blue-deep to-brand-blue" />
@@ -168,7 +170,7 @@ export default function VillePage() {
             {city.name}
           </h1>
           <p
-            className="city-hero-in mt-3 max-w-xl text-sm leading-relaxed text-white/88 sm:text-lg"
+            className="city-hero-in mt-3 max-w-xl text-sm leading-snug text-white/88 sm:text-lg sm:leading-relaxed"
             style={{ animationDelay: "220ms" }}
           >
             {city.tagline}
@@ -269,7 +271,7 @@ export default function VillePage() {
           <section className="bg-white px-2 pb-4 pt-2 sm:px-6 sm:pb-6">
             <div className="mx-auto max-w-5xl">
               <CityGalleryCarousel
-                images={gallery}
+                images={galleryForCarousel}
                 title={city.slug === "jerusalem" ? "Pisgat Ze'ev" : `${city.name} en images`}
                 subtitle="Glissez pour parcourir — appuyez pour agrandir."
                 variant="section"

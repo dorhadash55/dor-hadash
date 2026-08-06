@@ -30,7 +30,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-brand-blue/8 bg-brand-cream/90 backdrop-blur-md pt-[env(safe-area-inset-top,0px)]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid h-[4.5rem] grid-cols-[2.75rem_1fr_2.75rem] items-center sm:h-20 lg:flex lg:justify-between">
+        <div className="grid h-16 grid-cols-[2.75rem_1fr_2.75rem] items-center sm:h-20 lg:flex lg:justify-between">
           <button
             id="mobile-menu-toggle"
             type="button"
@@ -58,7 +58,7 @@ export default function Header() {
             className="col-start-2 flex items-center justify-center shrink-0 lg:col-auto lg:justify-start"
             onClick={() => setOpen(false)}
           >
-            <img src="/images/logo.png" alt="Dor Hadash — Incubateur d'Alya" className="h-16 sm:h-20 w-auto object-contain" />
+            <img src="/images/logo.png" alt="Dor Hadash — Incubateur d'Alya" className="h-12 w-auto object-contain sm:h-16 lg:h-20" />
           </NavLink>
 
           <div className="col-start-3 lg:hidden" aria-hidden="true" />

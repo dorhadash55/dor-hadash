@@ -5,8 +5,8 @@ import Reveal from "../components/Reveal";
 import { cities } from "../content/cities";
 
 export default function NosVilles() {
-  const heroCity = cities.find((c) => c.gallery?.[0]?.src) ?? cities[0];
-  const heroSrc = heroCity?.gallery?.[0]?.src ?? heroCity?.image;
+  const heroCity = cities.find((c) => c.slug === "karmiel") ?? cities[0];
+  const heroSrc = heroCity?.image ?? heroCity?.gallery?.[0]?.src;
 
   return (
     <>
@@ -28,20 +28,20 @@ export default function NosVilles() {
             Destinations
           </p>
           <h1
-            className="city-hero-in mt-2 font-heading text-4xl font-semibold leading-tight sm:text-5xl"
+            className="city-hero-in mt-2 font-heading text-[1.85rem] font-semibold leading-tight sm:text-5xl"
             style={{ animationDelay: "120ms" }}
           >
             Nos villes d&apos;accueil
           </h1>
           <p
-            className="city-hero-in mt-3 max-w-xl text-base leading-relaxed text-white/88 sm:text-lg"
+            className="city-hero-in mt-3 max-w-xl text-sm leading-snug text-white/88 sm:text-lg sm:leading-relaxed"
             style={{ animationDelay: "220ms" }}
           >
             Sept villes partenaires, sept ambiances — trouvez celle qui correspond à votre projet d&apos;Alya.
           </p>
           <a
             href="#liste-villes"
-            className="city-hero-in btn-primary mt-6 w-fit text-sm"
+            className="city-hero-in btn-primary mt-5 w-full justify-center px-5 py-3 text-sm sm:mt-6 sm:w-fit"
             style={{ animationDelay: "320ms" }}
           >
             Voir les villes
