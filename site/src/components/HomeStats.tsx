@@ -5,7 +5,7 @@ const stats = [
   { value: 6, suffix: "", label: "villes d'accueil" },
   { value: 4, suffix: "", label: "étapes d'accompagnement" },
   { value: 6, suffix: "", label: "piliers de services" },
-  { value: 100, suffix: "%", label: "gratuit pour les olim" },
+  { value: 100, suffix: "%", label: "francophone" },
 ];
 
 function useInViewOnce<T extends HTMLElement>() {

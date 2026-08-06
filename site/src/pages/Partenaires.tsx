@@ -70,12 +70,12 @@ function PartnerTeaserCard({
       type="button"
       id={partner.slug}
       onClick={() => onOpen(partner)}
-      className="flex w-full scroll-mt-28 gap-3 rounded-2xl bg-white p-3.5 text-left ring-1 ring-brand-sand transition-shadow hover:shadow-md sm:gap-5 sm:p-5"
+      className="group flex w-full scroll-mt-28 gap-3 rounded-2xl bg-white p-3.5 text-left ring-1 ring-brand-sand transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-brand-blue/10 hover:ring-brand-teal/40 active:scale-[0.99] sm:gap-5 sm:p-5"
     >
-      <PartnerLogo partner={partner} className="h-12 w-12 rounded-xl sm:h-[4.5rem] sm:w-[4.5rem] sm:rounded-2xl" />
+      <PartnerLogo partner={partner} className="h-12 w-12 rounded-xl transition-transform duration-300 group-hover:scale-105 sm:h-[4.5rem] sm:w-[4.5rem] sm:rounded-2xl" />
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-          <h3 className="font-heading text-[0.95rem] font-semibold leading-snug text-brand-blue-deep [overflow-wrap:anywhere] sm:text-lg">
+          <h3 className="font-heading text-[0.95rem] font-semibold leading-snug text-brand-blue-deep transition-colors group-hover:text-brand-blue [overflow-wrap:anywhere] sm:text-lg">
             {partner.name}
           </h3>
           {partner.nameHe && (
@@ -86,7 +86,7 @@ function PartnerTeaserCard({
         </div>
         <p className="mt-1 text-sm font-medium text-brand-teal">{partner.tagline}</p>
         <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-gray-600">{partner.summary}</p>
-        <span className="mt-2.5 inline-flex items-center gap-1 text-sm font-semibold text-brand-blue">
+        <span className="mt-2.5 inline-flex items-center gap-1 text-sm font-semibold text-brand-blue transition-all group-hover:gap-2">
           {hasDetails ? "Voir les détails" : partner.website ? "En savoir plus" : "Voir"}
           <span aria-hidden>→</span>
         </span>

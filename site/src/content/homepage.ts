@@ -57,10 +57,10 @@ export type Service = {
 export const services: Service[] = [
   {
     icon: "home",
-    title: "Logement abordable",
-    teaser: "Un premier toit pour démarrer sereinement en Israël.",
+    title: "Aide au logement",
+    teaser: "On vous aide à chercher un appartement adapté à votre Alya.",
     description:
-      "Un premier logement abordable pour débuter sa vie en Israël (environ 90 m² pour 2 200 shekels par mois en moyenne).",
+      "Accompagnement pour trouver un premier logement : conseils et aide à la recherche d'un appartement (sur place ou à distance), selon votre budget et votre ville d'accueil — sans prix garanti.",
   },
   {
     icon: "language",

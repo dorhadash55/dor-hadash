@@ -259,7 +259,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
               onClick={handleClose}
               className="mobile-menu-cta-primary flex items-center justify-center gap-2 rounded-2xl py-4 font-heading text-base font-semibold text-white shadow-xl transition-transform active:scale-[0.98]"
             >
-              M'inscrire — c'est gratuit
+              M'inscrire
             </NavLink>
             <a
               href={siteInfo.callPhone}

@@ -28,11 +28,11 @@ export default function FinalCta() {
             Prêt à préparer votre Alya ?
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-white/85 sm:mt-4 sm:text-lg">
-            Inscription gratuite — accompagnement dès le premier contact.
+            Inscription ouverte — accompagnement dès le premier contact.
           </p>
           <div className="mt-5 flex w-full flex-col items-stretch justify-center gap-2.5 sm:mt-8 sm:flex-row sm:items-center sm:gap-3">
             <Link to="/nous-contacter" className="btn-primary hidden sm:inline-flex">
-              M'inscrire gratuitement →
+              M'inscrire →
             </Link>
             <a href="#methode" className="btn-ghost w-full justify-center px-5 py-3 text-sm sm:w-auto sm:text-base">
               Revoir la méthode

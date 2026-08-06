@@ -18,7 +18,7 @@ function PartnerLogoMark({ partner }: { partner: Partner }) {
   if (!partner.logo) {
     return (
       <div
-        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-cream font-heading text-sm font-semibold text-brand-blue ring-1 ring-brand-sand sm:h-16 sm:w-16"
+        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-cream font-heading text-sm font-semibold text-brand-blue ring-1 ring-brand-sand transition-transform duration-300 group-hover:scale-110 group-hover:ring-brand-teal/40 sm:h-16 sm:w-16"
         aria-hidden
       >
         {partner.name
@@ -34,7 +34,7 @@ function PartnerLogoMark({ partner }: { partner: Partner }) {
     <img
       src={partner.logo}
       alt=""
-      className="h-14 w-14 rounded-2xl bg-white object-contain p-1.5 shadow-sm ring-1 ring-brand-sand sm:h-16 sm:w-16"
+      className="h-14 w-14 rounded-2xl bg-white object-contain p-1.5 shadow-sm ring-1 ring-brand-sand transition-transform duration-300 group-hover:scale-110 group-hover:shadow-md group-hover:ring-brand-teal/40 sm:h-16 sm:w-16"
     />
   );
 }
@@ -64,12 +64,18 @@ export default function PartnersSection() {
               <button
                 type="button"
                 onClick={() => setActive(partner)}
-                className="group flex h-full w-full flex-col items-center rounded-2xl bg-white p-3 text-center ring-1 ring-brand-sand transition-shadow hover:shadow-md sm:p-5"
+                className="group flex h-full w-full flex-col items-center rounded-2xl bg-white p-3 text-center ring-1 ring-brand-sand transition-all duration-300 hover:-translate-y-1.5 hover:bg-white hover:shadow-lg hover:shadow-brand-blue/10 hover:ring-brand-teal/45 active:scale-[0.98] sm:p-5"
               >
                 <PartnerLogoMark partner={partner} />
-                <p className="mt-2.5 font-heading text-[13px] font-semibold leading-snug text-brand-blue-deep [overflow-wrap:anywhere] sm:mt-3 sm:text-sm">
+                <p className="mt-2.5 font-heading text-[13px] font-semibold leading-snug text-brand-blue-deep transition-colors duration-300 [overflow-wrap:anywhere] group-hover:text-brand-blue sm:mt-3 sm:text-sm">
                   {partner.name}
                 </p>
+                <span
+                  className="mt-2 text-[11px] font-semibold text-brand-teal opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 sm:text-xs"
+                  aria-hidden
+                >
+                  Voir →
+                </span>
               </button>
             </Reveal>
           ))}

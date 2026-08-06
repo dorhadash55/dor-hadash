@@ -102,8 +102,8 @@ export default function Hero() {
                 </li>
               </ul>
               <div className="mt-6 border-t border-white/15 pt-5">
-                <p className="font-heading text-2xl font-semibold text-white">Gratuit</p>
-                <p className="mt-1 text-xs text-white/65">Programme d'accompagnement sans frais pour les olim</p>
+                <p className="font-heading text-2xl font-semibold text-white">Sur mesure</p>
+                <p className="mt-1 text-xs text-white/65">Un accompagnement adapté à votre projet d'Alya</p>
               </div>
             </div>
           </div>

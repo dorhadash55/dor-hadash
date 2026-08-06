@@ -477,7 +477,7 @@ export default function Mission() {
                   Prêt à en parler avec Dor Hadash ?
                 </h3>
                 <p className="mx-auto mt-2 max-w-md text-sm text-white/75">
-                  Inscription gratuite — un coordinateur vous répond rapidement.
+                  Un coordinateur vous répond rapidement.
                 </p>
                 <Link to="/nous-contacter" className="btn-primary mt-7 inline-flex">
                   Nous contacter →
