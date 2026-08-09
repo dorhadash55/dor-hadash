@@ -33,10 +33,13 @@ export function extractYoutubeId(input: string): string | null {
 
 export function youtubeEmbedUrl(id: string, options?: { autoplay?: boolean }) {
   const cleanId = extractYoutubeId(id) ?? id.trim();
+  // playsinline=1 : lecture inline sur iPhone (sinon plein écran forcé / échec)
+  // fs=1 : bouton plein écran ; rel=0 : limite les suggestions hors chaîne
   const params = new URLSearchParams({
     playsinline: "1",
     rel: "0",
     modestbranding: "1",
+    fs: "1",
   });
   if (options?.autoplay) params.set("autoplay", "1");
   return `https://www.youtube-nocookie.com/embed/${cleanId}?${params.toString()}`;

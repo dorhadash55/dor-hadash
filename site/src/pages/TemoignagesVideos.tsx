@@ -45,17 +45,17 @@ export default function TemoignagesVideos() {
         subtitle="Témoignages, présentation du programme Dor Hadash et autres contenus pour préparer votre Alya."
       />
 
-      <section className="mx-auto max-w-6xl px-6 py-16">
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
         {videos.length > 0 ? (
           <>
             <Reveal>
-              <div className="flex flex-wrap gap-2">
+              <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-hide sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
                 {FILTERS.map((item) => (
                   <button
                     key={item.id}
                     type="button"
                     onClick={() => setFilter(item.id)}
-                    className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                    className={`shrink-0 rounded-full px-4 py-2.5 text-sm font-medium transition min-h-11 ${
                       filter === item.id
                         ? "bg-brand-blue text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -68,7 +68,7 @@ export default function TemoignagesVideos() {
             </Reveal>
 
             {filter === "all" ? (
-              <div className="mt-10 space-y-12">
+              <div className="mt-8 space-y-10 sm:mt-10 sm:space-y-12">
                 {grouped.map((group, gi) => (
                   <div key={group.category}>
                     <Reveal delay={gi * 80} variant="up">
@@ -76,7 +76,7 @@ export default function TemoignagesVideos() {
                         {group.label}
                       </h2>
                     </Reveal>
-                    <div className="mt-5 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="mt-4 grid gap-5 sm:mt-5 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
                       {group.items.map((v, i) => (
                         <Reveal key={v.id} delay={i * 70} variant="scale">
                           <VideoCard video={v} />
@@ -87,7 +87,7 @@ export default function TemoignagesVideos() {
                 ))}
               </div>
             ) : (
-              <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-8 grid gap-5 sm:mt-10 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
                 {filtered.map((v, i) => (
                   <Reveal key={v.id} delay={i * 70} variant="scale">
                     <VideoCard video={v} />

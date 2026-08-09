@@ -30,13 +30,13 @@ export default function VideoTeaser() {
           />
         </Reveal>
 
-        <div className="mt-10 -mx-4 flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 pb-3 scrollbar-hide sm:mx-0 sm:flex-wrap sm:justify-start sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0">
+        <div className="mt-8 -mx-4 flex gap-3 overflow-x-auto snap-x snap-mandatory px-4 pb-3 scrollbar-hide sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-3 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
           {preview.map((v, i) => (
             <Reveal
               key={v.id}
               delay={i * 100}
               variant="scale"
-              className="w-[78vw] max-w-[20rem] shrink-0 snap-center sm:w-48 sm:max-w-none sm:snap-align-none"
+              className="w-[78vw] max-w-[18.5rem] shrink-0 snap-center sm:w-auto sm:max-w-none sm:snap-align-none"
             >
               <VideoTeaserCard video={v} onPlay={() => setActiveVideo(v)} />
             </Reveal>

@@ -223,12 +223,14 @@ export default function AdminVideosPage() {
           <AdminCard title="Aperçu">
             {youtubeId ? (
               <div className="overflow-hidden rounded-xl border border-gray-200">
-                <div className="aspect-video bg-black">
+                <div className="relative aspect-video w-full bg-black">
                   <iframe
-                    className="h-full w-full"
+                    className="absolute inset-0 h-full w-full border-0"
                     src={youtubeEmbedUrl(youtubeId)}
                     title={form.title || "Aperçu"}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
                     allowFullScreen
+                    referrerPolicy="strict-origin-when-cross-origin"
                   />
                 </div>
                 <div className="p-4">

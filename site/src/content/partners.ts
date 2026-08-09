@@ -111,7 +111,7 @@ export const partners: Partner[] = [
     logo: "/images/partners/olimaid.png",
     website: "https://www.olimaid.com/fr",
     websiteLabel: "Essayer OlimAid — c'est gratuit",
-    offer: "7 outils IA + 17 guides · gratuit · mis à jour chaque semaine",
+    offer: "Outils IA et guides complets · gratuit · mis à jour régulièrement",
     quote: "Courrier en hébreu, droits Olim, CV, démarches : tout devient clair en quelques clics.",
     highlights: [
       { text: "Scanner un courrier hébreu → résumé en français", icon: "scan" },
