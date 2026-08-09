@@ -82,7 +82,7 @@ export const seoByPath: Record<string, SeoEntry> = {
 };
 
 export const defaultSeo: SeoEntry = {
-  title: "Dor Hadash | Incubateur d'Alya francophone",
+  title: "Dor Hadash | Incubateur d'Alya francophone en Israël",
   description:
-    "Dor Hadash accompagne les francophones dans leur Alya en Israël : logement, immersion, éducation, emploi.",
+    "Dor Hadash accompagne les francophones dans leur Alya en Israël : logement, immersion, éducation, emploi. Un parcours complet pour réussir votre intégration.",
 };

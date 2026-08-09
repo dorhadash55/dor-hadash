@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite-react-ssg dev",
+    "prebuild": "node scripts/generate-sitemap.mjs",
     "build": "tsc -b && vite-react-ssg build",
+    "sitemap": "node scripts/generate-sitemap.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "optimize-images": "bash scripts/optimize-images.sh"

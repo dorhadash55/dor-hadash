@@ -4,7 +4,11 @@ import SeoHead from "../components/SeoHead";
 export default function NotFound() {
   return (
     <>
-      <SeoHead title="Page introuvable | Dor Hadash" description="Cette page n'existe pas ou plus." />
+      <SeoHead
+        title="Page introuvable | Dor Hadash"
+        description="Cette page n'existe pas ou a été déplacée. Retournez à l'accueil Dor Hadash."
+        noindex
+      />
       <section className="mx-auto flex max-w-2xl flex-col items-center px-6 py-28 text-center">
         <span className="font-heading text-6xl font-semibold text-brand-blue">404</span>
         <h1 className="mt-4 font-heading text-2xl font-semibold text-brand-blue-deep">Page introuvable</h1>

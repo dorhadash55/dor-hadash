@@ -1,6 +1,8 @@
 export type BlogPost = {
   slug: string;
   title: string;
+  /** Titre court pour <title> / OG si le titre H1 est trop long */
+  seoTitle?: string;
   excerpt: string;
   metaDescription: string;
   author: string;
@@ -46,6 +48,7 @@ export const blogPosts: BlogPost[] = [
     slug: "nof-hagalil-a-laube-dun-tournant-historique-16-milliards-de-shekels-dinvestissement-et-10-000-nouveaux-habitants-attendus",
     title:
       "Nof HaGalil à l'aube d'un tournant historique : 16 milliards de shekels d'investissement et 10 000 nouveaux habitants attendus",
+    seoTitle: "Nof HaGalil : 16 milliards de shekels et 10 000 nouveaux habitants",
     excerpt:
       "La signature d'un accord pour le transfert de trois usines de défense vers Nof HaGalil représente un investissement de 16 milliards de shekels et l'arrivée de 10 000 nouveaux habitants.",
     metaDescription:

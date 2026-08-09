@@ -19,7 +19,7 @@ function FeaturedBlogCard({ post }: { post: BlogPost }) {
       <div className="relative aspect-[16/10] overflow-hidden bg-brand-blue-deep/5">
         <img
           src={post.coverImage}
-          alt=""
+          alt={post.title}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -54,7 +54,7 @@ function CompactBlogCard({ post }: { post: BlogPost }) {
       <div className="relative h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden rounded-lg bg-gray-100">
         <img
           src={post.coverImage}
-          alt=""
+          alt={post.title}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -81,7 +81,7 @@ function GridBlogCard({ post }: { post: BlogPost }) {
       <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
         <img
           src={post.coverImage}
-          alt=""
+          alt={post.title}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />

@@ -18,6 +18,96 @@
           "value": "same-origin-allow-popups"
         }
       ]
+    },
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/admin",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/2026/03/17/faire-son-alya-en-famille-une-aventure-magnifique-qui-se-prepare",
+      "destination": "/blog/faire-son-alya-en-famille-une-aventure-magnifique-qui-se-prepare",
+      "permanent": true
+    },
+    {
+      "source": "/2026/03/17/faire-son-alya-en-famille-une-aventure-magnifique-qui-se-prepare/",
+      "destination": "/blog/faire-son-alya-en-famille-une-aventure-magnifique-qui-se-prepare",
+      "permanent": true
+    },
+    {
+      "source": "/2026/02/27/nof-hagalil-a-laube-dun-tournant-historique-16-milliards-de-shekels-dinvestissement-et-10-000-nouveaux-habitants-attendus",
+      "destination": "/blog/nof-hagalil-a-laube-dun-tournant-historique-16-milliards-de-shekels-dinvestissement-et-10-000-nouveaux-habitants-attendus",
+      "permanent": true
+    },
+    {
+      "source": "/2026/02/27/nof-hagalil-a-laube-dun-tournant-historique-16-milliards-de-shekels-dinvestissement-et-10-000-nouveaux-habitants-attendus/",
+      "destination": "/blog/nof-hagalil-a-laube-dun-tournant-historique-16-milliards-de-shekels-dinvestissement-et-10-000-nouveaux-habitants-attendus",
+      "permanent": true
+    },
+    {
+      "source": "/2026/02/25/chers-parents-olim-et-si-le-systeme-israelien-avait-raison",
+      "destination": "/blog/chers-parents-olim-et-si-le-systeme-israelien-avait-raison",
+      "permanent": true
+    },
+    {
+      "source": "/2026/02/25/chers-parents-olim-et-si-le-systeme-israelien-avait-raison/",
+      "destination": "/blog/chers-parents-olim-et-si-le-systeme-israelien-avait-raison",
+      "permanent": true
+    },
+    {
+      "source": "/2025/10/22/guide-sur-les-taxes-dimportation-pour-les-nouveaux-immigrants",
+      "destination": "/blog/guide-sur-les-taxes-dimportation-pour-les-nouveaux-immigrants",
+      "permanent": true
+    },
+    {
+      "source": "/2025/10/22/guide-sur-les-taxes-dimportation-pour-les-nouveaux-immigrants/",
+      "destination": "/blog/guide-sur-les-taxes-dimportation-pour-les-nouveaux-immigrants",
+      "permanent": true
+    },
+    {
+      "source": "/2025/10/12/les-astuces-pour-bien-preparer-votre-demenagement-a-linternational",
+      "destination": "/blog/les-astuces-pour-bien-preparer-votre-demenagement-a-linternational",
+      "permanent": true
+    },
+    {
+      "source": "/2025/10/12/les-astuces-pour-bien-preparer-votre-demenagement-a-linternational/",
+      "destination": "/blog/les-astuces-pour-bien-preparer-votre-demenagement-a-linternational",
+      "permanent": true
+    },
+    {
+      "source": "/2025/09/15/nof-hagalil-construire-lavenir-ensemble-en-galilee",
+      "destination": "/blog/nof-hagalil-construire-lavenir-ensemble-en-galilee",
+      "permanent": true
+    },
+    {
+      "source": "/2025/09/15/nof-hagalil-construire-lavenir-ensemble-en-galilee/",
+      "destination": "/blog/nof-hagalil-construire-lavenir-ensemble-en-galilee",
+      "permanent": true
+    },
+    {
+      "source": "/2024/08/06/faire-son-alya-a-karmiel-un-programme-clef-en-main",
+      "destination": "/blog/faire-son-alya-a-karmiel-un-programme-clef-en-main",
+      "permanent": true
+    },
+    {
+      "source": "/2024/08/06/faire-son-alya-a-karmiel-un-programme-clef-en-main/",
+      "destination": "/blog/faire-son-alya-a-karmiel-un-programme-clef-en-main",
+      "permanent": true
     }
   ],
   "rewrites": [

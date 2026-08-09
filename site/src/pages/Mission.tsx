@@ -189,9 +189,9 @@ export default function Mission() {
         />
 
         <div className="relative mx-auto w-full max-w-3xl px-4 pb-10 pt-24 sm:px-6 sm:pb-16 sm:pt-28">
-          <p className="mission-hero-in font-heading text-3xl font-semibold tracking-wide text-white sm:text-5xl">
+          <h1 className="mission-hero-in font-heading text-3xl font-semibold tracking-wide text-white sm:text-5xl">
             Dor Hadash
-          </p>
+          </h1>
           <p
             className="mission-hero-in mt-1 font-accent text-xs uppercase tracking-[0.28em] text-brand-teal sm:text-sm"
             style={{ animationDelay: "120ms" }}

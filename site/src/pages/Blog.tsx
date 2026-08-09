@@ -26,7 +26,7 @@ export default function Blog() {
                 <div className="aspect-[16/10] w-full overflow-hidden bg-gray-100">
                   <img
                     src={post.coverImage}
-                    alt=""
+                    alt={post.title}
                     loading="lazy"
                     className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
                   />
