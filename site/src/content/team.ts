@@ -47,7 +47,10 @@ export const missionIntro =
   "L'association Dor Hadash est une structure d'accompagnement à l'intégration sociale et professionnelle des olim francophones en Israël.";
 
 export const missionSupport = [
-  { title: "Hébergement", detail: "Un premier logement pour démarrer sereinement." },
+  {
+    title: "Aide au logement",
+    detail: "Conseils et aide à la recherche d'un premier appartement — sans prix garanti.",
+  },
   { title: "Apprentissage de la langue", detail: "Oulpan intensif et immersion dans la vie locale." },
   {
     title: "Formation & emploi",
@@ -71,7 +74,7 @@ export const missionVillage = [
 export const missionIncubator = {
   lieu: "Situé à proximité d'une grande ville, avec les équipements nécessaires au quotidien.",
   equipements: [
-    "Logements équipés et sécurisés (unités pour 4 à 6 personnes, capacité d'environ 30 familles)",
+    "Aide à la recherche d'un premier logement selon le cadre d'accueil (Mercaz Klita, kibboutz ou autre)",
     "Réfectoire pour repas et réunions (facultatif)",
     "Synagogue",
     "Gan, écoles, camps de vacances et activités pour tous les âges",
@@ -86,16 +89,26 @@ export const missionIncubator = {
 
 export const missionProgram = {
   intro:
-    "La formule de base est la même pour les familles et les célibataires, avec quelques adaptations. Un contrat d'engagement est signé par les deux parties. Une participation financière couvre le logement, l'arnona, l'écolage et la garderie — financée en partie via le Sal Klita.",
+    "Le programme Dor Hadash dure 6 mois avant l'Alya et 12 mois après l'arrivée. La formule de base est la même pour les familles et les célibataires, avec quelques adaptations. Un contrat d'engagement est signé par les deux parties.",
   phases: [
     {
-      title: "6 premiers mois",
+      title: "6 mois avant l'Alya",
+      items: [
+        "Diagnostic de votre projet et choix de la ville d'accueil",
+        "Oulpan à distance pour poser les bases de l'hébreu",
+        "Atelier budget individuel pour anticiper le coût de la vie",
+        "Préparation professionnelle avec le Hub de l'emploi",
+        "Accompagnement sur les démarches préalables au départ",
+      ],
+    },
+    {
+      title: "6 premiers mois après l'Alya",
       items: [
         "Oulpan intensif le matin (partenariat Misrad Haklita)",
         "Enfants scolarisés toute la journée (gan et écoles souvent ouverts de 7 h à 16 h)",
         "Cours de Torah l'après-midi pour le primaire",
         "Activités bénévoles l'après-midi pour pratiquer l'hébreu",
-        "Logements confortables avec salle de bain et kitchenette",
+        "Aide à la recherche d'un premier logement (sur place ou à distance), selon votre budget — sans prix garanti",
         "Les parents peuvent accompagner les enfants les premiers jours à l'école",
       ],
     },
@@ -113,7 +126,7 @@ export const missionProgram = {
 };
 
 export const missionSynthese = [
-  "Un logement fourni à un prix accessible par rapport au marché",
+  "Une aide à la recherche de logement, selon votre budget et votre ville — sans prix garanti",
   "Un accueil dans d'excellentes conditions",
   "Une communication locale dans les deux langues",
   "Un lieu de vie fondé sur le contact humain, l'échange et l'apprentissage des codes",

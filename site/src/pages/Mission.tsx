@@ -224,7 +224,7 @@ export default function Mission() {
             className="mission-hero-in mt-8 inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2.5 text-sm font-semibold text-white ring-1 ring-white/25 backdrop-blur-sm transition hover:bg-white/18"
             style={{ animationDelay: "460ms" }}
           >
-            Voir le parcours 12 mois
+            Voir le parcours : 6 mois avant, 12 mois après
             <svg className="h-4 w-4 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
@@ -379,7 +379,7 @@ export default function Mission() {
               04 — Le parcours
             </p>
             <h2 className="mt-2 font-heading text-[1.65rem] font-semibold text-brand-blue-deep sm:text-4xl">
-              12 mois pour devenir autonome
+              6 mois avant l&apos;Alya, 12 mois après
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">{missionProgram.intro}</p>
           </Reveal>
@@ -396,7 +396,9 @@ export default function Mission() {
                     className={`absolute left-0 top-1 flex h-9 w-9 items-center justify-center rounded-full font-heading text-sm font-semibold text-white shadow-lg sm:h-11 sm:w-11 sm:text-base ${
                       i === 0
                         ? "bg-brand-blue shadow-brand-blue/30"
-                        : "bg-brand-teal shadow-brand-teal/30"
+                        : i === 1
+                          ? "bg-brand-teal shadow-brand-teal/30"
+                          : "bg-brand-coral shadow-brand-coral/30"
                     }`}
                   >
                     {i + 1}

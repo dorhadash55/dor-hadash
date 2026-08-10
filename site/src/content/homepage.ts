@@ -25,10 +25,10 @@ export const methodeSteps: MethodeStep[] = [
   },
   {
     step: "02",
-    title: "Préparation avant le départ",
+    title: "6 mois de préparation avant l'Alya",
     teaser: "Hébreu, budget et emploi : tout se prépare depuis la France.",
     description:
-      "Oulpan à distance, atelier budget individuel et préparation professionnelle avec le Hub de l'emploi, avant même votre départ de France.",
+      "Pendant 6 mois avant le départ : oulpan à distance, atelier budget individuel et préparation professionnelle avec le Hub de l'emploi.",
   },
   {
     step: "03",
@@ -39,10 +39,10 @@ export const methodeSteps: MethodeStep[] = [
   },
   {
     step: "04",
-    title: "Intégration sur 12 mois",
+    title: "12 mois d'intégration après l'Alya",
     teaser: "Un suivi jusqu'à votre autonomie complète en Israël.",
     description:
-      "Un accompagnement continu pendant toute votre première année : emploi, éducation, vie sociale — jusqu'à votre pleine autonomie.",
+      "Un accompagnement continu pendant 12 mois après l'arrivée : emploi, éducation, vie sociale — jusqu'à votre pleine autonomie.",
   },
 ];
 

@@ -12,7 +12,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/mission": {
     title: "Notre mission | Dor Hadash",
     description:
-      "Mission Dor Hadash : accompagnement à l'intégration des olim francophones — hébergement, oulpan, formation, emploi et village communautaire traditionaliste.",
+      "Mission Dor Hadash : accompagnement à l'intégration des olim francophones — aide au logement, oulpan, formation, emploi et village communautaire traditionaliste.",
   },
   "/lequipe": {
     title: "L'équipe Dor Hadash | Qui sommes-nous ?",

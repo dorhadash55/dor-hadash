@@ -9,7 +9,7 @@ export default function Equipe() {
       <SeoHead />
       <PageBanner
         title="L'équipe Dor Hadash"
-        subtitle="Toute notre équipe est présente à vos côtés afin de vous accompagner tout au long de votre première année d'Alya."
+        subtitle="Toute notre équipe est à vos côtés : 6 mois avant l'Alya, puis 12 mois après votre arrivée."
       />
 
       <section className="mx-auto max-w-6xl px-6 py-16">
