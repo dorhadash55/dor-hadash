@@ -1,11 +1,39 @@
 export const hero = {
   eyebrow: "Association Dor Hadash",
-  title: "Votre place vous attend en Israël",
+  title: "Votre avenir en Israël commence avec nous",
   subtitle:
-    "Vous envisagez de faire votre Alya ? Préparez-vous, avec un accompagnement complet, pour une intégration réussie en Israël.",
+    "Avant le départ, puis pas à pas après l'Alya — un accompagnement francophone pour réussir votre intégration.",
   ctaPrimary: { label: "Je m'inscris", href: "/nous-contacter" },
   ctaSecondary: { label: "Découvrir la méthode", href: "#methode" },
 };
+
+export type CampaignVisual = {
+  id: string;
+  src: string;
+  title: string;
+  alt: string;
+};
+
+export const campaignVisuals: CampaignVisual[] = [
+  {
+    id: "avenir-israel",
+    src: "/images/campaigns/avenir-israel.png",
+    title: "Incubateur d'Alya",
+    alt: "Affiche Dor Hadash — Votre avenir en Israël commence avec nous, et les quatre piliers logement, intégration, éducation et emploi",
+  },
+  {
+    id: "dor-hadash-360",
+    src: "/images/campaigns/dor-hadash-360.png",
+    title: "Dor Hadash 360°",
+    alt: "Affiche Dor Hadash 360° — programme d'accompagnement global avant et après l'Alya",
+  },
+  {
+    id: "reussir-ecole",
+    src: "/images/campaigns/reussir-ecole.png",
+    title: "Réussir l'école en Israël",
+    alt: "Affiche Réussir l'école en Israël — accompagnement éducatif pour les familles olim",
+  },
+];
 
 export type MethodeStep = {
   step: string;

@@ -1,5 +1,6 @@
 import SeoHead from "../components/SeoHead";
 import Hero from "../components/Hero";
+import CampaignVisuals from "../components/CampaignVisuals";
 import HomeStats from "../components/HomeStats";
 import MethodeSection from "../components/MethodeSection";
 import ServicesSection from "../components/ServicesSection";
@@ -14,6 +15,7 @@ export default function Home() {
     <>
       <SeoHead />
       <Hero />
+      <CampaignVisuals />
       <HomeStats />
       <MethodeSection />
       <ServicesSection />
