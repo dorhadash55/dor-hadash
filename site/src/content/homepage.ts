@@ -61,16 +61,16 @@ export const methodeSteps: MethodeStep[] = [
   {
     step: "03",
     title: "Installation à l'arrivée",
-    teaser: "Logement, démarches et accueil dès votre arrivée.",
+    teaser: "Référent, oulpan, scolarité, logement et emploi dès les premiers mois.",
     description:
-      "Aide à la recherche d'un logement, accompagnement dans les démarches administratives, et accueil personnalisé par un coordinateur francophone dès votre arrivée en Israël.",
+      "Les 6 premiers mois après l'Alya : accompagnateur référent, oulpan (Misrad Haklita), soutien scolaire, aide à la recherche de logement sans prix garanti, et orientation professionnelle.",
   },
   {
     step: "04",
     title: "12 mois d'intégration après l'Alya",
     teaser: "Un suivi jusqu'à votre autonomie complète en Israël.",
     description:
-      "Un accompagnement continu pendant 12 mois après l'arrivée : emploi, éducation, vie sociale — jusqu'à votre pleine autonomie.",
+      "Puis les 6 mois suivants : second oulpan ou oulpan pro, formation en entreprise, partenariat Misrad Haavoda, suivi budgétaire au 8ᵉ mois, et aide aux démarches.",
   },
 ];
 
