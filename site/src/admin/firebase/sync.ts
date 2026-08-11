@@ -101,9 +101,22 @@ function startContactsListener(
   contactsUnsubscribe = onSnapshot(
     contactsQuery,
     (contactsSnapshot) => {
-      const contactSubmissions = contactsSnapshot.docs.map(
-        (d) => ({ id: d.id, ...d.data() }) as ContactSubmission,
-      );
+      const contactSubmissions = contactsSnapshot.docs.map((d) => {
+        const data = d.data() as Record<string, unknown>;
+        return {
+          id: d.id,
+          prenom: String(data.prenom ?? ""),
+          nom: String(data.nom ?? ""),
+          email: String(data.email ?? ""),
+          telephone: String(data.telephone ?? ""),
+          ville: String(data.ville ?? ""),
+          horizon: String(data.horizon ?? ""),
+          message: String(data.message ?? ""),
+          createdAt: String(data.createdAt ?? ""),
+          // Toujours un booléen (évite read manquant → badge bloqué)
+          read: data.read === true,
+        } as ContactSubmission;
+      });
       applyContent({ contactSubmissions });
     },
     (error) => {

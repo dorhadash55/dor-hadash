@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { getAdminStats } from "../storage/contentStore";
+import { useContactSubmissions } from "../hooks/useAdminContent";
 
 const navItems = [
   { to: "/admin", label: "Tableau de bord", end: true, icon: "◉" },
@@ -11,7 +11,8 @@ const navItems = [
 ];
 
 export default function AdminSidebar() {
-  const stats = getAdminStats();
+  const submissions = useContactSubmissions();
+  const unreadContacts = submissions.filter((s) => !s.read).length;
   const { canWriteToFirestore, userEmail } = useAuth();
 
   return (
@@ -44,9 +45,9 @@ export default function AdminSidebar() {
               {item.icon}
             </span>
             <span className="truncate">{item.label}</span>
-            {item.to === "/admin/contacts" && stats.unreadContacts > 0 && (
+            {item.to === "/admin/contacts" && unreadContacts > 0 && (
               <span className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-coral px-1.5 text-[10px] font-bold">
-                {stats.unreadContacts}
+                {unreadContacts}
               </span>
             )}
           </NavLink>

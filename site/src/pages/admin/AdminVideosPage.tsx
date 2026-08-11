@@ -133,6 +133,30 @@ export default function AdminVideosPage() {
           </p>
         )}
 
+        {/* Bouton sync liste → Firebase (réactiver si besoin)
+        {videos.length > 0 && (
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-brand-sand bg-white px-4 py-3">
+            <p className="flex-1 text-sm text-gray-600">
+              {videos.length} vidéo{videos.length > 1 ? "s" : ""} affichée
+              {videos.length > 1 ? "s" : ""} sur le site
+              {canWriteToFirestore
+                ? " — poussez la liste complète vers Firebase si besoin."
+                : " — connectez Google pour enregistrer dans Firebase."}
+            </p>
+            <AdminButton
+              variant="secondary"
+              disabled={saving || !canWriteToFirestore}
+              onClick={async () => {
+                const ok = await persistVideos(videos);
+                if (ok) setSaved(true);
+              }}
+            >
+              {saving ? "Enregistrement…" : "Sauver toute la liste dans Firebase"}
+            </AdminButton>
+          </div>
+        )}
+        */}
+
         <div className="grid gap-6 xl:grid-cols-2">
           <AdminCard title={editingId ? "Modifier la vidéo" : "Ajouter une vidéo YouTube"}>
             <div className="space-y-4">

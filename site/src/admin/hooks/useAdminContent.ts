@@ -12,6 +12,7 @@ import type { AdminContent, BlogPost, ContactSubmission, SiteSettings, VideoTest
 import { blogPosts as staticBlogPosts } from "../../content/blog";
 import { hero as defaultHero } from "../../content/homepage";
 import { siteInfo as defaultSiteInfo } from "../../content/site";
+import { videoTestimonials as staticVideos } from "../../content/videos";
 
 const SERVER_DEFAULT_SITE_SETTINGS: SiteSettings = {
   email: defaultSiteInfo.email,
@@ -25,7 +26,7 @@ const SERVER_DEFAULT_SITE_SETTINGS: SiteSettings = {
 };
 
 const SERVER_DEFAULT_CONTENT: AdminContent = {
-  videos: [],
+  videos: staticVideos,
   blogPosts: staticBlogPosts,
   contactSubmissions: [],
   siteSettings: null,

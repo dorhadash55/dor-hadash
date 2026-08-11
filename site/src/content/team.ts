@@ -11,9 +11,9 @@ export const team: TeamMember[] = [
     photo: "/images/team/patricia-hassoun.png",
   },
   {
-    name: "Eugène Slama",
-    role: "Vice-Président — Commission financière, collecte de fonds",
-    photo: "/images/team/eugene-slama.png",
+    name: "Frank Pila",
+    role: "Collecte de fonds",
+    photo: "/images/team/frank-pila.jpg",
   },
   {
     name: "Rav Yoël Kling",
@@ -32,7 +32,7 @@ export const team: TeamMember[] = [
   },
   {
     name: "Guillaume Hassoun",
-    role: "Commission communication",
+    role: "Commission gouvernance — stratégie",
     photo: "/images/team/guillaume-hassoun.jpeg",
   },
 ];

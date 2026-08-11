@@ -77,7 +77,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/temoignages-videos": {
     title: "Paroles d'olim | Dor Hadash",
     description:
-      "Témoignages d'olim et présentation du programme Dor Hadash en vidéo, pour préparer votre Alya en Israël.",
+      "Écoutez des olim francophones et découvrez le programme Dor Hadash en vidéo — témoignages et contenus pour préparer votre Alya.",
   },
 };
 

@@ -1,6 +1,7 @@
 import { blogPosts as staticBlogPosts } from "../../content/blog";
 import { hero as defaultHero } from "../../content/homepage";
 import { siteInfo as defaultSiteInfo } from "../../content/site";
+import { videoTestimonials as staticVideos } from "../../content/videos";
 import { isFirebaseConfigured } from "../firebase/config";
 import {
   addContactSubmissionDoc,
@@ -39,7 +40,7 @@ const defaultSiteSettings = (): SiteSettings => ({
 const DEFAULT_SITE_SETTINGS = defaultSiteSettings();
 
 const defaultContent = (): AdminContent => ({
-  videos: [],
+  videos: [...staticVideos],
   blogPosts: [...staticBlogPosts],
   contactSubmissions: [],
   siteSettings: null,
@@ -64,9 +65,52 @@ function sortSubmissions(submissions: ContactSubmission[]) {
 let cache = defaultContent();
 /** Cache trié — même référence tant que contactSubmissions n'a pas changé. */
 let sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+/** Fusion static + Firebase — même référence tant que cache.videos n'a pas changé. */
+let mergedVideos = mergeVideos(cache.videos);
 let syncInitialized = false;
 /** Évite qu'un snapshot Firestore stale écrase une sauvegarde locale en cours. */
 let firestoreWriteInFlight = 0;
+
+function mergeVideos(remote: VideoTestimonial[]): VideoTestimonial[] {
+  if (!remote.length) return staticVideos;
+
+  const byId = new Map<string, VideoTestimonial>();
+  for (const v of staticVideos) byId.set(v.youtubeId, v);
+  for (const v of remote) {
+    const base = byId.get(v.youtubeId);
+    byId.set(
+      v.youtubeId,
+      base
+        ? {
+            ...base,
+            ...v,
+            title: v.title?.trim() || base.title,
+            caption: v.caption?.trim() || base.caption,
+            category: v.category ?? base.category,
+          }
+        : v,
+    );
+  }
+
+  const ordered: VideoTestimonial[] = [];
+  const seen = new Set<string>();
+  for (const v of staticVideos) {
+    const item = byId.get(v.youtubeId);
+    if (item) {
+      ordered.push(item);
+      seen.add(v.youtubeId);
+    }
+  }
+  for (const v of remote) {
+    if (!seen.has(v.youtubeId)) ordered.push(byId.get(v.youtubeId) ?? v);
+  }
+  return ordered;
+}
+
+function setCacheVideos(videos: VideoTestimonial[]) {
+  cache = { ...cache, videos };
+  mergedVideos = mergeVideos(videos);
+}
 
 function readRaw(): AdminContent {
   if (!isBrowser()) return defaultContent();
@@ -89,6 +133,7 @@ function readRaw(): AdminContent {
 function refreshCache() {
   cache = readRaw();
   sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+  mergedVideos = mergeVideos(cache.videos);
 }
 
 function applyRemoteContent(partial: Partial<AdminContent>) {
@@ -107,12 +152,16 @@ function applyRemoteContent(partial: Partial<AdminContent>) {
 
   if (firestoreWriteInFlight > 0) return;
 
+  const nextVideos = partial.videos !== undefined ? partial.videos : cache.videos;
   cache = {
     ...cache,
     ...(partial.videos !== undefined && { videos: partial.videos }),
     ...(partial.blogPosts !== undefined && { blogPosts: partial.blogPosts }),
     ...(partial.siteSettings !== undefined && { siteSettings: partial.siteSettings }),
   };
+  if (partial.videos !== undefined) {
+    mergedVideos = mergeVideos(nextVideos);
+  }
   persistLocalStorage();
   emit();
 }
@@ -181,6 +230,7 @@ function formatFirestoreError(error: unknown): string {
 function write(content: AdminContent) {
   cache = content;
   sortedContactSubmissions = sortSubmissions(content.contactSubmissions);
+  mergedVideos = mergeVideos(content.videos);
   if (isFirebaseConfigured()) {
     // Protection anti-effacement active si videos est []
     void saveSiteDocument({
@@ -224,7 +274,7 @@ export function getContentSnapshot(): AdminContent {
 }
 
 export function getVideos(): VideoTestimonial[] {
-  return cache.videos;
+  return mergedVideos;
 }
 
 export function getBlogPosts(): BlogPost[] {
@@ -244,7 +294,7 @@ export function getSiteSettings(): SiteSettings {
 }
 
 export function saveVideos(videos: VideoTestimonial[]) {
-  cache = { ...cache, videos };
+  setCacheVideos(videos);
   void persistSiteContentAsync(["videos"], { allowEmptyVideos: true }).catch((error) => {
     console.error("Erreur enregistrement vidéos:", error);
   });
@@ -255,7 +305,7 @@ export function saveVideos(videos: VideoTestimonial[]) {
 export async function saveVideosAsync(
   videos: VideoTestimonial[],
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  cache = { ...cache, videos };
+  setCacheVideos(videos);
   emit();
 
   try {
@@ -328,13 +378,14 @@ export function markContactRead(id: string, read = true) {
     ),
   };
   sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+  persistLocalStorage();
+  emit();
 
   if (isFirebaseConfigured()) {
-    void updateContactSubmissionDoc(id, { read });
-  } else {
-    persistLocalStorage();
+    void updateContactSubmissionDoc(id, { read }).catch((error) => {
+      console.error("Erreur marquage lu Firestore:", error);
+    });
   }
-  emit();
 }
 
 export function markAllContactsRead() {
@@ -346,15 +397,16 @@ export function markAllContactsRead() {
     contactSubmissions: cache.contactSubmissions.map((s) => ({ ...s, read: true })),
   };
   sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+  persistLocalStorage();
+  emit();
 
   if (isFirebaseConfigured()) {
     for (const s of unread) {
-      void updateContactSubmissionDoc(s.id, { read: true });
+      void updateContactSubmissionDoc(s.id, { read: true }).catch((error) => {
+        console.error("Erreur marquage lu Firestore:", error);
+      });
     }
-  } else {
-    persistLocalStorage();
   }
-  emit();
 }
 
 export function deleteContactSubmission(id: string) {
