@@ -106,10 +106,8 @@ body {
 
 body.partner-modal-open .mobile-cta-bar,
 body.video-modal-open .mobile-cta-bar,
-body.campaign-lightbox-open .mobile-cta-bar,
 body.partner-modal-open .whatsapp-fab,
-body.video-modal-open .whatsapp-fab,
-body.campaign-lightbox-open .whatsapp-fab {
+body.video-modal-open .whatsapp-fab {
   display: none;
 }
 

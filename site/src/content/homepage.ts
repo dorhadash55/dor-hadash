@@ -7,34 +7,6 @@ export const hero = {
   ctaSecondary: { label: "Découvrir la méthode", href: "#methode" },
 };
 
-export type CampaignVisual = {
-  id: string;
-  src: string;
-  title: string;
-  alt: string;
-};
-
-export const campaignVisuals: CampaignVisual[] = [
-  {
-    id: "avenir-israel",
-    src: "/images/campaigns/avenir-israel.png",
-    title: "Incubateur d'Alya",
-    alt: "Affiche Dor Hadash — Votre avenir en Israël commence avec nous, et les quatre piliers logement, intégration, éducation et emploi",
-  },
-  {
-    id: "dor-hadash-360",
-    src: "/images/campaigns/dor-hadash-360.png",
-    title: "Dor Hadash 360°",
-    alt: "Affiche Dor Hadash 360° — programme d'accompagnement global avant et après l'Alya",
-  },
-  {
-    id: "reussir-ecole",
-    src: "/images/campaigns/reussir-ecole.png",
-    title: "Réussir l'école en Israël",
-    alt: "Affiche Réussir l'école en Israël — accompagnement éducatif pour les familles olim",
-  },
-];
-
 export type MethodeStep = {
   step: string;
   title: string;
