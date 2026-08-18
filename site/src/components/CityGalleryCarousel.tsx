@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { CityGalleryImage } from "../content/cities";
 
 type Props = {
@@ -15,23 +16,27 @@ export default function CityGalleryCarousel({
   variant = "banner",
 }: Props) {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef({ x: 0, y: 0 });
   const [index, setIndex] = useState(0);
   const [lightbox, setLightbox] = useState(false);
   const count = images.length;
   const isBanner = variant === "banner";
   const current = images[index];
 
-  const scrollTo = useCallback((i: number) => {
-    const el = scrollerRef.current;
-    if (!el || count === 0) return;
-    const next = ((i % count) + count) % count;
-    const slideW = el.clientWidth;
-    el.scrollTo({ left: next * slideW, behavior: "smooth" });
-    setIndex(next);
-  }, [count]);
+  const goTo = useCallback(
+    (i: number) => {
+      const el = scrollerRef.current;
+      if (!el || count === 0) return;
+      const next = ((i % count) + count) % count;
+      el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+      setIndex(next);
+    },
+    [count],
+  );
 
-  const prev = useCallback(() => scrollTo(index - 1), [index, scrollTo]);
-  const next = useCallback(() => scrollTo(index + 1), [index, scrollTo]);
+  const prev = useCallback(() => goTo(index - 1), [index, goTo]);
+  const next = useCallback(() => goTo(index + 1), [index, goTo]);
+  const close = useCallback(() => setLightbox(false), []);
 
   useEffect(() => {
     setIndex(0);
@@ -57,32 +62,44 @@ export default function CityGalleryCarousel({
   }, [count]);
 
   useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const onChange = () => {
+      if (!mq.matches) setLightbox(false);
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (!lightbox) return;
     const onKey = (e: KeyboardEvent) => {
-      if (lightbox) {
-        if (e.key === "Escape") setLightbox(false);
-        if (e.key === "ArrowLeft") prev();
-        if (e.key === "ArrowRight") next();
-        return;
-      }
+      if (e.key === "Escape") close();
       if (e.key === "ArrowLeft") prev();
       if (e.key === "ArrowRight") next();
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [prev, next, lightbox]);
-
-  useEffect(() => {
-    if (!lightbox) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
+      window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
     };
-  }, [lightbox]);
+  }, [lightbox, close, prev, next]);
 
   if (count === 0 || !current) return null;
 
   const fitOf = (img: CityGalleryImage) => img.fit ?? "cover";
+
+  const canZoom = () =>
+    typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  const openIfTap = (i: number) => {
+    if (!canZoom()) return;
+    const { x, y } = dragRef.current;
+    if (Math.abs(x) > 12 || Math.abs(y) > 12) return;
+    setIndex(i);
+    setLightbox(true);
+  };
 
   return (
     <section
@@ -117,12 +134,18 @@ export default function CityGalleryCarousel({
               >
                 <button
                   type="button"
-                  onClick={() => {
-                    setIndex(i);
-                    setLightbox(true);
+                  onPointerDown={(e) => {
+                    dragRef.current = { x: e.clientX, y: e.clientY };
                   }}
-                  className="block h-full w-full cursor-zoom-in"
-                  aria-label={`Agrandir : ${image.caption}`}
+                  onPointerUp={(e) => {
+                    dragRef.current = {
+                      x: e.clientX - dragRef.current.x,
+                      y: e.clientY - dragRef.current.y,
+                    };
+                  }}
+                  onClick={() => openIfTap(i)}
+                  className="block h-full w-full lg:cursor-zoom-in"
+                  aria-label={image.caption}
                 >
                   <img
                     src={image.src}
@@ -149,7 +172,8 @@ export default function CityGalleryCarousel({
                 {current.caption}
               </p>
               <p className="mt-0.5 text-xs text-gray-400">
-                Glissez pour parcourir · appuyez pour agrandir
+                <span className="lg:hidden">Glissez pour voir les photos suivantes</span>
+                <span className="hidden lg:inline">Glissez pour parcourir · cliquez pour agrandir</span>
               </p>
             </div>
             <p className="shrink-0 pt-0.5 text-xs font-medium tabular-nums text-gray-500">
@@ -173,7 +197,7 @@ export default function CityGalleryCarousel({
                   <button
                     key={image.src}
                     type="button"
-                    onClick={() => scrollTo(i)}
+                    onClick={() => goTo(i)}
                     aria-label={`Aller à l'image ${i + 1}`}
                     aria-current={i === index}
                     className={`h-2.5 rounded-full transition-all ${
@@ -196,55 +220,67 @@ export default function CityGalleryCarousel({
         </div>
       </div>
 
-      {lightbox && (
-        <div
-          className="fixed inset-0 z-[80] flex flex-col bg-black/92"
-          role="dialog"
-          aria-modal="true"
-          aria-label={current.caption}
-          onClick={() => setLightbox(false)}
-        >
-          <div className="flex items-center justify-between gap-3 px-3 py-3 text-white sm:px-5">
-            <p className="min-w-0 truncate text-sm font-medium">{current.caption}</p>
+      {lightbox &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[200] flex flex-col bg-black"
+            role="dialog"
+            aria-modal="true"
+            aria-label={current.caption}
+          >
+            <div className="flex items-center justify-between gap-3 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3 text-white sm:px-5">
+              <p className="min-w-0 truncate text-sm font-medium">{current.caption}</p>
+              <button
+                type="button"
+                onClick={close}
+                className="flex h-11 shrink-0 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-brand-blue-deep"
+              >
+                Fermer
+              </button>
+            </div>
+
             <button
               type="button"
-              onClick={() => setLightbox(false)}
-              className="shrink-0 rounded-full bg-white/15 px-4 py-2 text-sm font-medium hover:bg-white/25"
+              className="relative flex min-h-0 flex-1 items-center justify-center px-1"
+              onClick={close}
+              aria-label="Fermer l'image"
             >
-              Fermer
+              <img src={current.src} alt="" className="max-h-full max-w-full object-contain" />
             </button>
-          </div>
-          <div
-            className="relative flex min-h-0 flex-1 items-center justify-center px-1 pb-4 sm:px-8"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <img src={current.src} alt={current.caption} className="max-h-full max-w-full object-contain" />
+
             {count > 1 && (
               <>
                 <button
                   type="button"
-                  onClick={prev}
-                  className="absolute left-2 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-brand-blue-deep shadow-lg sm:left-4"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    prev();
+                  }}
+                  className="absolute left-3 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-brand-blue-deep shadow-lg"
                   aria-label="Image précédente"
                 >
                   <ChevronLeft />
                 </button>
                 <button
                   type="button"
-                  onClick={next}
-                  className="absolute right-2 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-brand-blue-deep shadow-lg sm:right-4"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    next();
+                  }}
+                  className="absolute right-3 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white text-brand-blue-deep shadow-lg"
                   aria-label="Image suivante"
                 >
                   <ChevronRight />
                 </button>
               </>
             )}
-          </div>
-          <p className="pb-4 text-center text-xs text-white/70">
-            {index + 1} / {count}
-          </p>
-        </div>
-      )}
+
+            <p className="pb-[max(1rem,env(safe-area-inset-bottom))] pt-2 text-center text-xs text-white/70">
+              {index + 1} / {count} · appuyez n&apos;importe où ou sur Fermer
+            </p>
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }
