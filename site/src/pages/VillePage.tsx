@@ -133,9 +133,13 @@ export default function VillePage() {
   const gallery = city.gallery ?? [];
   const galleryMore = city.galleryMore ?? [];
   const heroSrc = gallery[0]?.src ?? city.image;
-  // Évite un carrousel redondant si la seule image galerie = déjà le hero
-  const galleryForCarousel = gallery.filter((img) => img.src !== heroSrc);
-  const hasGallery = galleryForCarousel.length > 0;
+  const seen = new Set<string>();
+  const allGallery = [...gallery, ...galleryMore].filter((img) => {
+    if (img.src === heroSrc || seen.has(img.src)) return false;
+    seen.add(img.src);
+    return true;
+  });
+  const hasGallery = allGallery.length > 0;
   const ogImage = heroSrc
     ? `https://www.dor-hadash.com${heroSrc.startsWith("/") ? heroSrc : `/${heroSrc}`}`
     : undefined;
@@ -296,53 +300,33 @@ export default function VillePage() {
         </div>
       </section>
 
-      {/* Galeries en bas de page — après le contenu */}
       {hasGallery && (
-        <Reveal variant="fade">
-          <section className="bg-white px-2 pb-4 pt-2 sm:px-6 sm:pb-6">
-            <div className="mx-auto max-w-5xl">
-              <CityGalleryCarousel
-                images={galleryForCarousel}
-                title={city.slug === "jerusalem" ? "Pisgat Ze'ev" : `${city.name} en images`}
-                subtitle="Glissez pour parcourir — appuyez pour agrandir."
-                variant="section"
-              />
-            </div>
-          </section>
-        </Reveal>
+        <section className="bg-white px-2 py-8 sm:px-6 sm:py-12">
+          <div className="mx-auto max-w-5xl">
+            <CityGalleryCarousel
+              images={allGallery}
+              title={city.slug === "jerusalem" ? "Pisgat Ze'ev" : `${city.name} en images`}
+              subtitle="Glissez pour parcourir — appuyez pour agrandir."
+              variant="section"
+            />
+          </div>
+        </section>
       )}
 
       {!hasGallery && !city.lowResImage && city.image && (
-        <Reveal variant="fade">
-          <div className="relative aspect-[16/9] max-h-[380px] w-full overflow-hidden">
-            <CityImage city={city} className="h-full w-full" />
-            {city.photoCredit && (
-              <a
-                href={city.photoCredit.url}
-                target="_blank"
-                rel="noreferrer"
-                className="absolute bottom-2 right-3 rounded bg-black/40 px-2 py-1 text-[11px] text-white/90 hover:text-white"
-              >
-                {city.photoCredit.text}
-              </a>
-            )}
-          </div>
-        </Reveal>
-      )}
-
-      {galleryMore.length > 0 && (
-        <Reveal variant="up">
-          <section className="bg-white px-2 py-8 sm:px-6 sm:py-12">
-            <div className="mx-auto max-w-5xl">
-              <CityGalleryCarousel
-                images={galleryMore}
-                title={`${city.name} — suite`}
-                subtitle="Glissez pour parcourir — appuyez pour agrandir."
-                variant="section"
-              />
-            </div>
-          </section>
-        </Reveal>
+        <div className="relative aspect-[16/9] max-h-[380px] w-full overflow-hidden">
+          <CityImage city={city} className="h-full w-full" />
+          {city.photoCredit && (
+            <a
+              href={city.photoCredit.url}
+              target="_blank"
+              rel="noreferrer"
+              className="absolute bottom-2 right-3 rounded bg-black/40 px-2 py-1 text-[11px] text-white/90 hover:text-white"
+            >
+              {city.photoCredit.text}
+            </a>
+          )}
+        </div>
       )}
 
       <section className="bg-brand-cream px-4 py-12 sm:px-6 sm:py-16">
