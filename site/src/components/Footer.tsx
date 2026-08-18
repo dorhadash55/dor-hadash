@@ -22,10 +22,16 @@ export default function Footer() {
           <h3 className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal mb-4">Navigation</h3>
           <ul className="space-y-2.5 text-sm">
             {mainNav.map((item) => (
-              <li key={item.path}>
-                <Link to={item.path} className="text-white/80 transition-colors hover:text-white">
-                  {item.label}
-                </Link>
+              <li key={item.label}>
+                {item.path.includes("#") ? (
+                  <a href={item.path} className="text-white/80 transition-colors hover:text-white">
+                    {item.label}
+                  </a>
+                ) : (
+                  <Link to={item.path} className="text-white/80 transition-colors hover:text-white">
+                    {item.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

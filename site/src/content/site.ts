@@ -15,17 +15,56 @@ export const siteInfo = {
 
 export type NavItem = {
   label: string;
+  /** Libellé compact pour la barre desktop (évite le wrap) */
+  shortLabel?: string;
   path: string;
   children?: NavItem[];
 };
 
+/** Navigation desktop — barre compacte */
 export const mainNav: NavItem[] = [
-  { label: "Accueil", path: "/" },
-  { label: "Mission", path: "/mission" },
-  { label: "L'équipe", path: "/lequipe" },
-  { label: "Partenaires", path: "/partenaires" },
+  { label: "Notre accompagnement", shortLabel: "Accompagnement", path: "/mission" },
+  { label: "Les quatre piliers", shortLabel: "Piliers", path: "/#piliers" },
   {
-    label: "Nos Villes",
+    label: "Choisir sa ville",
+    shortLabel: "Villes",
+    path: "/nos-villes",
+    children: [
+      { label: "Toutes les villes", path: "/nos-villes" },
+      { label: "Karmiel", path: "/karmiel" },
+      { label: "Haïfa", path: "/haifa" },
+      { label: "Jérusalem", path: "/jerusalem" },
+      { label: "Nof HaGalil", path: "/nof-hagalil" },
+      { label: "Netivot", path: "/netivot" },
+      { label: "Ashdod", path: "/ashdod" },
+      { label: "Bat Yam", path: "/bat-yam" },
+    ],
+  },
+  { label: "Préparer mon Alya", shortLabel: "Préparer", path: "/preparer-mon-alya" },
+  { label: "Témoignages", path: "/temoignages-videos" },
+  {
+    label: "À propos",
+    path: "/lequipe",
+    children: [
+      { label: "Mission", path: "/mission" },
+      { label: "L'équipe", path: "/lequipe" },
+      { label: "Partenaires", path: "/partenaires" },
+      { label: "Blog", path: "/blog" },
+    ],
+  },
+  { label: "Contact", path: "/nous-contacter" },
+];
+
+/**
+ * Navigation mobile — structure claire type ancien menu :
+ * Accueil + Blog visibles, villes en accordéon, CTA contact en bas.
+ */
+export const mobileNav: NavItem[] = [
+  { label: "Accueil", path: "/" },
+  { label: "Notre accompagnement", path: "/mission" },
+  { label: "Les quatre piliers", path: "/#piliers" },
+  {
+    label: "Nos villes",
     path: "/nos-villes",
     children: [
       { label: "Karmiel", path: "/karmiel" },
@@ -37,7 +76,9 @@ export const mainNav: NavItem[] = [
       { label: "Bat Yam", path: "/bat-yam" },
     ],
   },
-  { label: "Paroles d'olim", path: "/temoignages-videos" },
+  { label: "Préparer mon Alya", path: "/preparer-mon-alya" },
+  { label: "Témoignages", path: "/temoignages-videos" },
+  { label: "L'équipe", path: "/lequipe" },
+  { label: "Partenaires", path: "/partenaires" },
   { label: "Blog", path: "/blog" },
-  { label: "Nous Contacter", path: "/nous-contacter" },
 ];

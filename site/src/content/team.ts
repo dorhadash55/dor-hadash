@@ -54,11 +54,12 @@ export const missionSupport = [
   { title: "Apprentissage de la langue", detail: "Oulpan intensif et immersion dans la vie locale." },
   {
     title: "Formation & emploi",
-    detail: "Alternance, apprentissage en entreprise et intégration professionnelle.",
+    detail:
+      "Orientation, bilan et suivi d'intégration professionnelle — selon votre profil, votre ville et les dispositifs disponibles.",
   },
   {
     title: "Accompagnement administratif",
-    detail: "Un suivi concret pour toutes les démarches du quotidien.",
+    detail: "Un fil conducteur pour les démarches du quotidien, selon les dispositifs disponibles.",
   },
 ];
 
@@ -66,9 +67,9 @@ export const missionAudience =
   "Ce programme s'adresse aux jeunes célibataires ou en couple, aux familles et aux seniors actifs.";
 
 export const missionVillage = [
-  "Les olim sont accueillis dans un « village communautaire » (kibboutz, Mercaz Klita ou autre), où le contact humain, l'échange, la compréhension et l'apprentissage des codes sont l'essence même du programme.",
+  "Selon la ville et le programme choisi, l'accueil peut s'effectuer dans un Mercaz Klita, une structure communautaire ou directement dans un logement en ville. Le contact humain, l'échange et l'apprentissage des codes restent au cœur du parcours.",
   "Ce projet est conçu pour rendre le olé autonome.",
-  "La structure d'accueil se veut religieusement traditionaliste : respect du Chabbat et des fêtes, cacherout, offices et éducation religieuse — pour rassurer les familles traditionalistes.",
+  "Dor Hadash accueille chaque famille dans le respect de son identité, de son mode de vie et de ses besoins, en l'orientant vers un environnement adapté.",
 ];
 
 export const missionIncubator = {
@@ -116,7 +117,7 @@ export const missionProgram = {
       title: "6 mois suivants",
       items: [
         "Second oulpan ou oulpan professionnel",
-        "Formation et mise en pratique l'après-midi en entreprise locale",
+        "Formation et mise en pratique l'après-midi en entreprise locale — selon les opportunités et l'éligibilité",
         "Partenariat Misrad Haavoda",
         "Suivi budgétaire au 8ᵉ mois d'Alya par l'accompagnant initial",
         "Aide aux démarches administratives et professionnelles",
@@ -127,11 +128,11 @@ export const missionProgram = {
 
 export const missionSynthese = [
   "Une aide à la recherche de logement, selon votre budget et votre ville — sans prix garanti",
-  "Un accueil dans d'excellentes conditions",
+  "Un accueil adapté à votre ville et à votre programme",
   "Une communication locale dans les deux langues",
   "Un lieu de vie fondé sur le contact humain, l'échange et l'apprentissage des codes",
-  "La facilitation de toutes les formalités administratives",
-  "Un soutien financier concret, en lien avec le projet",
+  "La facilitation des formalités administratives, selon les dispositifs disponibles",
+  "Un accompagnement concret, dans la transparence sur ce qui est possible pour votre profil",
   "Le développement d'une activité économique locale",
-  "Un cadre culturel et cultuel adapté aux olim francophones",
+  "Un cadre culturel adapté aux olim francophones",
 ];

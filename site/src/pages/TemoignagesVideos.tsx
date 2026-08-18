@@ -5,6 +5,7 @@ import PageBanner from "../components/PageBanner";
 import Reveal from "../components/Reveal";
 import VideoCard from "../components/VideoCard";
 import { useVideos } from "../admin/hooks/useAdminContent";
+import { writtenTestimonials } from "../content/testimonials";
 import {
   getVideoCategory,
   type VideoCategory,
@@ -57,10 +58,59 @@ export default function TemoignagesVideos() {
       <SeoHead />
       <PageBanner
         title="Paroles d'olim"
-        subtitle="Écoutez des olim francophones, et découvrez le programme Dor Hadash en vidéo."
+        subtitle="Des expériences concrètes — en quelques phrases et en vidéo — pour vous projeter dans votre Alya."
       />
 
-      <section className="relative overflow-hidden bg-[#f7f5f0]">
+      {/* Témoignages écrits */}
+      <section className="bg-white">
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+          <Reveal>
+            <p className="font-accent text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-teal">
+              Ils en parlent
+            </p>
+            <h2 className="mt-2 max-w-2xl font-heading text-[1.45rem] font-semibold leading-snug text-brand-blue-deep sm:text-3xl">
+              Des parcours concrets, pas des slogans
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-gray-600 sm:text-base">
+              Logement, école, emploi, préparation : ce que des olim ont vécu avec Dor Hadash — ville par ville,
+              situation par situation.
+            </p>
+          </Reveal>
+
+          <div className="mt-8 grid gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+            {writtenTestimonials.map((t, i) => (
+              <Reveal key={`${t.prenom}-${t.ville}-${t.annee}`} delay={i * 50} variant="up">
+                <blockquote className="flex h-full flex-col rounded-2xl border border-brand-sand bg-brand-cream/40 p-5 sm:p-6">
+                  <p className="font-accent text-[10px] uppercase tracking-[0.18em] text-brand-teal">
+                    {t.theme}
+                  </p>
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-gray-700 sm:text-[0.9375rem]">
+                    « {t.quote} »
+                  </p>
+                  <footer className="mt-5 border-t border-brand-sand pt-4">
+                    <p className="font-heading text-base font-semibold text-brand-blue-deep">{t.prenom}</p>
+                    <p className="mt-1 text-xs leading-snug text-gray-500 sm:text-sm">
+                      {t.situation} · {t.ville} · Alya {t.annee}
+                    </p>
+                  </footer>
+                </blockquote>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal delay={80}>
+            <p className="mt-6 text-center text-xs text-gray-500 sm:mt-8 sm:text-sm">
+              Vous avez fait votre Alya avec Dor Hadash et souhaitez témoigner ?{" "}
+              <Link to="/nous-contacter" className="font-medium text-brand-blue hover:underline">
+                Écrivez-nous
+              </Link>
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Vidéos */}
+      <section id="videos" className="relative scroll-mt-24 overflow-hidden bg-[#f7f5f0]">
         <div
           className="pointer-events-none absolute -right-20 top-10 h-56 w-56 rounded-full bg-brand-teal/10 blur-3xl"
           aria-hidden
@@ -68,14 +118,14 @@ export default function TemoignagesVideos() {
         <div className="relative mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
           <Reveal>
             <p className="font-accent text-[11px] font-semibold uppercase tracking-[0.22em] text-brand-teal">
-              Vidéos
+              En vidéo
             </p>
             <h2 className="mt-2 max-w-2xl font-heading text-[1.45rem] font-semibold leading-snug text-brand-blue-deep sm:text-3xl">
-              Nous vous invitons à découvrir nos vidéos
+              Voir et entendre le programme
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-gray-600 sm:text-base">
-              Témoignages, présentation du programme et autres contenus pour avancer sereinement dans votre projet
-              d&apos;Alya — avant le départ comme après l&apos;arrivée.
+              Témoignages filmés, présentation du parcours et contenus pour avancer sereinement — avant le départ
+              comme après l&apos;arrivée.
             </p>
           </Reveal>
 
@@ -83,7 +133,7 @@ export default function TemoignagesVideos() {
             <>
               <Reveal delay={80}>
                 <div
-                  className="mt-8 flex gap-1 border-b border-brand-blue/10 pb-px sm:mt-10"
+                  className="mt-8 flex gap-1 overflow-x-auto border-b border-brand-blue/10 pb-px scrollbar-hide sm:mt-10"
                   role="tablist"
                   aria-label="Filtrer les vidéos"
                 >
@@ -97,9 +147,7 @@ export default function TemoignagesVideos() {
                         aria-selected={active}
                         onClick={() => setFilter(item.id)}
                         className={`relative min-h-11 shrink-0 px-3.5 py-2.5 text-sm font-medium transition sm:px-4 ${
-                          active
-                            ? "text-brand-blue-deep"
-                            : "text-gray-500 hover:text-brand-blue"
+                          active ? "text-brand-blue-deep" : "text-gray-500 hover:text-brand-blue"
                         }`}
                       >
                         {item.label}
@@ -162,43 +210,38 @@ export default function TemoignagesVideos() {
                     </div>
                   ) : (
                     <p className="rounded-2xl bg-white/70 px-6 py-10 text-center text-sm text-gray-500 ring-1 ring-brand-sand">
-                      Aucune vidéo dans cette catégorie pour le moment. Revenez bientôt, ou explorez les autres
-                      filtres.
+                      Aucune vidéo dans cette catégorie pour le moment.
                     </p>
                   )}
                 </>
               )}
-
-              <Reveal delay={100}>
-                <div className="mt-14 border-t border-brand-blue/10 pt-10 text-center sm:mt-16">
-                  <p className="font-heading text-lg font-semibold text-brand-blue-deep sm:text-xl">
-                    Une question après ces vidéos ?
-                  </p>
-                  <p className="mx-auto mt-2 max-w-md text-sm text-gray-600">
-                    Échangeons sur votre projet — notre équipe vous répond rapidement.
-                  </p>
-                  <Link to="/nous-contacter" className="btn-primary mt-5 inline-flex">
-                    Nous contacter
-                  </Link>
-                </div>
-              </Reveal>
             </>
           ) : (
             <Reveal delay={60}>
-              <div className="mt-10 rounded-2xl bg-white px-6 py-12 text-center ring-1 ring-brand-sand sm:px-10">
+              <div className="mt-8 rounded-2xl bg-white px-6 py-10 text-center ring-1 ring-brand-sand sm:px-10">
                 <p className="font-heading text-lg font-semibold text-brand-blue-deep">
-                  Les premières vidéos arrivent bientôt
+                  Les vidéos arrivent bientôt
                 </p>
                 <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-gray-600">
-                  Nous préparons des témoignages d&apos;olim et des présentations du programme. En attendant,
-                  parlez-nous de votre projet d&apos;Alya.
+                  En attendant, les témoignages écrits ci-dessus donnent déjà une idée concrète du parcours.
                 </p>
-                <Link to="/nous-contacter" className="btn-primary mt-6 inline-flex">
-                  Nous contacter
-                </Link>
               </div>
             </Reveal>
           )}
+
+          <Reveal delay={100}>
+            <div className="mt-14 border-t border-brand-blue/10 pt-10 text-center sm:mt-16">
+              <p className="font-heading text-lg font-semibold text-brand-blue-deep sm:text-xl">
+                Une question sur votre projet ?
+              </p>
+              <p className="mx-auto mt-2 max-w-md text-sm text-gray-600">
+                Échangeons — notre équipe vous répond généralement sous 48 h ouvrées.
+              </p>
+              <Link to="/nous-contacter?objet=entretien" className="btn-primary mt-5 inline-flex">
+                Demander un premier entretien
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>

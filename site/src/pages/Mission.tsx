@@ -262,7 +262,7 @@ export default function Mission() {
               02 — Le cadre
             </p>
             <h2 className="mt-2 font-heading text-[1.65rem] font-semibold text-brand-blue-deep sm:text-4xl">
-              Un village communautaire
+              Un accueil adapté à chaque projet
             </h2>
           </Reveal>
 
@@ -307,9 +307,6 @@ export default function Mission() {
             <h2 className="mt-2 font-heading text-[1.65rem] font-semibold sm:text-4xl">
               Pensé pour l&apos;Alya francophone
             </h2>
-            <p className="mt-3 max-w-lg text-sm text-white/70 sm:text-base">
-              Un lieu de vie complet — ouvrez chaque volet pour le détail.
-            </p>
           </Reveal>
 
           <div className="mt-7 space-y-3 sm:hidden">
@@ -481,8 +478,8 @@ export default function Mission() {
                 <p className="mx-auto mt-2 max-w-md text-sm text-white/75">
                   Un coordinateur vous répond rapidement.
                 </p>
-                <Link to="/nous-contacter" className="btn-primary mt-7 inline-flex">
-                  Nous contacter →
+                <Link to="/nous-contacter?objet=entretien" className="btn-primary mt-7 inline-flex">
+                  Demander un premier entretien →
                 </Link>
               </div>
             </div>

@@ -152,8 +152,8 @@ export default function Partenaires() {
 
           <Reveal delay={100} className="mt-10 text-center">
             <p className="text-sm text-gray-500">Vous préparez votre Alya avec Dor Hadash ?</p>
-            <Link to="/nous-contacter" className="btn-primary mt-4 inline-flex">
-              Nous contacter
+            <Link to="/nous-contacter?objet=entretien" className="btn-primary mt-4 inline-flex">
+              Demander un premier entretien
             </Link>
           </Reveal>
         </div>

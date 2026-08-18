@@ -11,7 +11,6 @@ export default function Hero() {
       <Head>
         <link rel="preload" as="image" href="/images/jerusalem.jpg" fetchPriority="high" />
       </Head>
-      {/* Image */}
       <div className="relative lg:absolute lg:inset-0">
         <img
           src="/images/jerusalem.jpg"
@@ -23,11 +22,10 @@ export default function Hero() {
           sizes="100vw"
           className="hero-img-in block h-auto max-h-[30vh] w-full object-cover object-center sm:max-h-[52vh] lg:h-full lg:max-h-none"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep via-brand-blue-deep/55 to-brand-blue-deep/15 lg:bg-gradient-to-r lg:from-brand-blue-deep/95 lg:via-brand-blue-deep/72 lg:via-45% lg:to-brand-blue-light/15" />
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep/90 via-transparent to-transparent lg:from-brand-blue-deep/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep via-brand-blue-deep/40 to-brand-blue-deep/10 lg:bg-gradient-to-r lg:from-brand-blue-deep/88 lg:via-brand-blue-deep/55 lg:via-45% lg:to-brand-blue-light/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep/80 via-transparent to-transparent lg:from-brand-blue-deep/35" />
       </div>
 
-      {/* Motif discret — pas du generic AI blob */}
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.035] mix-blend-overlay"
         style={{
@@ -46,13 +44,13 @@ export default function Hero() {
               {hero.eyebrow || defaultHero.eyebrow}
             </p>
             <h1
-              className="hero-in mt-2 font-heading text-[1.65rem] font-semibold leading-[1.12] text-balance sm:mt-3 sm:text-4xl lg:text-5xl xl:text-[3.35rem]"
+              className="hero-in mt-2 font-heading text-[1.65rem] font-semibold leading-[1.12] text-balance text-white drop-shadow-sm sm:mt-3 sm:text-4xl lg:text-5xl xl:text-[3.35rem]"
               style={{ animationDelay: "280ms" }}
             >
               {hero.title || defaultHero.title}
             </h1>
             <p
-              className="hero-in mt-2.5 max-w-xl text-sm leading-snug text-white/88 line-clamp-3 sm:mt-5 sm:line-clamp-none sm:text-lg sm:leading-relaxed lg:text-xl"
+              className="hero-in mt-2.5 max-w-xl text-sm leading-snug text-white line-clamp-3 sm:mt-5 sm:line-clamp-none sm:text-lg sm:leading-relaxed lg:text-xl"
               style={{ animationDelay: "420ms" }}
             >
               {hero.subtitle || defaultHero.subtitle}
@@ -71,39 +69,38 @@ export default function Hero() {
                   →
                 </span>
               </Link>
-              <a
-                href={defaultHero.ctaSecondary.href}
+              <Link
+                to={defaultHero.ctaSecondary.href}
                 className="btn-ghost w-full justify-center px-5 py-2.5 text-sm sm:w-auto sm:px-7 sm:py-3.5 sm:text-[0.9375rem]"
               >
                 {defaultHero.ctaSecondary.label}
-              </a>
+              </Link>
             </div>
           </div>
 
-          {/* Panneau latéral desktop — ancrage visuel */}
           <div className="hidden lg:block">
             <div
-              className="hero-in ml-auto max-w-sm rounded-2xl border border-white/15 bg-white/8 p-6 backdrop-blur-md"
+              className="hero-in ml-auto max-w-sm rounded-2xl border border-white/20 bg-white/12 p-6 backdrop-blur-md"
               style={{ animationDelay: "520ms" }}
             >
               <p className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal">Pour qui ?</p>
-              <ul className="mt-4 space-y-3 text-sm text-white/90">
+              <ul className="mt-4 space-y-3 text-sm text-white">
                 <li className="flex gap-3">
                   <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-teal" aria-hidden="true" />
-                  Familles, couples et célibataires en projet d'Alya
+                  Familles, couples et célibataires en projet d&apos;Alya
                 </li>
                 <li className="flex gap-3">
                   <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-teal" aria-hidden="true" />
-                  Accompagnement francophone de la préparation à l'intégration
+                  Accompagnement francophone de la préparation à l&apos;intégration
                 </li>
                 <li className="flex gap-3">
                   <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-teal" aria-hidden="true" />
-                  Logement, emploi, éducation et communauté
+                  Logement, immersion, éducation et emploi
                 </li>
               </ul>
-              <div className="mt-6 border-t border-white/15 pt-5">
+              <div className="mt-6 border-t border-white/20 pt-5">
                 <p className="font-heading text-2xl font-semibold text-white">Sur mesure</p>
-                <p className="mt-1 text-xs text-white/65">Un accompagnement adapté à votre projet d'Alya</p>
+                <p className="mt-1 text-xs text-white/80">Un accompagnement adapté à votre projet d&apos;Alya</p>
               </div>
             </div>
           </div>

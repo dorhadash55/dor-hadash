@@ -77,10 +77,10 @@ export default function BlogPost() {
         <div className="mt-14 rounded-2xl bg-brand-blue/5 p-8 text-center">
           <h2 className="font-heading text-xl font-semibold text-brand-blue-deep">Une question sur votre Alya ?</h2>
           <Link
-            to="/nous-contacter"
+            to="/nous-contacter?objet=entretien"
             className="mt-5 inline-block rounded-full bg-brand-blue px-7 py-3 text-sm font-semibold text-white hover:bg-brand-blue-dark"
           >
-            Nous contacter
+            Demander un premier entretien
           </Link>
         </div>
       </article>

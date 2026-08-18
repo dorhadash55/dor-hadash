@@ -4,12 +4,12 @@ import { useSiteInfo } from "../content/useSiteContent";
 export default function MobileCtaBar() {
   const siteInfo = useSiteInfo();
   return (
-    <div className="mobile-cta-bar lg:hidden fixed bottom-0 inset-x-0 z-40 flex border-t border-gray-100 bg-white pb-[env(safe-area-inset-bottom,0px)] shadow-[0_-4px_12px_rgba(0,0,0,0.06)]">
+    <div className="mobile-cta-bar fixed inset-x-0 bottom-0 z-40 flex h-14 items-stretch border-t border-gray-100 bg-white pb-[env(safe-area-inset-bottom,0px)] shadow-[0_-4px_12px_rgba(0,0,0,0.06)] lg:hidden">
       <a
         href={siteInfo.callPhone}
-        className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold text-brand-blue border-r border-gray-100"
+        className="flex flex-1 items-center justify-center gap-2 text-sm font-semibold leading-none text-brand-blue border-r border-gray-100"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -19,10 +19,10 @@ export default function MobileCtaBar() {
         Appeler
       </a>
       <Link
-        to="/nous-contacter"
-        className="flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold text-white bg-brand-blue"
+        to="/nous-contacter?objet=entretien"
+        className="flex flex-1 items-center justify-center gap-2 bg-brand-blue text-sm font-semibold leading-none text-white"
       >
-        M'inscrire
+        Entretien
       </Link>
     </div>
   );

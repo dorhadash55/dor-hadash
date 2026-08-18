@@ -252,8 +252,8 @@ export const cities: City[] = [
         paragraphs: [
           "Logement : aide à la recherche sur place ou en visio avant l'arrivée — loyers accessibles selon quartier et meublé.",
           "Immersion : oulpan intensif tous les matins pendant les 5 premiers mois ; activité bénévole l'après-midi (parrainage par des familles francophones locales) ou activité professionnelle d'appoint.",
-          "Éducation : scolarité de haut niveau, traditionnaliste et religieuse, dans les écoles de la ville.",
-          "Emploi : bilan de compétences, formation professionnelle, accompagnement à la création d'entreprise ou emploi rémunéré l'après-midi en entreprise locale.",
+          "Éducation : orientation scolaire selon le profil de la famille (réseau traditionnaliste et religieux disponible selon les établissements).",
+          "Emploi : bilan de compétences, formation et orientation professionnelle — les opportunités dépendent du profil, de la ville et de l'éligibilité aux dispositifs.",
         ],
       },
     ],
@@ -319,8 +319,8 @@ export const cities: City[] = [
         paragraphs: [
           "Logement : aide à la recherche d'un logement sur place ou en visio avant l'arrivée du olé et de sa famille.",
           "Immersion : oulpan intensif tous les matins pendant les 5 premiers mois ; activité bénévole tous les après-midis (parrainage par des familles francophones locales) ou activité professionnelle d'appoint.",
-          "Éducation : scolarité de haut niveau, traditionnaliste et religieuse, dans les multiples écoles de la ville.",
-          "Emploi : bilan de compétences, formation professionnelle, accompagnement à la création d'entreprise ou à l'emploi (ateliers, emploi rémunéré l'après-midi en entreprise locale), suivi personnalisé du Hub de l'emploi de Qualita.",
+          "Éducation : orientation scolaire dans le réseau de la ville — établissements traditionnalistes et religieux selon le projet familial.",
+          "Emploi : bilan de compétences, formation et suivi avec le Hub de l'emploi de Qualita — selon le profil et les dispositifs disponibles.",
         ],
       },
     ],
@@ -413,7 +413,7 @@ export const cities: City[] = [
       {
         heading: "Les avantages",
         paragraphs: [
-          "Réduction d'impôt pouvant atteindre 18 %, pour un soutien financier concret aux familles et aux professionnels.",
+          "Réduction d'impôt pouvant atteindre 18 % selon les critères d'éligibilité — un levier utile pour les familles et les professionnels, à confirmer au cas par cas.",
           "Jusqu'à 2 000 ₪ d'aide au loyer par mois pendant 2 ans. Ces aides sont cumulables avec celles du Ministère de l'Intégration.",
           "Coût de la vie et immobilier plus accessibles que dans le centre d'Israël — loyers et achats nettement plus abordables qu'à Tel Aviv ou dans le centre du pays.",
         ],

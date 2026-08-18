@@ -1,12 +1,45 @@
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import SeoHead from "../components/SeoHead";
 import CityImage from "../components/CityImage";
 import Reveal from "../components/Reveal";
 import { cities } from "../content/cities";
+import { cityDecisions } from "../content/cityDecision";
+
+const criteria = [
+  { id: "famille", label: "Famille avec enfants" },
+  { id: "celibataire", label: "Célibataire / couple" },
+  { id: "senior", label: "Senior actif" },
+  { id: "pratiquant", label: "Cadre religieux / traditionaliste" },
+  { id: "budget", label: "Budget maîtrisé" },
+  { id: "emploi", label: "Priorité emploi / bassins d’activité" },
+  { id: "sans-voiture", label: "Se déplacer sans voiture" },
+  { id: "mer", label: "Proximité mer" },
+  { id: "galilee", label: "Galilée / cadre nature" },
+] as const;
+
+type CriterionId = (typeof criteria)[number]["id"];
 
 export default function NosVilles() {
   const heroCity = cities.find((c) => c.slug === "karmiel") ?? cities[0];
   const heroSrc = heroCity?.image ?? heroCity?.gallery?.[0]?.src;
+  const [selected, setSelected] = useState<CriterionId[]>([]);
+
+  const suggestions = useMemo(() => {
+    if (selected.length === 0) return [];
+    return cityDecisions
+      .map((city) => ({
+        slug: city.slug,
+        score: selected.filter((t) => city.tags.includes(t)).length,
+      }))
+      .filter((c) => c.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 4);
+  }, [selected]);
+
+  const toggle = (id: CriterionId) => {
+    setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
 
   return (
     <>
@@ -37,15 +70,76 @@ export default function NosVilles() {
             className="city-hero-in mt-3 max-w-xl text-sm leading-snug text-white/88 sm:text-lg sm:leading-relaxed"
             style={{ animationDelay: "220ms" }}
           >
-            Sept villes partenaires, sept ambiances — trouvez celle qui correspond à votre projet d&apos;Alya.
+            Sept villes partenaires — comparez, choisissez, validez avec un coordinateur.
           </p>
-          <a
-            href="#liste-villes"
-            className="city-hero-in btn-primary mt-5 w-full justify-center px-5 py-3 text-sm sm:mt-6 sm:w-fit"
+          <div
+            className="city-hero-in mt-5 flex w-full flex-col gap-2.5 sm:mt-6 sm:w-auto sm:flex-row"
             style={{ animationDelay: "320ms" }}
           >
-            Voir les villes
-          </a>
+            <a href="#comparateur" className="btn-primary w-full justify-center px-5 py-3 text-sm sm:w-fit">
+              Quelle ville me correspond ?
+            </a>
+            <a href="#liste-villes" className="btn-ghost w-full justify-center px-5 py-3 text-sm sm:w-fit">
+              Voir les villes
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="comparateur" className="scroll-mt-24 bg-white">
+        <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
+          <Reveal>
+            <p className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal">Comparateur</p>
+            <h2 className="mt-2 font-heading text-2xl font-semibold text-brand-blue-deep sm:text-3xl">
+              Quelle ville correspond à votre projet ?
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-gray-600">
+              Cochez quelques critères. Les suggestions sont indicatives — un coordinateur affine selon votre
+              situation réelle.
+            </p>
+          </Reveal>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            {criteria.map((c) => {
+              const on = selected.includes(c.id);
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => toggle(c.id)}
+                  className={`rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
+                    on
+                      ? "bg-brand-blue text-white"
+                      : "bg-brand-cream text-brand-blue-deep ring-1 ring-brand-sand hover:bg-white"
+                  }`}
+                >
+                  {c.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {suggestions.length > 0 && (
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+              {suggestions.map((s) => {
+                const city = cities.find((c) => c.slug === s.slug);
+                if (!city) return null;
+                return (
+                  <Link
+                    key={s.slug}
+                    to={`/${s.slug}`}
+                    className="rounded-2xl border border-brand-sand bg-brand-cream/40 px-5 py-4 transition-shadow hover:shadow-md"
+                  >
+                    <p className="font-heading text-lg font-semibold text-brand-blue-deep">{city.name}</p>
+                    <p className="mt-1 text-sm text-gray-600 line-clamp-2">{city.tagline}</p>
+                    <p className="mt-2 text-xs font-medium text-brand-teal">
+                      {s.score} critère{s.score > 1 ? "s" : ""} en commun →
+                    </p>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 
@@ -61,7 +155,6 @@ export default function NosVilles() {
             </p>
           </Reveal>
 
-          {/* Mobile — carousel plein cadre */}
           <div className="mt-6 -mx-4 flex gap-3 overflow-x-auto snap-x snap-mandatory px-4 pb-3 scrollbar-hide sm:hidden">
             {cities.map((city, i) => (
               <Reveal
@@ -102,7 +195,6 @@ export default function NosVilles() {
             ))}
           </div>
 
-          {/* Desktop — grille */}
           <div className="mt-10 hidden gap-5 sm:grid sm:grid-cols-2 lg:grid-cols-3">
             {cities.map((city, i) => (
               <Reveal key={city.slug} delay={i * 70} variant="up">
@@ -148,10 +240,10 @@ export default function NosVilles() {
               Un coordinateur Dor Hadash vous oriente selon votre famille, votre budget et votre projet.
             </p>
             <Link
-              to="/nous-contacter"
+              to="/nous-contacter?objet=ville"
               className="btn-primary mt-6 inline-flex bg-brand-teal text-brand-blue-deep hover:bg-white"
             >
-              Nous contacter
+              Demander un premier entretien
             </Link>
           </div>
         </Reveal>

@@ -12,7 +12,12 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/mission": {
     title: "Notre mission | Dor Hadash",
     description:
-      "Mission Dor Hadash : accompagnement à l'intégration des olim francophones — aide au logement, oulpan, formation, emploi et village communautaire traditionaliste.",
+      "Mission Dor Hadash : accompagnement à l'intégration des olim francophones — logement, immersion, éducation et emploi, selon votre profil et votre ville.",
+  },
+  "/preparer-mon-alya": {
+    title: "Préparer mon Alya | Dor Hadash",
+    description:
+      "Chronologie, checklist, budget, scolarité, premiers jours en Israël et FAQ pour préparer votre Alya avec Dor Hadash.",
   },
   "/lequipe": {
     title: "L'équipe Dor Hadash | Qui sommes-nous ?",
@@ -77,7 +82,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/temoignages-videos": {
     title: "Paroles d'olim | Dor Hadash",
     description:
-      "Écoutez des olim francophones et découvrez le programme Dor Hadash en vidéo — témoignages et contenus pour préparer votre Alya.",
+      "Témoignages écrits et vidéos d'olim francophones : logement, école, emploi et accompagnement Dor Hadash pour préparer votre Alya.",
   },
 };
 

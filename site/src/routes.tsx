@@ -9,6 +9,7 @@ import VillePage from "./pages/VillePage";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
+import PreparerMonAlya from "./pages/PreparerMonAlya";
 import TemoignagesVideos from "./pages/TemoignagesVideos";
 import NotFound from "./pages/NotFound";
 import AdminRoot from "./admin/AdminRoot";
@@ -34,6 +35,7 @@ export const routes: RouteRecord[] = [
       { path: "partenaires", Component: Partenaires },
       { path: "nos-villes", Component: NosVilles },
       { path: "temoignages-videos", Component: TemoignagesVideos },
+      { path: "preparer-mon-alya", Component: PreparerMonAlya },
       { path: "blog", Component: Blog },
       {
         path: "blog/:slug",

@@ -5,6 +5,7 @@ import CityImage from "../components/CityImage";
 import CityGalleryCarousel from "../components/CityGalleryCarousel";
 import Reveal from "../components/Reveal";
 import { getCityBySlug, type CitySection } from "../content/cities";
+import { getCityDecision } from "../content/cityDecision";
 
 function teaserFrom(section: CitySection) {
   const first = section.paragraphs[0] ?? "";
@@ -128,6 +129,7 @@ export default function VillePage() {
 
   if (!city) return <Navigate to="/nos-villes" replace />;
 
+  const decision = getCityDecision(city.slug);
   const gallery = city.gallery ?? [];
   const galleryMore = city.galleryMore ?? [];
   const heroSrc = gallery[0]?.src ?? city.image;
@@ -191,10 +193,10 @@ export default function VillePage() {
               Découvrir {city.name}
             </a>
             <Link
-              to="/nous-contacter"
+              to="/nous-contacter?objet=ville"
               className="btn-ghost w-full justify-center px-5 py-3 text-sm sm:w-auto"
             >
-              Parler à un coordinateur
+              Demander un premier entretien
             </Link>
           </div>
         </div>
@@ -219,7 +221,36 @@ export default function VillePage() {
         </div>
       </section>
 
-      <section className="bg-white">
+      {decision && (
+        <section className="bg-white">
+          <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
+            <Reveal>
+              <p className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal">Aide à la décision</p>
+              <h2 className="mt-2 font-heading text-2xl font-semibold text-brand-blue-deep sm:text-3xl">
+                Grille pratique — {city.name}
+              </h2>
+              <p className="mt-2 text-sm text-gray-600">
+                Les mêmes rubriques pour chaque ville. Les montants et dispositifs se confirment au premier
+                échange.
+              </p>
+            </Reveal>
+            <div className="mt-6 overflow-hidden rounded-2xl border border-brand-sand">
+              <dl className="divide-y divide-brand-sand">
+                {decision.rows.map((row, i) => (
+                  <Reveal key={row.label} delay={Math.min(i * 40, 200)} variant="up">
+                    <div className="grid gap-1 px-4 py-3.5 sm:grid-cols-[11rem_1fr] sm:gap-4 sm:px-5 sm:py-4">
+                      <dt className="font-heading text-sm font-semibold text-brand-blue-deep">{row.label}</dt>
+                      <dd className="text-sm leading-relaxed text-gray-600">{row.value}</dd>
+                    </div>
+                  </Reveal>
+                ))}
+              </dl>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="bg-brand-cream">
         <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
           <Reveal>
             <p className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal">Le parcours</p>
@@ -324,8 +355,8 @@ export default function VillePage() {
             <p className="mx-auto mt-3 max-w-md text-sm text-white/80">
               Parlons-en avec un coordinateur — sans engagement.
             </p>
-            <Link to="/nous-contacter" className="btn-primary mt-6 inline-flex w-full justify-center bg-brand-teal px-5 py-3 text-brand-blue-deep hover:bg-white sm:w-auto">
-              Nous contacter
+            <Link to="/nous-contacter?objet=ville" className="btn-primary mt-6 inline-flex w-full justify-center bg-brand-teal px-5 py-3 text-brand-blue-deep hover:bg-white sm:w-auto">
+              Demander un premier entretien
             </Link>
           </div>
         </Reveal>

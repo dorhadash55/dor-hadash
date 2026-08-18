@@ -7,6 +7,7 @@ import MobileCtaBar from "./MobileCtaBar";
 import WhatsAppButton from "./WhatsAppButton";
 import { siteInfo } from "../content/site";
 import ContentSyncInit from "./ContentSyncInit";
+import { scrollToId } from "../lib/scrollToId";
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
@@ -22,11 +23,19 @@ const organizationJsonLd = {
 };
 
 export default function Layout() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
+    if (hash) {
+      const id = hash.slice(1);
+      const tryScroll = () => scrollToId(id);
+      requestAnimationFrame(() => {
+        if (!tryScroll()) window.setTimeout(tryScroll, 80);
+      });
+      return;
+    }
     window.scrollTo(0, 0);
-  }, [pathname]);
+  }, [pathname, hash]);
 
   return (
     <div className="flex min-h-screen flex-col">
