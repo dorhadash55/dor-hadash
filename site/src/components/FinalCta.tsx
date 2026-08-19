@@ -21,7 +21,7 @@ export default function FinalCta() {
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-10 pb-16 sm:px-6 sm:py-24 sm:pb-24">
+      <div className="relative mx-auto max-w-7xl px-4 py-10 pb-20 sm:px-6 sm:py-20 sm:pb-20">
         <Reveal variant="blur" className="mx-auto max-w-2xl text-center text-white">
           <p className="font-accent text-xs uppercase tracking-[0.24em] text-brand-teal">Prochaine étape</p>
           <h2 className="mt-2 font-heading text-2xl font-semibold text-balance sm:mt-3 sm:text-4xl lg:text-5xl">
