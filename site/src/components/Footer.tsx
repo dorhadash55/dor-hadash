@@ -81,6 +81,14 @@ export default function Footer() {
 
       <div className="border-t border-white/10 py-5 text-center font-accent text-xs tracking-wide text-white/45">
         © {year} Dor Hadash — Tous droits réservés
+        {" · "}
+        <button
+          type="button"
+          className="text-white/60 underline-offset-2 hover:text-white hover:underline"
+          onClick={() => window.dispatchEvent(new Event("dh-open-cookie-banner"))}
+        >
+          Cookies
+        </button>
       </div>
     </footer>
   );

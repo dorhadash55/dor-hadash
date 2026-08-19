@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link, Navigate } from "react-router-dom";
 import SeoHead from "../components/SeoHead";
 import CityImage from "../components/CityImage";
@@ -6,6 +6,7 @@ import CityGalleryCarousel from "../components/CityGalleryCarousel";
 import Reveal from "../components/Reveal";
 import { getCityBySlug, type CitySection } from "../content/cities";
 import { getCityDecision } from "../content/cityDecision";
+import { writeOptionalCookie } from "../lib/cookieConsent";
 
 function teaserFrom(section: CitySection) {
   const first = section.paragraphs[0] ?? "";
@@ -126,6 +127,10 @@ function DesktopSection({ section, index }: { section: CitySection; index: numbe
 export default function VillePage() {
   const { slug } = useParams<{ slug: string }>();
   const city = getCityBySlug(slug ?? "");
+
+  useEffect(() => {
+    if (city) writeOptionalCookie("dh_last_city", city.slug);
+  }, [city]);
 
   if (!city) return <Navigate to="/nos-villes" replace />;
 

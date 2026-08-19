@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import SeoHead from "../components/SeoHead";
 import CityImage from "../components/CityImage";
 import Reveal from "../components/Reveal";
 import { cities } from "../content/cities";
 import { cityDecisions } from "../content/cityDecision";
+import { readOptionalCookie, writeOptionalCookie } from "../lib/cookieConsent";
 
 const criteria = [
   { id: "famille", label: "Famille avec enfants" },
@@ -24,6 +25,20 @@ export default function NosVilles() {
   const heroCity = cities.find((c) => c.slug === "karmiel") ?? cities[0];
   const heroSrc = heroCity?.image ?? heroCity?.gallery?.[0]?.src;
   const [selected, setSelected] = useState<CriterionId[]>([]);
+  const lastCitySlug = readOptionalCookie("dh_last_city");
+  const lastCity = cities.find((c) => c.slug === lastCitySlug);
+
+  useEffect(() => {
+    const saved = readOptionalCookie("dh_city_filters");
+    if (!saved) return;
+    const ids = saved.split(",").filter((id): id is CriterionId => criteria.some((c) => c.id === id));
+    if (ids.length) setSelected(ids);
+  }, []);
+
+  useEffect(() => {
+    if (selected.length === 0) return;
+    writeOptionalCookie("dh_city_filters", selected.join(","));
+  }, [selected]);
 
   const suggestions = useMemo(() => {
     if (selected.length === 0) return [];
@@ -88,6 +103,16 @@ export default function NosVilles() {
 
       <section id="comparateur" className="scroll-mt-24 bg-white">
         <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
+          {lastCity && (
+            <p className="mb-8 rounded-2xl bg-brand-cream px-4 py-3 text-sm text-gray-700">
+              Vous consultiez{" "}
+              <Link to={`/${lastCity.slug}`} className="font-semibold text-brand-blue hover:underline">
+                {lastCity.name}
+              </Link>
+              .
+            </p>
+          )}
+
           <Reveal>
             <p className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal">Comparateur</p>
             <h2 className="mt-2 font-heading text-2xl font-semibold text-brand-blue-deep sm:text-3xl">
