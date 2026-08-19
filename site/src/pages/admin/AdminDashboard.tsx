@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AdminHeader from "../../admin/components/AdminHeader";
 import {
@@ -9,6 +10,7 @@ import {
 import { useAuth } from "../../admin/auth/AuthContext";
 import { useAdminContent } from "../../admin/hooks/useAdminContent";
 import { getAdminStats, isFirebaseConfigured } from "../../admin/storage/contentStore";
+import { fetchSiteTrafficStats, type SiteTrafficStats } from "../../lib/siteAnalytics";
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
@@ -17,6 +19,13 @@ export default function AdminDashboard() {
   const content = useAdminContent();
   const stats = getAdminStats();
   const { canWriteToFirestore, usesFirebaseAuth } = useAuth();
+  const [traffic, setTraffic] = useState<SiteTrafficStats>({ pageViews: 0, clicks: 0 });
+
+  useEffect(() => {
+    void fetchSiteTrafficStats()
+      .then(setTraffic)
+      .catch(() => setTraffic({ pageViews: 0, clicks: 0 }));
+  }, []);
 
   const checklist = [
     { label: "Firebase configuré", done: isFirebaseConfigured(), link: "/admin/settings" },
@@ -51,6 +60,21 @@ export default function AdminDashboard() {
             to="/admin/contacts"
             highlight={stats.unreadContacts > 0}
             hint={stats.unreadContacts > 0 ? "À traiter en priorité" : "Tout est lu"}
+          />
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+          <AdminStatCard
+            label="Pages vues"
+            value={traffic.pageViews}
+            to="/admin"
+            hint="Visiteurs ayant accepté les cookies"
+          />
+          <AdminStatCard
+            label="Clics"
+            value={traffic.clicks}
+            to="/admin"
+            hint="Liens et boutons — uniquement si cookies acceptés"
           />
         </div>
 

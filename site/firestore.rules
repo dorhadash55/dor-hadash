@@ -38,6 +38,34 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
+    // Compteurs publics : +1 uniquement, si cookies acceptés côté client
+    function isPlusOne(field) {
+      return field in request.resource.data
+        && request.resource.data[field] is int
+        && (
+          (!(field in resource.data) && request.resource.data[field] == 1)
+          || (resource.data[field] is int && request.resource.data[field] == resource.data[field] + 1)
+        );
+    }
+
+    match /analytics/stats {
+      allow read: if isAdmin();
+      allow create: if request.resource.data.pageViews is int
+        && request.resource.data.pageViews >= 0
+        && request.resource.data.pageViews <= 1
+        && (!('clicks' in request.resource.data)
+          || (request.resource.data.clicks is int
+            && request.resource.data.clicks >= 0
+            && request.resource.data.clicks <= 1));
+      allow update: if isAdmin() || (
+        isPlusOne('pageViews') &&
+        (!('clicks' in request.resource.data) || request.resource.data.clicks == resource.data.clicks)
+      ) || (
+        isPlusOne('clicks') &&
+        (!('pageViews' in request.resource.data) || request.resource.data.pageViews == resource.data.pageViews)
+      );
+    }
+
     // Contenu éditorial du site
     match /site/{document=**} {
       allow read: if true;

@@ -121,7 +121,7 @@ export default function CityGalleryCarousel({
       >
         <div
           ref={scrollerRef}
-          className="city-gallery-track flex h-[min(68dvh,640px)] w-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden overscroll-x-contain"
+          className="city-gallery-track flex h-[min(42vw,220px)] w-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden sm:h-[min(48dvh,420px)] lg:h-[min(56dvh,560px)]"
         >
           {images.map((image, i) => {
             const contain = fitOf(image) === "contain";

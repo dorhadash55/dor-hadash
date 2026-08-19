@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { initFirebaseAppCheck } from "../admin/firebase/appCheck";
-import { initFirebaseAnalytics } from "../admin/firebase/config";
 import { initContentSync } from "../admin/storage/contentStore";
 
 function deferNonCriticalWork(callback: () => void) {
@@ -17,7 +16,6 @@ export default function ContentSyncInit() {
     deferNonCriticalWork(() => {
       initFirebaseAppCheck();
       initContentSync();
-      void initFirebaseAnalytics();
     });
   }, []);
 

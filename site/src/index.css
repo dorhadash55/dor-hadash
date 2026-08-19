@@ -720,12 +720,12 @@ h1, h2, h3, h4 {
   }
 }
 
-/* Carrousel villes — glissement natif, sans barre ni saut de hauteur */
+/* Carrousel villes — glissement horizontal, scroll vertical de la page conservé */
 .city-gallery-track {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  overscroll-behavior-x: contain;
-  touch-action: pan-x;
+  overscroll-behavior-y: auto;
+  touch-action: pan-x pan-y;
 }
 .city-gallery-track::-webkit-scrollbar {
   display: none;
