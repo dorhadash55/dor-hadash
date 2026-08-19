@@ -2,8 +2,6 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Emails admin autorisés (doivent correspondre à VITE_ADMIN_EMAIL / Google Auth).
-    // Après modification : Firebase Console → Firestore → Règles → Publier
     function isAdmin() {
       return request.auth != null
         && request.auth.token.email_verified == true
@@ -32,22 +30,27 @@ service cloud.firestore {
         && d.read == false;
     }
 
-    // Formulaire public : création contrôlée uniquement
-    match /contact_submissions/{id} {
-      allow create: if isValidContactCreate();
-      allow read, update, delete: if isAdmin();
-    }
-
-    // Compteurs publics : +1 uniquement, si cookies acceptés côté client
     function isPlusOne(field) {
       return field in request.resource.data
         && request.resource.data[field] is int
         && (
           (!(field in resource.data) && request.resource.data[field] == 1)
-          || (resource.data[field] is int && request.resource.data[field] == resource.data[field] + 1)
+          || (resource.data[field] is int
+            && request.resource.data[field] == resource.data[field] + 1)
         );
     }
 
+    function onlyChanged(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    // Messages du formulaire : création publique, lecture uniquement admin
+    match /contact_submissions/{id} {
+      allow create: if isValidContactCreate();
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Compteurs : +1 seulement (cookies acceptés côté site)
     match /analytics/stats {
       allow read: if isAdmin();
       allow create: if request.resource.data.pageViews is int
@@ -58,24 +61,21 @@ service cloud.firestore {
             && request.resource.data.clicks >= 0
             && request.resource.data.clicks <= 1));
       allow update: if isAdmin() || (
-        isPlusOne('pageViews') &&
-        (!('clicks' in request.resource.data) || request.resource.data.clicks == resource.data.clicks)
+        onlyChanged(['pageViews', 'updatedAt']) && isPlusOne('pageViews')
       ) || (
-        isPlusOne('clicks') &&
-        (!('pageViews' in request.resource.data) || request.resource.data.pageViews == resource.data.pageViews)
+        onlyChanged(['clicks', 'updatedAt']) && isPlusOne('clicks')
       );
     }
 
-    // Contenu éditorial du site
+    // Contenu du site : lecture publique, écriture admin seulement
     match /site/{document=**} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // Par défaut : lecture publique, écriture admin seulement
+    // Tout le reste : admin uniquement (pas de lecture publique des messages)
     match /{document=**} {
-      allow read: if true;
-      allow write: if isAdmin();
+      allow read, write: if isAdmin();
     }
   }
 }
