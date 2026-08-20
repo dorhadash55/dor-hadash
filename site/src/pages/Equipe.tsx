@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import SeoHead from "../components/SeoHead";
 import PageBanner from "../components/PageBanner";
 import Reveal from "../components/Reveal";
@@ -9,11 +10,11 @@ export default function Equipe() {
       <SeoHead />
       <PageBanner
         title="L'équipe Dor Hadash"
-        subtitle="Toute notre équipe est à vos côtés : 6 mois avant l'Alya, puis 12 mois après votre arrivée."
+        subtitle="Toute l'équipe est à vos côtés : 6 mois avant l'Alya, puis 12 mois après votre arrivée."
       />
 
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8">
           {team.map((member, i) => (
             <Reveal key={member.name} delay={i * 80} variant="up">
               <div className="flex h-full flex-col items-center rounded-2xl border border-gray-100 p-8 text-center shadow-sm transition-shadow hover:shadow-md">
@@ -27,6 +28,15 @@ export default function Equipe() {
               </div>
             </Reveal>
           ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <Link
+            to="/nous-contacter?objet=entretien"
+            className="inline-flex rounded-full bg-brand-blue px-7 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-brand-blue-dark"
+          >
+            Échanger avec l&apos;équipe →
+          </Link>
         </div>
       </section>
     </>

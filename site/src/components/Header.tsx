@@ -84,6 +84,12 @@ function DesktopDropdown({ item }: { item: NavItem }) {
         aria-controls={menuId}
         onFocus={openMenu}
         onBlur={scheduleClose}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") {
+            setOpen(false);
+            (e.currentTarget as HTMLElement).blur();
+          }
+        }}
       >
         <DesktopLabel item={item} />
         <svg
@@ -164,7 +170,7 @@ export default function Header() {
             open ? "bg-brand-blue text-white shadow-md" : "text-brand-blue hover:bg-brand-blue/5"
           }`}
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
             {open ? (
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M6 18L18 6" />
             ) : (

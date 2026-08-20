@@ -45,8 +45,11 @@ export default function Layout() {
       <Head>
         <script type="application/ld+json">{JSON.stringify(organizationJsonLd)}</script>
       </Head>
+      <a href="#contenu" className="skip-link">
+        Aller au contenu
+      </a>
       <Header />
-      <main key={pathname} className="page-enter flex-1">
+      <main id="contenu" key={pathname} className="page-enter flex-1" tabIndex={-1}>
         <Outlet />
       </main>
       <Footer />

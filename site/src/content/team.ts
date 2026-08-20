@@ -46,6 +46,23 @@ export const missionQuote = {
 export const missionIntro =
   "L'association Dor Hadash est une structure d'accompagnement à l'intégration sociale et professionnelle des olim francophones en Israël.";
 
+export const missionSupport = [
+  {
+    title: "Aide au logement",
+    detail: "Conseils et aide à la recherche d'un premier appartement — sans prix garanti.",
+  },
+  { title: "Apprentissage de la langue", detail: "Oulpan intensif et immersion dans la vie locale." },
+  {
+    title: "Formation & emploi",
+    detail:
+      "Orientation, bilan et suivi d'intégration professionnelle — selon votre profil, votre ville et les dispositifs disponibles.",
+  },
+  {
+    title: "Accompagnement administratif",
+    detail: "Un fil conducteur pour les démarches du quotidien, selon les dispositifs disponibles.",
+  },
+];
+
 export const missionAudience =
   "Ce programme s'adresse aux jeunes célibataires ou en couple, aux familles et aux seniors actifs.";
 
@@ -54,6 +71,22 @@ export const missionVillage = [
   "Ce projet est conçu pour rendre le olé autonome.",
   "Dor Hadash accueille chaque famille dans le respect de son identité, de son mode de vie et de ses besoins, en l'orientant vers un environnement adapté.",
 ];
+
+export const missionIncubator = {
+  lieu: "Situé à proximité d'une grande ville, avec les équipements nécessaires au quotidien.",
+  equipements: [
+    "Aide à la recherche d'un premier logement selon le cadre d'accueil (Mercaz Klita, kibboutz ou autre)",
+    "Réfectoire pour repas et réunions (facultatif)",
+    "Synagogue",
+    "Gan, écoles, camps de vacances et activités pour tous les âges",
+    "Laverie (option)",
+    "Cadre vert, propre et calme",
+    "Équipements sportifs, aires de jeux et piscine",
+    "Contexte agricole",
+  ],
+  accueil:
+    "L'expérience du village est particulièrement adaptée aux familles pendant la première période d'intégration : amitiés, familiarisation avec le mode de vie israélien, insertion sociale et professionnelle, puis participation active à la communauté.",
+};
 
 export const missionProgram = {
   intro:
@@ -92,3 +125,14 @@ export const missionProgram = {
     },
   ],
 };
+
+export const missionSynthese = [
+  "Une aide à la recherche de logement, selon votre budget et votre ville — sans prix garanti",
+  "Un accueil adapté à votre ville et à votre programme",
+  "Une communication locale dans les deux langues",
+  "Un lieu de vie fondé sur le contact humain, l'échange et l'apprentissage des codes",
+  "La facilitation des formalités administratives, selon les dispositifs disponibles",
+  "Un accompagnement concret, dans la transparence sur ce qui est possible pour votre profil",
+  "Le développement d'une activité économique locale",
+  "Un cadre culturel adapté aux olim francophones",
+];

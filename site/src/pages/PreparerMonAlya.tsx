@@ -55,8 +55,7 @@ export default function PreparerMonAlya() {
               À préparer avant le départ
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-gray-600">
-              Liste de contrôle à imprimer ou à copier — une version PDF téléchargeable pourra être ajoutée
-              dès que l&apos;association la valide.
+              Une liste de contrôle à parcourir avant le départ.
             </p>
           </Reveal>
           <ul className="mt-6 space-y-3">
@@ -109,7 +108,7 @@ export default function PreparerMonAlya() {
                 <a
                   href={link.href}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="text-sm font-medium text-brand-blue hover:underline"
                 >
                   {link.label} →
@@ -151,9 +150,18 @@ export default function PreparerMonAlya() {
           </div>
 
           <Reveal delay={100} className="mt-10 text-center">
-            <Link to="/nous-contacter?objet=entretien" className="btn-primary inline-flex">
+            <Link
+              to="/nous-contacter?objet=entretien"
+              className="inline-flex rounded-full bg-brand-blue px-7 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-brand-blue-dark"
+            >
               Demander un premier entretien →
             </Link>
+            <p className="mt-4 text-sm text-gray-500">
+              Ou{" "}
+              <Link to="/mission" className="font-semibold text-brand-blue hover:underline">
+                découvrir l&apos;accompagnement
+              </Link>
+            </p>
           </Reveal>
         </div>
       </section>

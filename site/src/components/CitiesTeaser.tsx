@@ -6,7 +6,7 @@ import SectionHeading from "./SectionHeading";
 
 export default function CitiesTeaser() {
   return (
-    <section className="section-shell bg-white">
+    <section className="section-shell bg-brand-cream">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal variant="blur">
           <SectionHeading
@@ -43,6 +43,7 @@ export default function CitiesTeaser() {
                   <CityImage
                     city={city}
                     variant="card"
+                    alt=""
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>

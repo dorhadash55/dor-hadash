@@ -103,24 +103,19 @@ export type EntryDoor = {
 
 export const entryDoors: EntryDoor[] = [
   {
-    title: "Je prépare mon Alya depuis la France",
-    description: "Chronologie, checklist et premiers échanges avec un coordinateur.",
+    title: "Je prépare mon Alya",
+    description: "Checklist, étapes et premiers échanges avec un coordinateur.",
     href: "/preparer-mon-alya",
   },
   {
     title: "Je viens d'arriver en Israël",
-    description: "Les premiers jours, le référent local et les démarches urgentes.",
+    description: "Référent local et démarches urgentes — on vous oriente.",
     href: "/nous-contacter?objet=arrive",
   },
   {
-    title: "Je cherche la ville qui me correspond",
-    description: "Comparer les villes et trouver le bon environnement pour votre famille.",
+    title: "Je cherche ma ville",
+    description: "Comparer les 7 destinations et trouver le bon cadre.",
     href: "/nos-villes",
-  },
-  {
-    title: "J'ai besoin d'aide pour l'emploi, l'école ou le logement",
-    description: "Nos quatre piliers : des réponses concrètes, sans faux espoirs.",
-    href: "/#piliers",
   },
 ];
 

@@ -9,6 +9,11 @@ export const seoByPath: Record<string, SeoEntry> = {
     description:
       "Dor Hadash accompagne les francophones dans leur Alya en Israël : logement, immersion, éducation, emploi. Un parcours complet pour réussir votre intégration.",
   },
+  "/mission": {
+    title: "Notre accompagnement | Dor Hadash",
+    description:
+      "Accompagnement Dor Hadash : 6 mois avant l'Alya et 12 mois après — logement, immersion, éducation et emploi, selon votre profil et votre ville.",
+  },
   "/preparer-mon-alya": {
     title: "Préparer mon Alya | Dor Hadash",
     description:
@@ -75,7 +80,7 @@ export const seoByPath: Record<string, SeoEntry> = {
       "Une question sur votre Alya ? Contactez l'équipe Dor Hadash par téléphone, email ou via notre formulaire. Réponse rapide garantie.",
   },
   "/temoignages-videos": {
-    title: "Paroles d'olim | Dor Hadash",
+    title: "Témoignages | Dor Hadash",
     description:
       "Témoignages écrits et vidéos d'olim francophones : logement, école, emploi et accompagnement Dor Hadash pour préparer votre Alya.",
   },

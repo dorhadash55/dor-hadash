@@ -16,7 +16,7 @@ export default function VideoTeaser() {
   if (preview.length === 0) return null;
 
   return (
-    <section className="section-shell bg-brand-cream">
+    <section className="section-shell bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal variant="blur">
           <SectionHeading

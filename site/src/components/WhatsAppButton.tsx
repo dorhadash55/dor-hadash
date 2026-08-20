@@ -9,7 +9,7 @@ export default function WhatsAppButton() {
     <a
       href={href}
       target="_blank"
-      rel="noreferrer"
+      rel="noopener noreferrer"
       aria-label="Contacter Dor Hadash sur WhatsApp"
       className="whatsapp-fab fixed bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))] z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/25 transition-transform hover:scale-105 lg:bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] lg:right-[calc(1.5rem+env(safe-area-inset-right,0px))]"
     >

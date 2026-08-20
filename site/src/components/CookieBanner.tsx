@@ -24,9 +24,17 @@ export default function CookieBanner() {
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[45] px-3 pb-[calc(4.25rem+env(safe-area-inset-bottom,0px))] sm:px-4 lg:bottom-4 lg:px-6 lg:pb-0">
+    <aside
+      role="dialog"
+      aria-labelledby="cookie-banner-title"
+      aria-describedby="cookie-banner-text"
+      className="fixed inset-x-0 bottom-0 z-[45] px-3 pb-[calc(4.25rem+env(safe-area-inset-bottom,0px))] sm:px-4 lg:bottom-4 lg:px-6 lg:pb-0"
+    >
       <div className="mx-auto max-w-3xl rounded-2xl border border-brand-blue/15 bg-white p-4 shadow-xl shadow-brand-blue/15 sm:p-5">
-        <p className="text-sm leading-relaxed text-gray-700">
+        <p id="cookie-banner-title" className="font-heading text-base font-semibold text-brand-blue-deep">
+          Cookies
+        </p>
+        <p id="cookie-banner-text" className="mt-1.5 text-sm leading-relaxed text-gray-700">
           Ce site utilise des cookies pour fonctionner, mémoriser vos choix (ville consultée, filtres) et
           améliorer l&apos;expérience. Vous pouvez tout accepter, ou garder uniquement l&apos;essentiel.
         </p>
@@ -78,6 +86,6 @@ export default function CookieBanner() {
           </div>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

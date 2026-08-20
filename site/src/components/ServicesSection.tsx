@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   accompanimentDisclaimer,
   pillars,
@@ -19,14 +20,14 @@ export default function ServicesSection() {
   const [openTitle, setOpenTitle] = useState<string | null>(null);
 
   return (
-    <section id="piliers" className="section-shell scroll-mt-24 bg-brand-cream">
+    <section id="piliers" className="section-shell scroll-mt-24 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
           <SectionHeading
             align="center"
             label="Les quatre piliers"
             title="Logement, immersion, éducation, emploi"
-            description="L'identité du programme — reconnaissable partout."
+            description="Quatre appuis concrets — selon votre profil, votre ville et les dispositifs disponibles."
           />
         </Reveal>
 
@@ -115,6 +116,11 @@ export default function ServicesSection() {
           <p className="mx-auto mt-4 max-w-2xl text-center text-xs leading-relaxed text-gray-500 sm:mt-5 sm:text-sm">
             {accompanimentDisclaimer}
           </p>
+          <div className="mt-6 flex justify-center sm:mt-8">
+            <Link to="/mission" className="btn-outline">
+              Voir notre accompagnement →
+            </Link>
+          </div>
         </Reveal>
       </div>
     </section>

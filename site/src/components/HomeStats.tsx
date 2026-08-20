@@ -7,7 +7,7 @@ export default function HomeStats() {
       <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-y divide-brand-blue/8 sm:grid-cols-4 sm:divide-y-0">
         {trustProofs.map((stat, i) => (
           <Reveal key={stat.label} delay={i * 80} variant="scale" className="stat-pop h-full">
-            <div className="flex h-full flex-col items-center justify-center px-3 py-4 text-center sm:px-4 sm:py-6">
+            <div className="flex h-full flex-col items-center justify-center px-3 py-5 text-center sm:px-4 sm:py-7">
               <span className="font-heading text-2xl font-semibold text-brand-blue sm:text-3xl lg:text-4xl">
                 {stat.value}
               </span>

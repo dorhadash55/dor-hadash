@@ -46,7 +46,7 @@ export default function PartnersSection() {
   );
 
   return (
-    <section className="border-y border-brand-blue/8 bg-white py-6 sm:py-8">
+    <section className="border-y border-brand-blue/8 bg-white py-10 sm:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-2">
@@ -74,6 +74,8 @@ export default function PartnersSection() {
               type="button"
               onClick={() => setActive(partner)}
               className="flex w-[4.75rem] shrink-0 flex-col items-center text-center transition active:scale-[0.98] sm:w-auto"
+              aria-haspopup="dialog"
+              aria-label={`En savoir plus sur ${partner.name}`}
             >
               <PartnerLogoMark partner={partner} />
               <p className="mt-1.5 line-clamp-2 font-heading text-[11px] font-semibold leading-tight text-brand-blue-deep sm:text-xs">

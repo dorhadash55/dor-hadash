@@ -225,7 +225,7 @@ export default function PartnerModal({
             <a
               href={partner.website}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="btn-primary w-full justify-center px-4 py-3 text-sm sm:flex-1"
             >
               {partner.websiteLabel ?? "En savoir plus"}

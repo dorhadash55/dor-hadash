@@ -13,7 +13,7 @@ export default function Blog() {
   return (
     <>
       <SeoHead />
-      <PageBanner title="Blog" subtitle="Toute l'actualité Dor Hadash : conseils, démarches et témoignages." />
+      <PageBanner title="Conseils et actualités" subtitle="Guides pratiques, villes et retours d'expérience pour préparer votre Alya." />
 
       <section className="mx-auto max-w-6xl px-6 py-16">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -26,7 +26,7 @@ export default function Blog() {
                 <div className="aspect-[16/10] w-full overflow-hidden bg-gray-100">
                   <img
                     src={post.coverImage}
-                    alt={post.title}
+                    alt=""
                     loading="lazy"
                     className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
                   />

@@ -8,6 +8,8 @@ type CityImageProps = {
   variant?: "full" | "card";
   /** Hero ou première image visible */
   priority?: boolean;
+  /** Vide si le nom de la ville est déjà dans le lien parent */
+  alt?: string;
 };
 
 export default function CityImage({
@@ -15,6 +17,7 @@ export default function CityImage({
   className,
   variant = "full",
   priority = false,
+  alt,
 }: CityImageProps) {
   if (!city.image) {
     return (
@@ -47,7 +50,7 @@ export default function CityImage({
   return (
     <img
       src={src}
-      alt={city.name}
+      alt={alt ?? city.name}
       loading={priority ? "eager" : "lazy"}
       decoding="async"
       fetchPriority={priority ? "high" : "auto"}

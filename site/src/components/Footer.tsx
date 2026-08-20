@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useSiteInfo } from "../content/useSiteContent";
-import { mainNav } from "../content/site";
+import { footerNav } from "../content/site";
 
 export default function Footer() {
   const siteInfo = useSiteInfo();
@@ -21,24 +21,13 @@ export default function Footer() {
         <div>
           <h3 className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal mb-4">Navigation</h3>
           <ul className="space-y-2.5 text-sm">
-            {mainNav.map((item) => (
+            {footerNav.map((item) => (
               <li key={item.label}>
-                {item.path.includes("#") ? (
-                  <a href={item.path} className="text-white/80 transition-colors hover:text-white">
-                    {item.label}
-                  </a>
-                ) : (
-                  <Link to={item.path} className="text-white/80 transition-colors hover:text-white">
-                    {item.label}
-                  </Link>
-                )}
+                <Link to={item.path} className="text-white/80 transition-colors hover:text-white">
+                  {item.label}
+                </Link>
               </li>
             ))}
-            <li>
-              <Link to="/nous-contacter" className="text-white/80 transition-colors hover:text-white">
-                Contact
-              </Link>
-            </li>
           </ul>
         </div>
 
@@ -50,8 +39,22 @@ export default function Footer() {
                 {siteInfo.email}
               </a>
             </li>
-            <li>Israël : {siteInfo.phones.israel.join(" · ")}</li>
-            <li>France : {siteInfo.phones.france.join(" · ")}</li>
+            <li>Israël : {siteInfo.phones.israel.map((p, i) => (
+              <span key={p}>
+                {i > 0 ? " · " : ""}
+                <a href={`tel:${p.replace(/[^\d+]/g, "")}`} className="transition-colors hover:text-white">
+                  {p}
+                </a>
+              </span>
+            ))}</li>
+            <li>France : {siteInfo.phones.france.map((p, i) => (
+              <span key={p}>
+                {i > 0 ? " · " : ""}
+                <a href={`tel:${p.replace(/[^\d+]/g, "")}`} className="transition-colors hover:text-white">
+                  {p}
+                </a>
+              </span>
+            ))}</li>
           </ul>
         </div>
 
@@ -61,7 +64,7 @@ export default function Footer() {
             <a
               href={siteInfo.social.facebook}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm text-white/85 transition-colors hover:border-white/40 hover:text-white"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -72,7 +75,7 @@ export default function Footer() {
             <a
               href={siteInfo.social.instagram}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm text-white/85 transition-colors hover:border-white/40 hover:text-white"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -92,7 +95,7 @@ export default function Footer() {
           className="text-white/60 underline-offset-2 hover:text-white hover:underline"
           onClick={() => window.dispatchEvent(new Event("dh-open-cookie-banner"))}
         >
-          Cookies
+          Gérer les cookies
         </button>
       </div>
     </footer>

@@ -26,7 +26,7 @@ export default function SectionHeading({
       }
     >
       <div className={centered ? undefined : "max-w-2xl"}>
-        <p className="font-accent text-xs font-medium uppercase tracking-[0.22em] text-brand-teal sm:text-sm">
+        <p className="font-accent text-xs font-medium uppercase tracking-[0.22em] text-[#168a78] sm:text-sm">
           {label}
         </p>
         <h2

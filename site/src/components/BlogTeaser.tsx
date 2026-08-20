@@ -19,7 +19,7 @@ function FeaturedBlogCard({ post }: { post: BlogPost }) {
       <div className="relative aspect-[16/10] overflow-hidden bg-brand-blue-deep/5">
         <img
           src={post.coverImage}
-          alt={post.title}
+          alt=""
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -54,7 +54,7 @@ function CompactBlogCard({ post }: { post: BlogPost }) {
       <div className="relative h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden rounded-lg bg-gray-100">
         <img
           src={post.coverImage}
-          alt={post.title}
+          alt=""
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -81,7 +81,7 @@ function GridBlogCard({ post }: { post: BlogPost }) {
       <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
         <img
           src={post.coverImage}
-          alt={post.title}
+          alt=""
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -126,7 +126,7 @@ export default function BlogTeaser() {
 
         {latest.length > 0 ? (
           <>
-            <div className="mt-10 flex flex-col gap-3 sm:hidden">
+            <div className="mt-6 flex flex-col gap-3 sm:hidden">
               {featured && (
                 <Reveal variant="up">
                   <FeaturedBlogCard post={featured} />
@@ -139,7 +139,7 @@ export default function BlogTeaser() {
               ))}
             </div>
 
-            <div className="mt-12 hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-10 hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-3">
               {latest.map((post, i) => (
                 <Reveal key={post.slug} delay={i * 100} variant="up">
                   <GridBlogCard post={post} />

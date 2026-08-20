@@ -9,7 +9,12 @@ type MobileMenuProps = {
 };
 
 const navIcons: Record<string, ReactNode> = {
-  "/#accompagnement": (
+  "/": (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-5.5h-5V21H5a1 1 0 0 1-1-1v-9.5Z" />
+    </svg>
+  ),
+  "/mission": (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 21V4.5M5 4.5h11.5l-2.25 3.25L16.5 11H5" />
     </svg>
@@ -222,6 +227,11 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
   useEffect(() => {
     if (!mounted || !open) return;
     closeBtnRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
   }, [open, mounted]);
 
   if (!mounted) return null;

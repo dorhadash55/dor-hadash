@@ -23,10 +23,9 @@ export type NavItem = {
 
 /**
  * Desktop — peu d'entrées, CTA entretien séparé dans le Header.
- * Pas de doublon Contact / Piliers (déjà sur l'accueil via Accompagnement).
  */
 export const mainNav: NavItem[] = [
-  { label: "Notre accompagnement", shortLabel: "Accompagnement", path: "/#accompagnement" },
+  { label: "Notre accompagnement", shortLabel: "Accompagnement", path: "/mission" },
   {
     label: "Nos villes",
     shortLabel: "Villes",
@@ -56,11 +55,23 @@ export const mainNav: NavItem[] = [
 ];
 
 /**
- * Mobile — peu d'entrées ; villes en mini-grille au tap.
- * Pas d'Accueil (logo), pas d'Appeler (barre CTA en bas).
+ * Liens footer — liste plate, facile à scanner.
  */
+export const footerNav: NavItem[] = [
+  { label: "Accueil", path: "/" },
+  { label: "Accompagnement", path: "/mission" },
+  { label: "Nos villes", path: "/nos-villes" },
+  { label: "Préparer mon Alya", path: "/preparer-mon-alya" },
+  { label: "Témoignages", path: "/temoignages-videos" },
+  { label: "L'équipe", path: "/lequipe" },
+  { label: "Partenaires", path: "/partenaires" },
+  { label: "Blog", path: "/blog" },
+  { label: "Contact", path: "/nous-contacter" },
+];
+
 export const mobileNav: NavItem[] = [
-  { label: "Accompagnement", path: "/#accompagnement" },
+  { label: "Accueil", path: "/" },
+  { label: "Accompagnement", path: "/mission" },
   {
     label: "Nos villes",
     path: "/nos-villes",
