@@ -40,6 +40,16 @@
   ],
   "redirects": [
     {
+      "source": "/mission",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/mission/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
       "source": "/2026/03/17/faire-son-alya-en-famille-une-aventure-magnifique-qui-se-prepare",
       "destination": "/blog/faire-son-alya-en-famille-une-aventure-magnifique-qui-se-prepare",
       "permanent": true

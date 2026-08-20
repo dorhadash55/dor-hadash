@@ -21,12 +21,14 @@ export type NavItem = {
   children?: NavItem[];
 };
 
-/** Navigation desktop — barre compacte */
+/**
+ * Desktop — peu d'entrées, CTA entretien séparé dans le Header.
+ * Pas de doublon Contact / Piliers (déjà sur l'accueil via Accompagnement).
+ */
 export const mainNav: NavItem[] = [
-  { label: "Notre accompagnement", shortLabel: "Accompagnement", path: "/mission" },
-  { label: "Les quatre piliers", shortLabel: "Piliers", path: "/#piliers" },
+  { label: "Notre accompagnement", shortLabel: "Accompagnement", path: "/#accompagnement" },
   {
-    label: "Choisir sa ville",
+    label: "Nos villes",
     shortLabel: "Villes",
     path: "/nos-villes",
     children: [
@@ -46,23 +48,19 @@ export const mainNav: NavItem[] = [
     label: "À propos",
     path: "/lequipe",
     children: [
-      { label: "Mission", path: "/mission" },
       { label: "L'équipe", path: "/lequipe" },
       { label: "Partenaires", path: "/partenaires" },
       { label: "Blog", path: "/blog" },
     ],
   },
-  { label: "Contact", path: "/nous-contacter" },
 ];
 
 /**
- * Navigation mobile — structure claire type ancien menu :
- * Accueil + Blog visibles, villes en accordéon, CTA contact en bas.
+ * Mobile — peu d'entrées ; villes en mini-grille au tap.
+ * Pas d'Accueil (logo), pas d'Appeler (barre CTA en bas).
  */
 export const mobileNav: NavItem[] = [
-  { label: "Accueil", path: "/" },
-  { label: "Notre accompagnement", path: "/mission" },
-  { label: "Les quatre piliers", path: "/#piliers" },
+  { label: "Accompagnement", path: "/#accompagnement" },
   {
     label: "Nos villes",
     path: "/nos-villes",
@@ -78,7 +76,13 @@ export const mobileNav: NavItem[] = [
   },
   { label: "Préparer mon Alya", path: "/preparer-mon-alya" },
   { label: "Témoignages", path: "/temoignages-videos" },
-  { label: "L'équipe", path: "/lequipe" },
-  { label: "Partenaires", path: "/partenaires" },
-  { label: "Blog", path: "/blog" },
+  {
+    label: "À propos",
+    path: "/lequipe",
+    children: [
+      { label: "L'équipe", path: "/lequipe" },
+      { label: "Partenaires", path: "/partenaires" },
+      { label: "Blog", path: "/blog" },
+    ],
+  },
 ];

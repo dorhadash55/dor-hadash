@@ -16,12 +16,12 @@ export default function VideoTeaser() {
   if (preview.length === 0) return null;
 
   return (
-    <section className="section-shell bg-white">
+    <section className="section-shell bg-brand-cream">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal variant="blur">
           <SectionHeading
             label="Paroles d'olim"
-            title="Témoignages et programme"
+            title="Ils en parlent"
             action={
               <Link to="/temoignages-videos" className="btn-outline">
                 Voir tout →
@@ -30,13 +30,13 @@ export default function VideoTeaser() {
           />
         </Reveal>
 
-        <div className="mt-8 -mx-4 flex gap-3 overflow-x-auto snap-x snap-mandatory px-4 pb-3 scrollbar-hide sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-3 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
+        <div className="mt-5 -mx-4 flex gap-2.5 overflow-x-auto snap-x snap-mandatory px-4 pb-2 scrollbar-hide sm:mx-0 sm:mt-8 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0">
           {preview.map((v, i) => (
             <Reveal
               key={v.id}
-              delay={i * 100}
+              delay={i * 70}
               variant="scale"
-              className="w-[78vw] max-w-[18.5rem] shrink-0 snap-center sm:w-auto sm:max-w-none sm:snap-align-none"
+              className="w-[72vw] max-w-[16rem] shrink-0 snap-center sm:w-auto sm:max-w-none sm:snap-align-none"
             >
               <VideoTeaserCard video={v} onPlay={() => setActiveVideo(v)} />
             </Reveal>

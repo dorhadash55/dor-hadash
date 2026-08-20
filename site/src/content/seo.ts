@@ -9,11 +9,6 @@ export const seoByPath: Record<string, SeoEntry> = {
     description:
       "Dor Hadash accompagne les francophones dans leur Alya en Israël : logement, immersion, éducation, emploi. Un parcours complet pour réussir votre intégration.",
   },
-  "/mission": {
-    title: "Notre mission | Dor Hadash",
-    description:
-      "Mission Dor Hadash : accompagnement à l'intégration des olim francophones — logement, immersion, éducation et emploi, selon votre profil et votre ville.",
-  },
   "/preparer-mon-alya": {
     title: "Préparer mon Alya | Dor Hadash",
     description:

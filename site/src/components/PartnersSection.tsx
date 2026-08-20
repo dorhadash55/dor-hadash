@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { partners, partnersIntro, type Partner } from "../content/partners";
+import { partners, type Partner } from "../content/partners";
 import PartnerModal from "./PartnerModal";
 import Reveal from "./Reveal";
-import SectionHeading from "./SectionHeading";
 
 /** Sélection courte pour l'accueil — le reste est sur /partenaires */
 const HOME_PARTNER_SLUGS = [
@@ -18,7 +17,7 @@ function PartnerLogoMark({ partner }: { partner: Partner }) {
   if (!partner.logo) {
     return (
       <div
-        className="flex aspect-square w-full max-w-[5.5rem] items-center justify-center font-heading text-base font-semibold text-brand-blue transition-transform duration-300 group-hover:scale-[1.03] sm:max-w-[6.5rem] sm:text-lg"
+        className="flex h-12 w-12 items-center justify-center font-heading text-sm font-semibold text-brand-blue sm:h-14 sm:w-14"
         aria-hidden
       >
         {partner.name
@@ -34,11 +33,12 @@ function PartnerLogoMark({ partner }: { partner: Partner }) {
     <img
       src={partner.logo}
       alt=""
-      className="aspect-square w-full max-w-[5.5rem] object-contain transition-transform duration-300 group-hover:scale-[1.03] sm:max-w-[6.5rem]"
+      className="h-12 w-12 object-contain sm:h-14 sm:w-14"
     />
   );
 }
 
+/** Bandeau logos compact — pas une section marketing pleine hauteur. */
 export default function PartnersSection() {
   const [active, setActive] = useState<Partner | null>(null);
   const preview = HOME_PARTNER_SLUGS.map((slug) => partners.find((p) => p.slug === slug)).filter(
@@ -46,49 +46,42 @@ export default function PartnersSection() {
   );
 
   return (
-    <section className="section-shell bg-brand-cream">
+    <section className="border-y border-brand-blue/8 bg-white py-6 sm:py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
-          <SectionHeading
-            align="center"
-            label={partnersIntro.label}
-            title={partnersIntro.title}
-            description="Institutions, associations et outils qui complètent l'accompagnement Dor Hadash — découvrez le réseau complet sur notre page partenaires."
-          />
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <p className="font-accent text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-teal sm:text-xs">
+                Partenaires
+              </p>
+              <p className="mt-1 font-heading text-base font-semibold text-brand-blue-deep sm:text-lg">
+                Un réseau institutionnel
+              </p>
+            </div>
+            <Link
+              to="/partenaires"
+              className="text-sm font-semibold text-brand-blue hover:text-brand-blue-dark"
+            >
+              Voir tous →
+            </Link>
+          </div>
         </Reveal>
 
-        <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-6 sm:mt-10 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-8 lg:grid-cols-5">
-          {preview.map((partner, i) => (
-            <Reveal key={partner.slug} delay={Math.min(i * 50, 220)} variant="up">
-              <button
-                type="button"
-                onClick={() => setActive(partner)}
-                className="group flex w-full flex-col items-center text-center transition-transform duration-300 hover:-translate-y-0.5 active:scale-[0.98]"
-              >
-                <PartnerLogoMark partner={partner} />
-                <p className="mt-2.5 font-heading text-[13px] font-semibold leading-snug text-brand-blue-deep transition-colors duration-300 [overflow-wrap:anywhere] group-hover:text-brand-blue sm:mt-3 sm:text-sm">
-                  {partner.name}
-                </p>
-                <span
-                  className="mt-1 text-[11px] font-semibold text-brand-teal opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-xs"
-                  aria-hidden
-                >
-                  Voir →
-                </span>
-              </button>
-            </Reveal>
+        <div className="mt-4 flex gap-4 overflow-x-auto pb-1 scrollbar-hide sm:mt-5 sm:grid sm:grid-cols-5 sm:gap-4 sm:overflow-visible sm:pb-0">
+          {preview.map((partner) => (
+            <button
+              key={partner.slug}
+              type="button"
+              onClick={() => setActive(partner)}
+              className="flex w-[4.75rem] shrink-0 flex-col items-center text-center transition active:scale-[0.98] sm:w-auto"
+            >
+              <PartnerLogoMark partner={partner} />
+              <p className="mt-1.5 line-clamp-2 font-heading text-[11px] font-semibold leading-tight text-brand-blue-deep sm:text-xs">
+                {partner.name}
+              </p>
+            </button>
           ))}
         </div>
-
-        <Reveal delay={120} className="mt-8 flex justify-center sm:mt-10">
-          <Link
-            to="/partenaires"
-            className="inline-flex items-center gap-2 rounded-full bg-brand-blue px-8 py-3.5 text-base font-semibold text-white shadow-md shadow-brand-blue/20 transition hover:-translate-y-0.5 hover:bg-brand-blue-dark hover:shadow-lg sm:px-10 sm:py-4 sm:text-lg"
-          >
-            Voir tous
-            <span aria-hidden>→</span>
-          </Link>
-        </Reveal>
       </div>
 
       {active && <PartnerModal partner={active} onClose={() => setActive(null)} />}

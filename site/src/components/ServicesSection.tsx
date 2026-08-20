@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import {
   accompanimentDisclaimer,
   pillars,
@@ -10,30 +9,30 @@ import SectionHeading from "./SectionHeading";
 import ServiceIcon from "./ServiceIcon";
 
 const accents = [
-  { iconBg: "bg-brand-blue", iconText: "text-white", border: "border-brand-blue/20", softBg: "bg-brand-blue/10", softText: "text-brand-blue" },
-  { iconBg: "bg-brand-teal", iconText: "text-brand-blue-deep", border: "border-brand-teal/25", softBg: "bg-brand-teal/15", softText: "text-brand-teal" },
-  { iconBg: "bg-brand-coral", iconText: "text-white", border: "border-brand-coral/20", softBg: "bg-brand-coral/10", softText: "text-brand-coral" },
-  { iconBg: "bg-brand-blue-deep", iconText: "text-white", border: "border-brand-blue/20", softBg: "bg-brand-blue/10", softText: "text-brand-blue" },
+  { iconBg: "bg-brand-blue", iconText: "text-white", border: "border-brand-blue/20" },
+  { iconBg: "bg-brand-teal", iconText: "text-brand-blue-deep", border: "border-brand-teal/25" },
+  { iconBg: "bg-brand-coral", iconText: "text-white", border: "border-brand-coral/20" },
+  { iconBg: "bg-brand-blue-deep", iconText: "text-white", border: "border-brand-blue/20" },
 ];
 
 export default function ServicesSection() {
-  const [openTitle, setOpenTitle] = useState<string | null>(pillars[0]?.title ?? null);
+  const [openTitle, setOpenTitle] = useState<string | null>(null);
 
   return (
-    <section id="piliers" className="section-shell scroll-mt-24 bg-white">
+    <section id="piliers" className="section-shell scroll-mt-24 bg-brand-cream">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
           <SectionHeading
             align="center"
             label="Les quatre piliers"
             title="Logement, immersion, éducation, emploi"
-            description="L'identité du programme Dor Hadash — reconnaissable partout."
+            description="L'identité du programme — reconnaissable partout."
           />
         </Reveal>
 
-        {/* Mobile — accordion avec icônes contrastées */}
-        <Reveal delay={80} className="sm:hidden">
-          <div className="mt-8 space-y-2.5">
+        {/* Mobile — accordéon fermé par défaut */}
+        <Reveal delay={60} className="mt-6 sm:hidden">
+          <div className="space-y-2">
             {pillars.map((s, i) => {
               const accent = accents[i % accents.length];
               const open = openTitle === s.title;
@@ -43,121 +42,79 @@ export default function ServicesSection() {
                   type="button"
                   onClick={() => setOpenTitle(open ? null : s.title)}
                   aria-expanded={open}
-                  className={`flex w-full items-start gap-3.5 rounded-2xl border px-3.5 py-3.5 text-left transition-shadow ${
+                  className={`flex w-full items-center gap-3 rounded-xl border px-3 py-3 text-left ${
                     open
-                      ? "border-brand-blue/20 bg-white shadow-md shadow-brand-blue/5"
-                      : "border-brand-sand bg-brand-cream/80"
+                      ? "border-brand-blue/20 bg-white shadow-sm"
+                      : "border-transparent bg-white/80"
                   }`}
                 >
                   <div
-                    className={`mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${accent.iconBg} ${accent.iconText}`}
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${accent.iconBg} ${accent.iconText}`}
                   >
-                    <ServiceIcon icon={s.icon} className="h-5 w-5" />
+                    <ServiceIcon icon={s.icon} className="h-4 w-4" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <h3 className="font-heading text-base font-semibold leading-snug text-brand-blue-deep">
-                        {s.title}
-                      </h3>
-                      <span
-                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-blue/8 text-brand-blue transition-transform ${open ? "rotate-180" : ""}`}
-                        aria-hidden="true"
-                      >
-                        <Chevron />
-                      </span>
-                    </div>
-                    <p className={`mt-1.5 text-sm leading-relaxed text-gray-600 ${open ? "" : "line-clamp-2"}`}>
-                      {open ? s.description : s.teaser}
-                    </p>
+                    <h3 className="font-heading text-[0.95rem] font-semibold text-brand-blue-deep">
+                      {s.title}
+                    </h3>
+                    {open ? (
+                      <p className="mt-1 text-sm leading-snug text-gray-600">{s.description}</p>
+                    ) : (
+                      <p className="mt-0.5 line-clamp-1 text-xs text-gray-500">{s.teaser}</p>
+                    )}
                   </div>
+                  <span
+                    className={`shrink-0 text-brand-blue transition-transform ${open ? "rotate-180" : ""}`}
+                    aria-hidden
+                  >
+                    <Chevron />
+                  </span>
                 </button>
               );
             })}
           </div>
-          <p className="mt-3 text-center text-xs text-gray-400">Appuyez pour lire le détail</p>
         </Reveal>
 
-        {/* Desktop */}
-        <div className="mt-14 hidden space-y-5 sm:block">
-          <Reveal delay={80} variant="blur">
-            <div className="relative overflow-hidden rounded-3xl">
-              <img
-                src="/images/hero-accompagnement.jpg"
-                alt=""
-                className="aspect-[21/8] w-full object-cover lg:aspect-[21/7]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-blue-deep/92 via-brand-blue-deep/55 to-transparent" />
-              <div className="absolute inset-0 flex flex-col justify-end px-5 py-8 sm:justify-center sm:px-8 sm:py-10 lg:px-12">
-                <p className="font-accent text-xs uppercase tracking-[0.22em] text-brand-teal">Dor Hadash</p>
-                <p className="mt-2 max-w-lg font-heading text-xl font-semibold leading-snug text-white sm:text-2xl lg:text-3xl">
-                  Quatre piliers clairs — pas un catalogue de services.
-                </p>
-                <Link
-                  to="/nous-contacter?objet=entretien"
-                  className="btn-ghost mt-5 w-full justify-center text-sm sm:w-fit"
+        {/* Desktop — grille sans bannière */}
+        <div className="mt-8 hidden gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-4">
+          {pillars.map((s, i) => {
+            const accent = accents[i % accents.length];
+            return (
+              <Reveal
+                key={s.title}
+                delay={80 + i * 50}
+                variant="up"
+                className={`rounded-2xl border bg-white p-5 ${accent.border}`}
+              >
+                <div
+                  className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${accent.iconBg} ${accent.iconText}`}
                 >
-                  Demander un premier entretien →
-                </Link>
-              </div>
-            </div>
-          </Reveal>
-
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {pillars.map((s, i) => {
-              const accent = accents[i % accents.length];
-              return (
-                <Reveal
-                  key={s.title}
-                  delay={120 + i * 70}
-                  variant="up"
-                  className={`group rounded-2xl border bg-white p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg ${accent.border}`}
-                >
-                  <div
-                    className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${accent.iconBg} ${accent.iconText}`}
-                  >
-                    <ServiceIcon icon={s.icon} className="h-6 w-6" />
-                  </div>
-                  <h3 className="mt-4 font-heading text-lg font-semibold text-brand-blue-deep">{s.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-gray-600">{s.description}</p>
-                </Reveal>
-              );
-            })}
-          </div>
+                  <ServiceIcon icon={s.icon} className="h-5 w-5" />
+                </div>
+                <h3 className="mt-3 font-heading text-lg font-semibold text-brand-blue-deep">{s.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-gray-600">{s.description}</p>
+              </Reveal>
+            );
+          })}
         </div>
 
-        <Reveal delay={100} className="mt-10 sm:mt-14">
-          <p className="font-accent text-center text-xs uppercase tracking-[0.2em] text-brand-teal">
-            Services transversaux
+        <Reveal delay={80} className="mt-6 sm:mt-8">
+          <p className="text-center font-accent text-[10px] uppercase tracking-[0.2em] text-brand-teal sm:text-xs">
+            Aussi inclus
           </p>
-          <h3 className="mt-2 text-center font-heading text-xl font-semibold text-brand-blue-deep sm:text-2xl">
-            Hébreu, démarches et communauté
-          </h3>
-          <div className="mt-6 grid gap-3 sm:grid-cols-3 sm:gap-4">
-            {transversalServices.map((s, i) => {
-              const accent = accents[i % accents.length];
-              return (
-                <div
-                  key={s.title}
-                  className={`rounded-2xl border bg-brand-cream/70 p-4 sm:p-5 ${accent.border}`}
-                >
-                  <div
-                    className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${accent.iconBg} ${accent.iconText}`}
-                  >
-                    <ServiceIcon icon={s.icon} className="h-5 w-5" />
-                  </div>
-                  <h4 className="mt-3 font-heading text-base font-semibold text-brand-blue-deep">{s.title}</h4>
-                  <p className="mt-1.5 text-sm leading-relaxed text-gray-600">{s.description}</p>
-                </div>
-              );
-            })}
-          </div>
-        </Reveal>
-
-        <Reveal delay={120} className="mt-8 sm:mt-10">
-          <aside className="rounded-2xl border border-brand-blue/15 bg-brand-blue/[0.04] px-5 py-4 text-sm leading-relaxed text-gray-700 sm:px-6 sm:py-5 sm:text-base">
-            <p className="font-medium text-brand-blue-deep">Transparence</p>
-            <p className="mt-1.5">{accompanimentDisclaimer}</p>
-          </aside>
+          <ul className="mt-3 flex flex-wrap justify-center gap-2">
+            {transversalServices.map((s) => (
+              <li
+                key={s.title}
+                className="rounded-full border border-brand-sand bg-white px-3.5 py-1.5 text-xs font-medium text-brand-blue-deep sm:text-sm"
+              >
+                {s.title}
+              </li>
+            ))}
+          </ul>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-xs leading-relaxed text-gray-500 sm:mt-5 sm:text-sm">
+            {accompanimentDisclaimer}
+          </p>
         </Reveal>
       </div>
     </section>

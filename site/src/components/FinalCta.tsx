@@ -21,22 +21,22 @@ export default function FinalCta() {
         aria-hidden="true"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-10 pb-20 sm:px-6 sm:py-20 sm:pb-20">
+      <div className="relative mx-auto max-w-7xl px-4 py-8 pb-[5.5rem] sm:px-6 sm:py-16 sm:pb-16">
         <Reveal variant="blur" className="mx-auto max-w-2xl text-center text-white">
           <p className="font-accent text-xs uppercase tracking-[0.24em] text-brand-teal">Prochaine étape</p>
-          <h2 className="mt-2 font-heading text-2xl font-semibold text-balance sm:mt-3 sm:text-4xl lg:text-5xl">
+          <h2 className="mt-2 font-heading text-xl font-semibold text-balance sm:mt-3 sm:text-4xl lg:text-5xl">
             Prêt à préparer votre Alya ?
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-white/85 sm:mt-4 sm:text-lg">
             Un premier échange pour clarifier votre projet — sans engagement.
           </p>
-          <div className="mt-5 flex w-full flex-col items-stretch justify-center gap-2.5 sm:mt-8 sm:flex-row sm:items-center sm:gap-3">
+          <div className="mt-4 flex w-full flex-col items-stretch justify-center gap-2 sm:mt-8 sm:flex-row sm:items-center sm:gap-3">
             <Link to="/nous-contacter?objet=entretien" className="btn-primary w-full justify-center sm:w-auto">
               Demander un premier entretien →
             </Link>
             <Link
               to="/preparer-mon-alya"
-              className="btn-ghost w-full justify-center px-5 py-3 text-sm sm:w-auto sm:text-base"
+              className="btn-ghost w-full justify-center px-5 py-2.5 text-sm sm:w-auto sm:py-3 sm:text-base"
             >
               Faire le point sur mon projet
             </Link>
