@@ -236,7 +236,7 @@ export const cities: City[] = [
       {
         heading: "Logement, transports et croissance",
         paragraphs: [
-          "Les loyers du centre-ville restent nettement inférieurs à ceux des autres grandes villes. Les prix sont environ 30 % moins chers que le marché national (environ 2 500 à 3 500 ₪ selon la taille, le quartier et le meublé).",
+          "Les loyers du centre-ville restent nettement inférieurs à ceux des autres grandes villes. Fourchettes indicatives (août 2026) : 4 200 à 6 500 ₪ pour un 3 pièces, 5 800 à 8 500 ₪ pour un 4 pièces — selon le quartier, l'état et le meublé.",
           "Transports remarquables : train, bus hybrides et le seul métro d'Israël. Une croissance démographique de 60 000 habitants est attendue d'ici 2025.",
         ],
       },
@@ -552,7 +552,7 @@ export const cities: City[] = [
       {
         heading: "Logement et projets",
         paragraphs: [
-          "Ces dernières années, 17 000 logements ont été commercialisés dans les quartiers ouest. Un second accord-cadre pour 32 000 logements vise 140 000 habitants d'ici dix ans. Les prix restent nettement plus bas que dans le centre ou d'autres villes du sud.",
+          "Ces dernières années, 17 000 logements ont été commercialisés dans les quartiers ouest. Un second accord-cadre pour 32 000 logements vise 140 000 habitants d'ici dix ans. Fourchettes indicatives (août 2026) : 3 300 à 4 300 ₪ pour un 3 pièces, 3 800 à 5 000 ₪ pour un 4 pièces.",
           "Début 2026, l'hôpital Hadassah ouvrira ses portes avec des urgences et d'autres services. Un grand country club familial est en construction. La synagogue francophone, avec son centre d'étude, devrait être achevée d'ici environ un an et demi.",
         ],
       },
@@ -567,7 +567,7 @@ export const cities: City[] = [
       {
         heading: "Contact mairie",
         paragraphs: [
-          "Yael Nahmias, coordinatrice des olim hadashim pour la mairie de Netivot — 054-945-2055 · yael.n@netivot.muni.il",
+          "Yael Nahmias, coordinatrice locale francophone pour la mairie de Netivot — 054-945-2055 · Yael.n@netivot.muni.il",
         ],
       },
     ],
@@ -671,7 +671,7 @@ export const cities: City[] = [
       {
         heading: "Les 4 piliers de votre installation",
         paragraphs: [
-          "Logement : définition des quartiers compatibles avec votre budget et votre mode de vie ; recherche à distance ou sur place ; lecture des conditions du bail et anticipation des garanties demandées.",
+          "Logement : définition des quartiers compatibles avec votre budget et votre mode de vie ; recherche à distance ou sur place ; lecture des conditions du bail et anticipation des garanties demandées. Fourchettes indicatives (août 2026) : 4 200 à 5 800 ₪ (3 pièces), 5 200 à 7 000 ₪ (4 pièces).",
           "Immersion : oulpan, pratique quotidienne de l'hébreu, activités municipales, bénévolat et rencontres avec des familles déjà installées — pour créer rapidement des repères et un réseau local.",
           "Éducation : orientation vers les établissements adaptés — publics, publics religieux ou autres cadres reconnus — puis suivi des inscriptions et de l'adaptation scolaire grâce au Pont Éducatif.",
           "Emploi : clarification du projet professionnel, adaptation du CV au marché israélien, activation des réseaux, orientation vers la formation, l'emploi salarié ou la création d'activité.",
@@ -762,7 +762,7 @@ export const cities: City[] = [
       {
         heading: "Les 4 piliers de votre installation",
         paragraphs: [
-          "Logement : choix du quartier selon le budget, le mode de vie et l'accès aux transports ; recherche à distance ou sur place ; lecture du bail, vérification du contexte de rénovation urbaine et anticipation des garanties demandées.",
+          "Logement : choix du quartier selon le budget, le mode de vie et l'accès aux transports ; recherche à distance ou sur place ; lecture du bail, vérification du contexte de rénovation urbaine et anticipation des garanties demandées. Fourchettes indicatives (août 2026) : 4 500 à 6 000 ₪ (3 pièces), 5 800 à 7 800 ₪ (4 pièces).",
           "Immersion : oulpan, pratique quotidienne de l'hébreu, activités municipales, bénévolat et rencontres avec des familles déjà installées — pour créer rapidement des repères et un réseau local.",
           "Éducation : orientation vers les établissements adaptés — publics, publics religieux ou autres cadres reconnus — puis suivi des inscriptions et de l'adaptation scolaire grâce au Pont Éducatif.",
           "Emploi : clarification du projet professionnel, adaptation du CV au marché israélien, activation des réseaux et accès aux opportunités de Bat Yam, Holon, Tel-Aviv et de l'ensemble du Goush Dan.",

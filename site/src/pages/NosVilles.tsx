@@ -5,7 +5,11 @@ import CityImage from "../components/CityImage";
 import Reveal from "../components/Reveal";
 import { cities } from "../content/cities";
 import { cityDecisions } from "../content/cityDecision";
+import { cityCoordinators } from "../content/coordinators";
+import { rentUpdatedLabel } from "../content/rents";
 import { readOptionalCookie, writeOptionalCookie } from "../lib/cookieConsent";
+import CoordinatorCard from "../components/CoordinatorCard";
+import RentTable from "../components/RentTable";
 
 const criteria = [
   { id: "famille", label: "Famille avec enfants" },
@@ -248,6 +252,46 @@ export default function NosVilles() {
                     </span>
                   </div>
                 </Link>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="loyers" className="scroll-mt-24 bg-white">
+        <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
+          <Reveal>
+            <p className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal">Repères budget</p>
+            <h2 className="mt-2 font-heading text-2xl font-semibold text-brand-blue-deep sm:text-3xl">
+              Fourchettes indicatives des loyers
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-gray-600">
+              Loyers mensuels demandés — {rentUpdatedLabel}. Jérusalem et Nof HaGalil se confirment au cas par
+              cas avec un coordinateur.
+            </p>
+          </Reveal>
+          <div className="mt-6">
+            <RentTable />
+          </div>
+        </div>
+      </section>
+
+      <section id="coordinateurs" className="scroll-mt-24 bg-brand-cream">
+        <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
+          <Reveal>
+            <p className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal">Sur place</p>
+            <h2 className="mt-2 font-heading text-2xl font-semibold text-brand-blue-deep sm:text-3xl">
+              Coordinateurs locaux francophones
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm text-gray-600">
+              Relais municipaux et locaux. Pour préparer votre Alya depuis la France, commencez par un échange
+              Dor Hadash — ils vous orientent vers le bon interlocuteur.
+            </p>
+          </Reveal>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {cityCoordinators.map((group, i) => (
+              <Reveal key={group.name} delay={Math.min(i * 40, 200)}>
+                <CoordinatorCard group={group} compact />
               </Reveal>
             ))}
           </div>

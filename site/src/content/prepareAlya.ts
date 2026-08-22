@@ -1,3 +1,9 @@
+export const checklistPdf = {
+  href: "/docs/checklist-dor-hadash.pdf",
+  filename: "Checklist-Dor-Hadash.pdf",
+  label: "Télécharger la checklist olim (PDF)",
+};
+
 export const prepareAlya = {
   intro:
     "Un espace pratique pour anticiper les étapes-clés de votre Alya — de la réflexion en France aux premiers jours en Israël.",
@@ -30,17 +36,12 @@ export const prepareAlya = {
       ],
     },
   ],
-  checklist: [
-    "Passeports, actes d’état civil, documents scolaires et professionnels",
-    "Budget prévisionnel sur 6 à 12 mois",
-    "Choix de ville et critères (école, emploi, vie religieuse, transports)",
-    "Contacts locaux (Dor Hadash, Misrad Haklita, partenaires)",
-    "Assurance / santé, banque, téléphone, logement temporaire",
-  ],
+  checklistIntro:
+    "La checklist officielle Dor Hadash pour les olim : documents, démarches et points à anticiper avant le départ. Document à télécharger et à parcourir à votre rythme.",
   topics: [
     {
       title: "Budget familial prévisionnel",
-      body: "Anticipez loyer, oulpan, scolarité, transports et une réserve pour les imprévus. Un atelier budget fait partie du parcours Dor Hadash — les montants dépendent de la ville et de votre situation.",
+      body: "Anticipez loyer, oulpan, scolarité, transports et une réserve pour les imprévus. Un atelier budget fait partie du parcours Dor Hadash — les montants dépendent de la ville et de votre situation. Consultez aussi les fourchettes indicatives de loyers sur la page Nos villes.",
     },
     {
       title: "Reconnaissance des diplômes",
@@ -67,7 +68,12 @@ export const prepareAlya = {
       label: "OlimAid — outil pratique pour préparer son Alya (partenaire)",
       href: "https://www.olimaid.com/fr",
     },
-  ],
+    {
+      label: "Checklist olim Dor Hadash (PDF)",
+      href: "/docs/checklist-dor-hadash.pdf",
+      download: "Checklist-Dor-Hadash.pdf",
+    },
+  ] satisfies Array<{ label: string; href: string; download?: string }>,
   faq: [
     {
       q: "Dor Hadash remplace-t-il les organismes officiels ?",

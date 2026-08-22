@@ -17,7 +17,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/preparer-mon-alya": {
     title: "Préparer mon Alya | Dor Hadash",
     description:
-      "Chronologie, checklist, budget, scolarité, premiers jours en Israël et FAQ pour préparer votre Alya avec Dor Hadash.",
+      "Chronologie, checklist olim téléchargeable, budget, scolarité, premiers jours en Israël et FAQ pour préparer votre Alya avec Dor Hadash.",
   },
   "/lequipe": {
     title: "L'équipe Dor Hadash | Qui sommes-nous ?",
@@ -32,7 +32,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/nos-villes": {
     title: "Nos villes d'accueil | Dor Hadash",
     description:
-      "Villes partenaires Dor Hadash pour votre Alya : Karmiel, Haïfa, Jérusalem, Nof HaGalil, Netivot, Ashdod et Bat Yam.",
+      "Villes partenaires Dor Hadash : Karmiel, Haïfa, Jérusalem, Nof HaGalil, Netivot, Ashdod et Bat Yam. Comparez, consultez les loyers indicatifs et les coordinateurs locaux.",
   },
   "/karmiel": {
     title: "Faire son Alya à Karmiel | Dor Hadash",

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import SeoHead from "../components/SeoHead";
 import PageBanner from "../components/PageBanner";
 import Reveal from "../components/Reveal";
-import { prepareAlya } from "../content/prepareAlya";
+import { checklistPdf, prepareAlya } from "../content/prepareAlya";
 
 export default function PreparerMonAlya() {
   const [openFaq, setOpenFaq] = useState<string | null>(prepareAlya.faq[0]?.q ?? null);
@@ -50,26 +50,39 @@ export default function PreparerMonAlya() {
       <section className="bg-brand-cream">
         <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
           <Reveal>
-            <p className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal">Checklist</p>
+            <p className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal">Checklist olim</p>
             <h2 className="mt-2 font-heading text-2xl font-semibold text-brand-blue-deep sm:text-3xl">
-              À préparer avant le départ
+              La checklist officielle Dor Hadash
             </h2>
-            <p className="mt-2 max-w-2xl text-sm text-gray-600">
-              Une liste de contrôle à parcourir avant le départ.
-            </p>
+            <p className="mt-2 max-w-2xl text-sm text-gray-600">{prepareAlya.checklistIntro}</p>
           </Reveal>
-          <ul className="mt-6 space-y-3">
-            {prepareAlya.checklist.map((item, i) => (
-              <Reveal key={item} delay={i * 40} variant="up">
-                <li className="flex items-start gap-3 rounded-xl bg-white px-4 py-3 text-sm text-gray-700 ring-1 ring-brand-sand">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-brand-blue/30 text-[10px] font-bold text-brand-blue">
-                    {i + 1}
+          <Reveal delay={80}>
+            <a
+              href={checklistPdf.href}
+              download={checklistPdf.filename}
+              className="mt-6 flex flex-col gap-4 rounded-2xl border border-brand-sand bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"
+            >
+              <div className="flex items-start gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-blue/10 text-brand-blue">
+                  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 3v5h5M12 11v6m0 0-2.5-2.5M12 17l2.5-2.5" />
+                  </svg>
+                </span>
+                <span>
+                  <span className="block font-heading text-lg font-semibold text-brand-blue-deep">
+                    Checklist Dor Hadash
                   </span>
-                  {item}
-                </li>
-              </Reveal>
-            ))}
-          </ul>
+                  <span className="mt-1 block text-sm text-gray-600">
+                    PDF officiel — à télécharger et à conserver.
+                  </span>
+                </span>
+              </div>
+              <span className="inline-flex items-center justify-center rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white">
+                {checklistPdf.label}
+              </span>
+            </a>
+          </Reveal>
         </div>
       </section>
 
@@ -87,6 +100,11 @@ export default function PreparerMonAlya() {
                 <div className="h-full rounded-2xl border border-brand-sand p-5">
                   <h3 className="font-heading text-lg font-semibold text-brand-blue-deep">{topic.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-gray-600">{topic.body}</p>
+                  {topic.title.startsWith("Budget") && (
+                    <Link to="/nos-villes#loyers" className="mt-3 inline-block text-sm font-semibold text-brand-blue hover:underline">
+                      Voir les fourchettes de loyers →
+                    </Link>
+                  )}
                 </div>
               </Reveal>
             ))}
@@ -107,8 +125,9 @@ export default function PreparerMonAlya() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  {...("download" in link && link.download
+                    ? { download: link.download }
+                    : { target: "_blank", rel: "noopener noreferrer" })}
                   className="text-sm font-medium text-brand-blue hover:underline"
                 >
                   {link.label} →

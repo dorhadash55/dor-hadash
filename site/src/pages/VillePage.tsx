@@ -6,7 +6,10 @@ import CityGalleryCarousel from "../components/CityGalleryCarousel";
 import Reveal from "../components/Reveal";
 import { getCityBySlug, type CitySection } from "../content/cities";
 import { getCityDecision } from "../content/cityDecision";
+import { getCityCoordinator } from "../content/coordinators";
+import { getCityRent, rentDisclaimer, rentUpdatedLabel } from "../content/rents";
 import { writeOptionalCookie } from "../lib/cookieConsent";
+import CoordinatorCard from "../components/CoordinatorCard";
 
 function teaserFrom(section: CitySection) {
   const first = section.paragraphs[0] ?? "";
@@ -135,6 +138,8 @@ export default function VillePage() {
   if (!city) return <Navigate to="/nos-villes" replace />;
 
   const decision = getCityDecision(city.slug);
+  const coordinator = getCityCoordinator(city.slug);
+  const rent = getCityRent(city.slug);
   const gallery = city.gallery ?? [];
   const galleryMore = city.galleryMore ?? [];
   const heroSrc = gallery[0]?.src ?? city.image;
@@ -255,6 +260,41 @@ export default function VillePage() {
                 ))}
               </dl>
             </div>
+            {(rent || coordinator) && (
+              <div className={`mt-6 grid gap-4 ${rent && coordinator ? "sm:grid-cols-2" : "sm:max-w-lg"}`}>
+                {rent && (
+                  <Reveal>
+                    <div className="h-full rounded-2xl border border-brand-sand bg-brand-cream/50 p-5 sm:p-6">
+                      <p className="font-accent text-[10px] uppercase tracking-[0.18em] text-brand-teal">
+                        Loyers indicatifs · {rentUpdatedLabel}
+                      </p>
+                      <h3 className="mt-1 font-heading text-lg font-semibold text-brand-blue-deep">
+                        Fourchettes à {city.name}
+                      </h3>
+                      <dl className="mt-4 space-y-2 text-sm">
+                        <div className="flex justify-between gap-3">
+                          <dt className="text-gray-600">Appartement 3 pièces</dt>
+                          <dd className="font-semibold tabular-nums text-brand-blue-deep">{rent.threeRooms}</dd>
+                        </div>
+                        <div className="flex justify-between gap-3">
+                          <dt className="text-gray-600">Appartement 4 pièces</dt>
+                          <dd className="font-semibold tabular-nums text-brand-blue-deep">{rent.fourRooms}</dd>
+                        </div>
+                      </dl>
+                      <p className="mt-4 text-xs leading-relaxed text-gray-500">{rentDisclaimer}</p>
+                      <Link to="/nos-villes#loyers" className="mt-3 inline-block text-sm font-semibold text-brand-blue hover:underline">
+                        Comparer les villes →
+                      </Link>
+                    </div>
+                  </Reveal>
+                )}
+                {coordinator && (
+                  <Reveal delay={rent ? 80 : 0}>
+                    <CoordinatorCard group={coordinator} />
+                  </Reveal>
+                )}
+              </div>
+            )}
           </div>
         </section>
       )}

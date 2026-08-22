@@ -104,7 +104,7 @@ export type EntryDoor = {
 export const entryDoors: EntryDoor[] = [
   {
     title: "Je prépare mon Alya",
-    description: "Checklist, étapes et premiers échanges avec un coordinateur.",
+    description: "Checklist olim téléchargeable, étapes et premiers échanges avec un coordinateur.",
     href: "/preparer-mon-alya",
   },
   {
