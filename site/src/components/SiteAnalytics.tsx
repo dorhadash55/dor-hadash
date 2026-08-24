@@ -1,11 +1,16 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { inject } from "@vercel/analytics";
 import { initFirebaseAnalytics } from "../admin/firebase/config";
 import { COOKIE_CONSENT_EVENT, hasAnalyticsConsent } from "../lib/cookieConsent";
 import { trackClick, trackPageView } from "../lib/siteAnalytics";
 
 export default function SiteAnalytics() {
   const { pathname } = useLocation();
+
+  useEffect(() => {
+    inject();
+  }, []);
 
   useEffect(() => {
     const startIfAllowed = () => {

@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -78,5 +79,18 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   return {
     plugins: [react(), tailwindcss(), contactApiPlugin(env)],
+    resolve: {
+      alias: {
+        "@vercel/analytics": fileURLToPath(
+          new URL("./node_modules/@vercel/analytics/dist/index.mjs", import.meta.url),
+        ),
+      },
+    },
+    optimizeDeps: {
+      include: ["@vercel/analytics"],
+    },
+    ssr: {
+      noExternal: ["@vercel/analytics"],
+    },
   };
 });
