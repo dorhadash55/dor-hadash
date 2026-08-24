@@ -448,67 +448,54 @@ export const cities: City[] = [
     name: "Netivot",
     tagline: "Ville familiale du Neguev — croissance, avantages fiscaux et communauté francophone",
     image: "/images/netivot.jpg",
+    photoCredit: {
+      text: "PikiWiki / CC BY 2.5",
+      url: "https://commons.wikimedia.org/wiki/File:PikiWiki_Israel_44401_Aerial_photo_of_Netivot.jpg",
+    },
     gallery: [
       {
         src: "/images/cities/netivot/vue-aerienne.jpg",
-        caption: "Netivot, ville en plein essor",
+        caption: "Vue aérienne de Netivot",
         fit: "cover",
       },
       {
-        src: "/images/cities/netivot/ville-familiale.jpg",
-        caption: "Une ville familiale",
+        src: "/images/cities/netivot/paris-center.jpg",
+        caption: "Paris Oded Shriki Center",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/netivot/tour-eiffel.jpg",
+        caption: "Réplique de la tour Eiffel — Paris Center",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/netivot/tombeau-baba-sali.jpg",
+        caption: "Tombeau du Baba Salé",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/netivot/galerie-paris.jpg",
+        caption: "Galerie Paris — Paris Center",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/netivot/gare.jpg",
+        caption: "Gare de Netivot",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/netivot/centre-sciences.jpg",
+        caption: "Schwartz / Reisman Science Education Center",
+        fit: "cover",
+      },
+      {
+        src: "/images/cities/netivot/blason.jpg",
+        caption: "Blason de Netivot",
         fit: "contain",
       },
       {
-        src: "/images/cities/netivot/centre-ville.jpg",
-        caption: "Centre-ville et commerces",
-        fit: "contain",
-      },
-    ],
-    galleryMore: [
-      {
-        src: "/images/cities/netivot/bienvenue.jpg",
-        caption: "Présentation de Netivot",
-        fit: "contain",
-      },
-      {
-        src: "/images/cities/netivot/education.jpg",
-        caption: "Éducation",
-        fit: "contain",
-      },
-      {
-        src: "/images/cities/netivot/services-publics.jpg",
-        caption: "Services publics",
-        fit: "contain",
-      },
-      {
-        src: "/images/cities/netivot/travail.jpg",
-        caption: "Emploi et insertion",
-        fit: "contain",
-      },
-      {
-        src: "/images/cities/netivot/avantages.jpg",
-        caption: "Les avantages de vivre à Netivot",
-        fit: "contain",
-      },
-      {
-        src: "/images/cities/netivot/projets.jpg",
-        caption: "Projets à venir",
-        fit: "contain",
-      },
-      {
-        src: "/images/cities/netivot/quartiers.jpg",
-        caption: "Quartiers en construction",
-        fit: "contain",
-      },
-      {
-        src: "/images/cities/netivot/communautes.jpg",
-        caption: "Diverses communautés",
-        fit: "contain",
-      },
-      {
-        src: "/images/cities/netivot/contact.jpg",
-        caption: "Contact mairie — Yael Nahmias",
+        src: "/images/cities/netivot/carte.jpg",
+        caption: "Situation de Netivot",
         fit: "contain",
       },
     ],

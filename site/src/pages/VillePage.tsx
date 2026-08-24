@@ -145,7 +145,7 @@ export default function VillePage() {
   const heroSrc = gallery[0]?.src ?? city.image;
   const seen = new Set<string>();
   const allGallery = [...gallery, ...galleryMore].filter((img) => {
-    if (img.src === heroSrc || seen.has(img.src)) return false;
+    if (seen.has(img.src)) return false;
     seen.add(img.src);
     return true;
   });
@@ -171,6 +171,16 @@ export default function VillePage() {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-brand-blue-deep via-brand-blue-deep/55 to-brand-blue-deep/25" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(41,196,169,0.18),transparent_55%)]" />
+        {city.photoCredit && (
+          <a
+            href={city.photoCredit.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute bottom-3 right-3 z-10 rounded bg-black/45 px-2 py-1 text-[10px] text-white/80 hover:text-white"
+          >
+            {city.photoCredit.text}
+          </a>
+        )}
 
         <div className="relative mx-auto flex min-h-[58vh] max-w-7xl flex-col justify-end px-4 pb-[7.5rem] pt-24 sm:min-h-[62vh] sm:px-6 sm:pb-14">
           <p
