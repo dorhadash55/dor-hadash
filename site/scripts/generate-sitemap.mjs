@@ -34,6 +34,7 @@ const blogPosts = extractBlogEntries(blogSrc);
 
 const staticPages = [
   { path: "/", changefreq: "weekly", priority: "1.0" },
+  { path: "/preparer-mon-alya", changefreq: "monthly", priority: "0.9" },
   { path: "/mission", changefreq: "monthly", priority: "0.8" },
   { path: "/lequipe", changefreq: "monthly", priority: "0.6" },
   { path: "/partenaires", changefreq: "monthly", priority: "0.6" },

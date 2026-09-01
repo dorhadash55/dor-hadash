@@ -25,14 +25,14 @@ export const seoByPath: Record<string, SeoEntry> = {
       "Rencontrez l'équipe de l'association Dor Hadash : présidente, trésorier, avocat et commissions dédiées, au service de votre projet d'Alya.",
   },
   "/partenaires": {
-    title: "Nos partenaires | Dor Hadash",
+    title: "Partenaires institutionnels | Dor Hadash",
     description:
-      "Partenaires Dor Hadash : Agence Juive, Misrad HaKlita, Qualita, Gvahim, Oulpan Zahav, municipalités et plus.",
+      "Les partenaires de Dor Hadash : Agence Juive, Misrad HaKlita, Qualita, Gvahim, Oulpan Zahav et municipalités, pour réussir votre Alya.",
   },
   "/nos-villes": {
     title: "Nos villes d'accueil | Dor Hadash",
     description:
-      "Villes partenaires Dor Hadash : Karmiel, Haïfa, Jérusalem, Nof HaGalil, Netivot, Ashdod et Bat Yam. Comparez, consultez les loyers indicatifs et les coordinateurs locaux.",
+      "Villes partenaires : Karmiel, Haïfa, Jérusalem, Nof HaGalil, Netivot, Ashdod et Bat Yam. Comparez loyers indicatifs et coordinateurs francophones.",
   },
   "/karmiel": {
     title: "Faire son Alya à Karmiel | Dor Hadash",
@@ -75,12 +75,12 @@ export const seoByPath: Record<string, SeoEntry> = {
       "Conseils pratiques, témoignages et actualités pour préparer votre Alya en Israël : démarches, logement, emploi, éducation. Le blog de Dor Hadash.",
   },
   "/nous-contacter": {
-    title: "Nous contacter | Dor Hadash",
+    title: "Nous contacter pour votre Alya | Dor Hadash",
     description:
       "Une question sur votre Alya ? Contactez l'équipe Dor Hadash par téléphone, email ou via notre formulaire. Réponse rapide garantie.",
   },
   "/temoignages-videos": {
-    title: "Témoignages | Dor Hadash",
+    title: "Témoignages d'olim francophones | Dor Hadash",
     description:
       "Témoignages écrits et vidéos d'olim francophones : logement, école, emploi et accompagnement Dor Hadash pour préparer votre Alya.",
   },
