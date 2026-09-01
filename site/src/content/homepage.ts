@@ -108,14 +108,14 @@ export const entryDoors: EntryDoor[] = [
     href: "/preparer-mon-alya",
   },
   {
-    title: "Je viens d'arriver en Israël",
-    description: "Référent local et démarches urgentes — on vous oriente.",
-    href: "/nous-contacter?objet=arrive",
-  },
-  {
     title: "Je cherche ma ville",
     description: "Comparer les 7 destinations et trouver le bon cadre.",
     href: "/nos-villes",
+  },
+  {
+    title: "Je viens d'arriver en Israël",
+    description: "Référent local et démarches urgentes — on vous oriente.",
+    href: "/nous-contacter?objet=arrive",
   },
 ];
 
