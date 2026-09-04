@@ -62,14 +62,14 @@ export default function CookieBanner() {
           >
             {details ? "Masquer le détail" : "En savoir plus"}
           </button>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <button
               type="button"
               onClick={() => {
                 setCookieConsent("refused");
                 setVisible(false);
               }}
-              className="flex-1 rounded-full border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 sm:flex-none"
+              className="w-full rounded-full border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 sm:w-auto"
             >
               Essentiels seulement
             </button>
@@ -79,7 +79,7 @@ export default function CookieBanner() {
                 setCookieConsent("accepted");
                 setVisible(false);
               }}
-              className="flex-1 rounded-full bg-brand-blue px-4 py-2.5 text-sm font-semibold text-white sm:flex-none"
+              className="w-full rounded-full bg-brand-blue px-4 py-2.5 text-sm font-semibold text-white sm:w-auto"
             >
               Tout accepter
             </button>

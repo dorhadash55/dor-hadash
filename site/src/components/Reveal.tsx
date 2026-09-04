@@ -49,18 +49,18 @@ export default function Reveal({
     };
 
     const isMobile = window.matchMedia("(max-width: 639px)").matches;
-    // Mobile : déclencher plus bas dans le viewport pour voir l'anim
+    // Mobile : déclencher dès qu’un bout entre dans l’écran (cartes hautes sinon restent invisibles)
     observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) show();
       },
       isMobile
-        ? { threshold: 0.2, rootMargin: "0px 0px -20% 0px" }
+        ? { threshold: 0.01, rootMargin: "48px 0px 0px 0px" }
         : { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
     );
     observer.observe(node);
 
-    const fallback = window.setTimeout(show, 4500);
+    const fallback = window.setTimeout(show, isMobile ? 900 : 4500);
 
     return () => {
       observer?.disconnect();

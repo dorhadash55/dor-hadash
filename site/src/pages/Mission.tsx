@@ -94,6 +94,13 @@ export default function Mission() {
               Préparation 6 mois avant le départ, puis 12 mois d&apos;intégration après l&apos;arrivée. La formule
               de base est la même pour les familles et les célibataires, avec quelques adaptations.
             </p>
+            <p className="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
+              Les démarches concrètes — Agence Juive, adhésion, contacts partenaires — sont détaillées dans{" "}
+              <Link to="/preparer-mon-alya" className="font-semibold text-brand-blue hover:underline">
+                Préparer mon Alya
+              </Link>
+              .
+            </p>
           </Reveal>
 
           <div className="mt-6 space-y-2 sm:mt-8">

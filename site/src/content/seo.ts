@@ -17,7 +17,7 @@ export const seoByPath: Record<string, SeoEntry> = {
   "/preparer-mon-alya": {
     title: "Préparer mon Alya | Dor Hadash",
     description:
-      "Chronologie, checklist olim téléchargeable, budget, scolarité, premiers jours en Israël et FAQ pour préparer votre Alya avec Dor Hadash.",
+      "Les étapes-clés de 12 mois à 6 mois avant l’Alya : Agence Juive, premier entretien Dor Hadash, budget, ville, scolarité et checklist olim téléchargeable.",
   },
   "/lequipe": {
     title: "L'équipe Dor Hadash | Qui sommes-nous ?",

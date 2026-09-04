@@ -24,23 +24,115 @@ export default function PreparerMonAlya() {
               Les étapes-clés
             </h2>
           </Reveal>
-          <div className="mt-8 grid gap-5 sm:grid-cols-3">
+          <div className="mt-8 space-y-6">
             {prepareAlya.chronology.map((phase, i) => (
-              <Reveal key={phase.title} delay={i * 80} variant="up">
-                <div className="h-full rounded-2xl border border-brand-sand bg-brand-cream/50 p-5">
+              <Reveal key={phase.period} delay={i * 80} variant="up">
+                <article className="rounded-2xl border border-brand-sand bg-brand-cream/50 p-5 sm:p-7">
                   <p className="font-accent text-[11px] uppercase tracking-[0.18em] text-brand-teal">
                     {String(i + 1).padStart(2, "0")}
                   </p>
-                  <h3 className="mt-2 font-heading text-lg font-semibold text-brand-blue-deep">{phase.title}</h3>
-                  <ul className="mt-3 space-y-2 text-sm text-gray-600">
-                    {phase.items.map((item) => (
+                  <h3 className="mt-2 font-heading text-xl font-semibold text-brand-blue-deep sm:text-2xl">
+                    {phase.period}
+                  </h3>
+
+                  <ul className="mt-4 space-y-2 text-sm text-gray-700">
+                    {phase.steps.map((item) => (
                       <li key={item} className="flex gap-2">
-                        <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand-teal" aria-hidden />
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-teal" aria-hidden />
                         <span>{item}</span>
                       </li>
                     ))}
                   </ul>
-                </div>
+
+                  {phase.dualAction && (
+                    <div className="mt-5 rounded-2xl border border-brand-blue/15 bg-white p-4 sm:p-5">
+                      <div className="flex gap-3">
+                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-blue font-heading text-xs font-semibold text-white">
+                          1
+                        </span>
+                        <div className="min-w-0 text-sm leading-relaxed text-gray-700">
+                          <p>{phase.dualAction.agency}</p>
+                          <p className="my-1.5 font-heading text-xs font-semibold uppercase tracking-wide text-brand-blue">
+                            et
+                          </p>
+                          <p>{phase.dualAction.dorHadash}.</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex flex-col gap-2 sm:ml-9 sm:flex-row sm:items-center sm:gap-3">
+                        <Link
+                          to="/nous-contacter?objet=entretien"
+                          className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-blue-dark sm:w-auto"
+                        >
+                          Demander un premier entretien →
+                        </Link>
+                        <a
+                          href="https://www.jewishagency.org/fr/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-brand-blue/20 px-5 py-2.5 text-center text-sm font-semibold text-brand-blue hover:bg-brand-blue/5 sm:w-auto"
+                        >
+                          Ouvrir un dossier à l&apos;Agence Juive →
+                        </a>
+                      </div>
+                    </div>
+                  )}
+
+                  {phase.membership && (
+                    <div className="mt-5">
+                      <h4 className="font-heading text-lg font-semibold text-brand-blue-deep">
+                        {phase.membership.title}
+                      </h4>
+                      <p className="mt-2 text-sm leading-relaxed text-gray-600">{phase.membership.intro}</p>
+                      <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+                        {phase.membership.contacts.map((contact) => (
+                          <li
+                            key={contact.name}
+                            className="rounded-xl border border-brand-sand bg-white px-4 py-3"
+                          >
+                            <p className="font-heading text-sm font-semibold text-brand-blue-deep">{contact.name}</p>
+                            {contact.detail && (
+                              <p className="mt-1 text-sm leading-relaxed text-gray-600">{contact.detail}</p>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {phase.cityNote && (
+                    <p className="mt-5 border-l-2 border-brand-teal pl-4 text-sm font-medium leading-relaxed text-brand-blue-deep">
+                      {phase.cityNote}{" "}
+                      <Link to="/nos-villes" className="font-semibold text-brand-blue hover:underline">
+                        Voir les villes →
+                      </Link>
+                    </p>
+                  )}
+
+                  {phase.professional && (
+                    <div className="mt-5 rounded-xl bg-white px-4 py-4">
+                      <h4 className="font-heading text-base font-semibold text-brand-blue-deep">
+                        {phase.professional.title}
+                      </h4>
+                      <p className="mt-2 text-sm leading-relaxed text-gray-600">{phase.professional.body}</p>
+                    </div>
+                  )}
+
+                  {phase.meanwhile && (
+                    <div className="mt-5 rounded-xl bg-brand-blue-deep px-4 py-4 text-white sm:px-5">
+                      <p className="font-accent text-[11px] uppercase tracking-[0.18em] text-brand-teal">
+                        {phase.meanwhile.title}
+                      </p>
+                      <ul className="mt-3 space-y-2 text-sm leading-relaxed text-white/90">
+                        {phase.meanwhile.items.map((item) => (
+                          <li key={item} className="flex gap-2">
+                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-teal" aria-hidden />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </article>
               </Reveal>
             ))}
           </div>
@@ -78,7 +170,7 @@ export default function PreparerMonAlya() {
                   </span>
                 </span>
               </div>
-              <span className="inline-flex items-center justify-center rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white">
+              <span className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-brand-blue px-5 py-2.5 text-sm font-semibold text-white sm:w-auto">
                 {checklistPdf.label}
               </span>
             </a>
@@ -171,7 +263,7 @@ export default function PreparerMonAlya() {
           <Reveal delay={100} className="mt-10 text-center">
             <Link
               to="/nous-contacter?objet=entretien"
-              className="inline-flex rounded-full bg-brand-blue px-7 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-brand-blue-dark"
+              className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-brand-blue px-7 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-brand-blue-dark sm:w-auto"
             >
               Demander un premier entretien →
             </Link>
