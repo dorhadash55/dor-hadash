@@ -14,10 +14,18 @@ import {
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { getDb, getFirebaseAuth, isFirebaseConfigured } from "./config";
+import { startMediaSync } from "./mediaStore";
 import { ensureFirebaseAuthReady } from "./authReady";
-import type { AdminContent, ContactSubmission, SiteSettings, VideoTestimonial } from "../storage/types";
+import type {
+  AdminContent,
+  ContactSubmission,
+  RemoteContentPatch,
+  SiteSettings,
+  VideoTestimonial,
+} from "../storage/types";
 import type { BlogPost } from "../storage/types";
 import type { VideoCategory } from "../../content/videos";
+import { sortVideosForDisplay } from "../../content/videos";
 import { extractYoutubeId } from "../utils/youtube";
 
 type SiteDocument = {
@@ -27,8 +35,15 @@ type SiteDocument = {
 };
 
 let syncStarted = false;
-let autoSeedAttempted = false;
+let itemsSyncStarted = false;
 let contactsUnsubscribe: Unsubscribe | null = null;
+let itemSyncApply: ((content: RemoteContentPatch) => void) | null = null;
+let itemSyncSeed: (() => AdminContent) | null = null;
+let legacyVideos: VideoTestimonial[] = [];
+let legacyBlogPosts: BlogPost[] = [];
+let lastSiteSettings: SiteSettings | null | undefined;
+let collectionVideoDocs: Array<VideoTestimonial & { deleted?: boolean }> | null = null;
+let collectionPostDocs: Array<BlogPost & { deleted?: boolean }> | null = null;
 
 function normalizeVideos(raw: unknown): VideoTestimonial[] {
   if (!Array.isArray(raw)) return [];
@@ -49,12 +64,14 @@ function normalizeVideos(raw: unknown): VideoTestimonial[] {
         ? row.category
         : "temoignage";
 
+    const sortKey = typeof row.sortKey === "number" ? row.sortKey : undefined;
     videos.push({
       id: String(row.id ?? youtubeId),
       youtubeId,
       title,
       caption: String(row.caption ?? ""),
       category,
+      ...(sortKey !== undefined ? { sortKey } : {}),
     });
   }
 
@@ -80,7 +97,7 @@ function isAdminUser(): boolean {
 }
 
 function applySeedLocally(
-  applyContent: (content: Partial<AdminContent>) => void,
+  applyContent: (content: RemoteContentPatch) => void,
   getSeedContent: () => AdminContent,
 ) {
   const seed = getSeedContent();
@@ -92,7 +109,7 @@ function applySeedLocally(
 }
 
 function startContactsListener(
-  applyContent: (content: Partial<AdminContent>) => void,
+  applyContent: (content: RemoteContentPatch) => void,
 ) {
   const db = getDb();
   if (!db || contactsUnsubscribe) return;
@@ -130,7 +147,227 @@ function stopContactsListener() {
   contactsUnsubscribe = null;
 }
 
-function watchAdminAuth(applyContent: (content: Partial<AdminContent>) => void) {
+function stripDeleted<T extends { deleted?: boolean }>(item: T): Omit<T, "deleted"> {
+  const { deleted: _deleted, ...rest } = item;
+  return rest;
+}
+
+function mergePostLists(
+  legacy: BlogPost[],
+  overlay: Array<BlogPost & { deleted?: boolean }> | null,
+): BlogPost[] {
+  const overlayBySlug = new Map((overlay ?? []).map((post) => [post.slug, post]));
+  const result: BlogPost[] = [];
+
+  if (overlay) {
+    for (const post of overlay) {
+      if (post.deleted || legacy.some((item) => item.slug === post.slug)) continue;
+      result.push(stripDeleted(post));
+    }
+  }
+
+  for (const post of legacy) {
+    const over = overlayBySlug.get(post.slug);
+    if (over?.deleted) continue;
+    result.push(over ? stripDeleted(over) : post);
+  }
+
+  return result;
+}
+
+function mergeVideoLists(
+  legacy: VideoTestimonial[],
+  overlay: Array<VideoTestimonial & { deleted?: boolean }> | null,
+): VideoTestimonial[] {
+  const overlayById = new Map((overlay ?? []).map((video) => [video.id, video]));
+  const overlayByYoutube = new Map(
+    (overlay ?? []).filter((video) => video.youtubeId).map((video) => [video.youtubeId, video]),
+  );
+  const result: VideoTestimonial[] = [];
+
+  if (overlay) {
+    for (const video of overlay) {
+      if (
+        video.deleted ||
+        legacy.some((item) => item.id === video.id || item.youtubeId === video.youtubeId)
+      ) {
+        continue;
+      }
+      result.push(stripDeleted(video));
+    }
+  }
+
+  for (const video of legacy) {
+    const over = overlayById.get(video.id) ?? overlayByYoutube.get(video.youtubeId);
+    if (over?.deleted) continue;
+    result.push(over ? stripDeleted(over) : video);
+  }
+
+  return sortVideosForDisplay(result);
+}
+
+function emitItemMerge() {
+  if (!itemSyncApply || !itemSyncSeed) return;
+  const seed = itemSyncSeed();
+  itemSyncApply({
+    videos: mergeVideoLists(legacyVideos, collectionVideoDocs),
+    blogPosts: mergePostLists(
+      legacyBlogPosts.length ? legacyBlogPosts : seed.blogPosts,
+      collectionPostDocs,
+    ),
+    excludedVideoIds: (collectionVideoDocs ?? [])
+      .filter((video) => video.deleted)
+      .map((video) => video.id),
+    excludedPostSlugs: (collectionPostDocs ?? [])
+      .filter((post) => post.deleted)
+      .map((post) => post.slug),
+    ...(lastSiteSettings !== undefined ? { siteSettings: lastSiteSettings } : {}),
+  });
+}
+
+function normalizePostDoc(
+  id: string,
+  raw: Record<string, unknown>,
+): (BlogPost & { deleted?: boolean }) | null {
+  const slug = String(raw.slug ?? id).trim();
+  if (!slug) return null;
+  if (raw.deleted === true) {
+    return { slug, title: "", excerpt: "", metaDescription: "", author: "", date: "", coverImage: "", legacyUrl: "", paragraphs: [], deleted: true };
+  }
+
+  const paragraphs = Array.isArray(raw.paragraphs)
+    ? raw.paragraphs.map((p) => String(p))
+    : [];
+  const sortKey = typeof raw.sortKey === "number" ? raw.sortKey : undefined;
+
+  return {
+    slug,
+    title: String(raw.title ?? ""),
+    ...(typeof raw.seoTitle === "string" ? { seoTitle: raw.seoTitle } : {}),
+    excerpt: String(raw.excerpt ?? ""),
+    metaDescription: String(raw.metaDescription ?? ""),
+    author: String(raw.author ?? ""),
+    date: String(raw.date ?? ""),
+    coverImage: String(raw.coverImage ?? ""),
+    legacyUrl: String(raw.legacyUrl ?? `/blog/${slug}/`),
+    paragraphs,
+    ...(sortKey !== undefined ? { sortKey } : {}),
+  };
+}
+
+function normalizeVideoDoc(
+  id: string,
+  raw: Record<string, unknown>,
+): (VideoTestimonial & { deleted?: boolean }) | null {
+  if (raw.deleted === true) {
+    return { id, youtubeId: "", title: "", caption: "", deleted: true };
+  }
+
+  const videos = normalizeVideos([{ ...raw, id: raw.id ?? id }]);
+  return videos[0] ?? null;
+}
+
+function startItemCollectionsSync(
+  applyContent: (content: RemoteContentPatch) => void,
+  getSeedContent: () => AdminContent,
+) {
+  if (itemsSyncStarted) return;
+  const db = getDb();
+  if (!db) return;
+
+  itemsSyncStarted = true;
+  itemSyncApply = applyContent;
+  itemSyncSeed = getSeedContent;
+
+  onSnapshot(
+    collection(db, "site", "content", "posts"),
+    (snapshot) => {
+      collectionPostDocs = snapshot.docs
+        .map((document) => normalizePostDoc(document.id, document.data() as Record<string, unknown>))
+        .filter((post): post is BlogPost & { deleted?: boolean } => Boolean(post));
+      emitItemMerge();
+    },
+    (error) => {
+      console.warn("[Dor Hadash] Lecture posts Firestore:", error.message);
+    },
+  );
+
+  onSnapshot(
+    collection(db, "site", "content", "videos"),
+    (snapshot) => {
+      collectionVideoDocs = snapshot.docs
+        .map((document) => normalizeVideoDoc(document.id, document.data() as Record<string, unknown>))
+        .filter((video): video is VideoTestimonial & { deleted?: boolean } => Boolean(video));
+      emitItemMerge();
+    },
+    (error) => {
+      console.warn("[Dor Hadash] Lecture vidéos Firestore:", error.message);
+    },
+  );
+}
+
+async function assertAdminWrite() {
+  const db = getDb();
+  if (!db) throw new Error("Firestore indisponible.");
+
+  const auth = getFirebaseAuth();
+  if (!auth?.currentUser) {
+    throw new Error(
+      "Session Firebase absente. Connectez-vous avec Google (compte admin) pour enregistrer dans Firestore.",
+    );
+  }
+
+  await ensureFirebaseAuthReady();
+  return db;
+}
+
+function withoutUndefined(data: Record<string, unknown>) {
+  return Object.fromEntries(Object.entries(data).filter(([, value]) => value !== undefined));
+}
+
+export async function upsertBlogPostDoc(post: BlogPost) {
+  const db = await assertAdminWrite();
+  await setDoc(
+    doc(db, "site", "content", "posts", post.slug),
+    withoutUndefined({
+      ...post,
+      deleted: false,
+      updatedAt: serverTimestamp(),
+    }),
+  );
+}
+
+export async function deleteBlogPostDoc(slug: string) {
+  const db = await assertAdminWrite();
+  await setDoc(
+    doc(db, "site", "content", "posts", slug),
+    { slug, deleted: true, updatedAt: serverTimestamp() },
+    { merge: true },
+  );
+}
+
+export async function upsertVideoDoc(video: VideoTestimonial) {
+  const db = await assertAdminWrite();
+  await setDoc(
+    doc(db, "site", "content", "videos", video.id),
+    withoutUndefined({
+      ...video,
+      deleted: false,
+      updatedAt: serverTimestamp(),
+    }),
+  );
+}
+
+export async function deleteVideoDoc(id: string) {
+  const db = await assertAdminWrite();
+  await setDoc(
+    doc(db, "site", "content", "videos", id),
+    { id, deleted: true, updatedAt: serverTimestamp() },
+    { merge: true },
+  );
+}
+
+function watchAdminAuth(applyContent: (content: RemoteContentPatch) => void) {
   const auth = getFirebaseAuth();
   if (!auth) return;
 
@@ -144,7 +381,7 @@ function watchAdminAuth(applyContent: (content: Partial<AdminContent>) => void) 
 }
 
 export function startFirestoreSync(
-  applyContent: (content: Partial<AdminContent>) => void,
+  applyContent: (content: RemoteContentPatch) => void,
   getSeedContent: () => AdminContent,
 ) {
   if (!isFirebaseConfigured() || syncStarted || typeof window === "undefined") return;
@@ -152,6 +389,10 @@ export function startFirestoreSync(
   if (!db) return;
 
   syncStarted = true;
+  itemSyncApply = applyContent;
+  itemSyncSeed = getSeedContent;
+  startMediaSync();
+  startItemCollectionsSync(applyContent, getSeedContent);
   const siteRef = doc(db, "site", "content");
 
   onSnapshot(
@@ -161,15 +402,15 @@ export function startFirestoreSync(
 
       if (!snapshot.exists()) {
         applySeedLocally(applyContent, getSeedContent);
+        legacyVideos = [];
+        legacyBlogPosts = seed.blogPosts;
+        lastSiteSettings = seed.siteSettings;
+        emitItemMerge();
         if (isAdminUser()) {
           try {
-            // Ne pas écrire videos: [] — évite d'initialiser un document qui écrase plus tard
             await setDoc(
               siteRef,
-              buildSitePayload({
-                blogPosts: seed.blogPosts,
-                siteSettings: seed.siteSettings,
-              }),
+              { siteSettings: seed.siteSettings, updatedAt: serverTimestamp() },
               { merge: true },
             );
           } catch (error) {
@@ -180,31 +421,13 @@ export function startFirestoreSync(
       }
 
       const data = snapshot.data() as SiteDocument;
-      const videos = normalizeVideos(data.videos);
-      const blogPosts = data.blogPosts?.length ? data.blogPosts : seed.blogPosts;
-      const siteSettings = data.siteSettings ?? null;
-
-      applyContent({ videos, blogPosts, siteSettings });
+      legacyVideos = normalizeVideos(data.videos);
+      legacyBlogPosts = data.blogPosts?.length ? data.blogPosts : seed.blogPosts;
+      lastSiteSettings = data.siteSettings ?? null;
+      emitItemMerge();
 
       if (import.meta.env.DEV) {
-        console.info(`[Dor Hadash] Firestore : ${videos.length} vidéo(s) chargée(s).`);
-      }
-
-      if (!autoSeedAttempted && !data.blogPosts?.length && isAdminUser()) {
-        autoSeedAttempted = true;
-        try {
-          // Seed blog uniquement — ne jamais renvoyer videos (risque d'écrasement)
-          await setDoc(
-            siteRef,
-            buildSitePayload({
-              blogPosts: seed.blogPosts,
-              siteSettings: data.siteSettings ?? seed.siteSettings,
-            }),
-            { merge: true },
-          );
-        } catch (error) {
-          console.warn("Firestore auto-seed blog:", error);
-        }
+        console.info(`[Dor Hadash] Firestore : ${legacyVideos.length} vidéo(s) héritée(s).`);
       }
     },
     (error) => {
@@ -316,13 +539,15 @@ export async function saveSiteSettingsDocument(settings: SiteSettings) {
 }
 
 export async function pushFullContentToFirestore(content: AdminContent) {
-  // Pas d'allowEmptyVideos : une sync globale ne doit jamais effacer des vidéos distantes
-  // si le cache local est encore vide (course au démarrage).
-  await saveSiteDocument({
-    videos: content.videos,
-    blogPosts: content.blogPosts,
-    siteSettings: content.siteSettings,
-  });
+  if (content.siteSettings) {
+    await saveSiteSettingsDocument(content.siteSettings);
+  }
+  for (const post of content.blogPosts) {
+    await upsertBlogPostDoc(post);
+  }
+  for (const video of content.videos) {
+    await upsertVideoDoc(video);
+  }
   await syncContactSubmissions(content.contactSubmissions);
 }
 

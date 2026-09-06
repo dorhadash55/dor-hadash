@@ -3,6 +3,7 @@ import SeoHead from "../components/SeoHead";
 import PageBanner from "../components/PageBanner";
 import Reveal from "../components/Reveal";
 import { useBlogPosts } from "../admin/hooks/useAdminContent";
+import SmartImage from "../components/SmartImage";
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
@@ -24,7 +25,7 @@ export default function Blog() {
                 className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-100 shadow-sm transition-shadow hover:shadow-lg"
               >
                 <div className="aspect-[16/10] w-full overflow-hidden bg-gray-100">
-                  <img
+                  <SmartImage
                     src={post.coverImage}
                     alt=""
                     loading="lazy"

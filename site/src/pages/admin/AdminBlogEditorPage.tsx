@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import AdminHeader from "../../admin/components/AdminHeader";
 import ImageUpload from "../../admin/components/ImageUpload";
 import { useAuth } from "../../admin/auth/AuthContext";
@@ -44,19 +44,27 @@ function postToForm(post: BlogPost): BlogForm {
   };
 }
 
+type EditorLocationState = { justSaved?: "created" | "updated" };
+
 export default function AdminBlogEditorPage() {
   const { slug } = useParams<{ slug: string }>();
   const isNew = !slug;
   const existing = useBlogPost(slug ?? "");
   const navigate = useNavigate();
+  const location = useLocation();
+  const justSaved = (location.state as EditorLocationState | null)?.justSaved;
   const { canWriteToFirestore, connectGoogleForFirestore } = useAuth();
   const [connectingGoogle, setConnectingGoogle] = useState(false);
 
   const [form, setForm] = useState<BlogForm>(emptyForm());
   const [slugManual, setSlugManual] = useState(false);
   const [error, setError] = useState("");
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState<"created" | "updated" | null>(justSaved ?? null);
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (justSaved) setSaved(justSaved);
+  }, [justSaved]);
 
   useEffect(() => {
     if (!isNew && existing) {
@@ -65,7 +73,7 @@ export default function AdminBlogEditorPage() {
     }
   }, [isNew, existing]);
 
-  if (!isNew && slug && !existing) {
+  if (!isNew && slug && !existing && !saved) {
     return (
       <>
         <AdminHeader title="Article introuvable" />
@@ -86,7 +94,7 @@ export default function AdminBlogEditorPage() {
       }
       return next;
     });
-    setSaved(false);
+    setSaved(null);
   };
 
   const handleSave = async () => {
@@ -134,20 +142,26 @@ export default function AdminBlogEditorPage() {
     };
 
     setSaving(true);
-    const result = await upsertBlogPostAsync(post);
+    const result = await upsertBlogPostAsync(post, {
+      previousSlug: isNew ? undefined : slug,
+    });
     setSaving(false);
 
     if (!result.ok) {
       setError(`Erreur Firestore : ${result.error}`);
-      setSaved(false);
+      setSaved(null);
       return;
     }
 
+    const kind = isNew ? "created" : "updated";
     setError("");
-    setSaved(true);
+    setSaved(kind);
 
     if (isNew) {
-      navigate(`/admin/blog/${finalSlug}/edit`, { replace: true });
+      navigate(`/admin/blog/${finalSlug}/edit`, {
+        replace: true,
+        state: { justSaved: kind } satisfies EditorLocationState,
+      });
     }
   };
 
@@ -158,6 +172,17 @@ export default function AdminBlogEditorPage() {
         description="Rédigez le contenu, uploadez une photo de couverture et enregistrez dans Firebase."
       />
       <main className="flex-1 space-y-6 p-4 sm:p-6">
+        {saved === "created" && (
+          <p className="rounded-lg bg-brand-teal/10 px-4 py-3 text-sm font-medium text-brand-teal">
+            Article ajouté dans Firestore ✓ Il est maintenant visible sur le site.
+          </p>
+        )}
+        {saved === "updated" && (
+          <p className="rounded-lg bg-brand-teal/10 px-4 py-3 text-sm font-medium text-brand-teal">
+            Article enregistré dans Firestore ✓
+          </p>
+        )}
+
         <div className="flex flex-wrap items-center gap-3">
           <Link to="/admin/blog" className="text-sm font-medium text-brand-blue hover:underline">
             ← Retour au blog
@@ -172,7 +197,6 @@ export default function AdminBlogEditorPage() {
               Aperçu sur le site ↗
             </a>
           )}
-          {saved && <span className="text-sm text-brand-teal">Enregistré dans Firestore ✓</span>}
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
@@ -237,7 +261,7 @@ Deuxième paragraphe..."
                     <TextInput
                       value={form.coverImage}
                       onChange={(e) => updateField("coverImage", e.target.value)}
-                      placeholder="/images/blog/... ou URL Firebase Storage"
+                      placeholder="/images/blog/... ou URL https://"
                     />
                   </div>
                 </FormField>

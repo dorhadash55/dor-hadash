@@ -73,6 +73,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Photos blog compressées (sans Firebase Storage)
+    match /media/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // Tout le reste : admin uniquement (pas de lecture publique des messages)
     match /{document=**} {
       allow read, write: if isAdmin();

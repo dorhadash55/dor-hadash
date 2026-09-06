@@ -34,4 +34,9 @@ export type AdminContent = {
   siteSettings: SiteSettings | null;
 };
 
+export type RemoteContentPatch = Partial<AdminContent> & {
+  excludedVideoIds?: string[];
+  excludedPostSlugs?: string[];
+};
+
 export type { BlogPost, VideoTestimonial };

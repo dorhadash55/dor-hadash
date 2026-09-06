@@ -10,6 +10,8 @@ export type BlogPost = {
   coverImage: string;
   legacyUrl: string; // ancienne URL WordPress, à conserver ou rediriger
   paragraphs: string[];
+  /** Ordre d’affichage (plus récent = plus grand). Non affiché dans l’UI. */
+  sortKey?: number;
 };
 
 export const blogPosts: BlogPost[] = [

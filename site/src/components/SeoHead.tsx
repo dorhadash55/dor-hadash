@@ -1,6 +1,7 @@
 import { Head } from "vite-react-ssg";
 import { useLocation } from "react-router-dom";
 import { seoByPath, defaultSeo } from "../content/seo";
+import { isShareableImageSrc } from "../admin/firebase/mediaStore";
 
 export const SITE_URL = "https://www.dor-hadash.com";
 const DEFAULT_OG_IMAGE = `${SITE_URL}/images/jerusalem.jpg`;
@@ -38,7 +39,7 @@ export default function SeoHead({
   const entry = seoByPath[pathname] ?? defaultSeo;
   const finalTitle = title ?? entry.title;
   const finalDescription = description ?? entry.description;
-  const finalImage = absoluteUrl(image);
+  const finalImage = isShareableImageSrc(image) ? absoluteUrl(image) : DEFAULT_OG_IMAGE;
   const canonical = `${SITE_URL}${pathname === "/" ? "/" : pathname.replace(/\/$/, "")}`;
   const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 

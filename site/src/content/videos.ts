@@ -7,6 +7,8 @@ export type VideoTestimonial = {
   caption: string;
   /** Type de contenu — défaut témoignage pour les anciennes entrées */
   category?: VideoCategory;
+  /** Ordre d’affichage (plus récent / plus haut = plus grand). */
+  sortKey?: number;
 };
 
 export const videoCategoryLabels: Record<VideoCategory, string> = {
@@ -19,10 +21,24 @@ export function getVideoCategory(video: Pick<VideoTestimonial, "category">): Vid
   return video.category ?? "temoignage";
 }
 
+/** Ordre d’affichage : sortKey explicite, sinon position actuelle. */
+export function sortVideosForDisplay(items: VideoTestimonial[]): VideoTestimonial[] {
+  const n = items.length;
+  return items
+    .map((video, index) => ({ video, index }))
+    .sort((a, b) => {
+      const aKey = a.video.sortKey ?? (n - a.index) * 1000;
+      const bKey = b.video.sortKey ?? (n - b.index) * 1000;
+      if (bKey !== aKey) return bKey - aKey;
+      return a.index - b.index;
+    })
+    .map(({ video }) => video);
+}
+
 /**
  * Vidéos éditoriales Dor Hadash.
- * Firebase (site/content.videos) reste la source live ; cette liste sert de socle
- * et complète les IDs absents côté Firestore.
+ * Firebase (site/content/videos/{id}) est la source live par vidéo ;
+ * cette liste sert de socle et complète les IDs absents côté Firestore.
  */
 export const videoTestimonials: VideoTestimonial[] = [
   {

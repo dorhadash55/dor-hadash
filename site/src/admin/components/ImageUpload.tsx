@@ -2,6 +2,8 @@ import { useRef, useState, type ChangeEvent } from "react";
 import { AdminButton } from "./AdminUi";
 import { uploadImage } from "../firebase/storageUpload";
 import { isFirebaseConfigured } from "../firebase/config";
+import { isMediaRef } from "../firebase/mediaStore";
+import SmartImage from "../../components/SmartImage";
 
 type ImageUploadProps = {
   value: string;
@@ -45,18 +47,20 @@ export default function ImageUpload({
         const url = await readFileAsDataUrl(file);
         onChange(url);
       }
-    } catch {
-      setError("Échec de l'upload. Réessayez ou collez une URL.");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Échec de l'upload. Réessayez ou collez une URL.");
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";
     }
   };
 
+  const urlValue = isMediaRef(value) || value.startsWith("data:") ? "" : value;
+
   return (
     <div className="space-y-3">
       {value && (
-        <img
+        <SmartImage
           src={value}
           alt=""
           className="h-36 w-full rounded-lg border border-gray-200 object-cover"
@@ -70,7 +74,7 @@ export default function ImageUpload({
           disabled={uploading}
           onClick={() => inputRef.current?.click()}
         >
-          {uploading ? "Upload en cours…" : `Uploader ${label.toLowerCase()}`}
+          {uploading ? "Compression et enregistrement…" : `Uploader ${label.toLowerCase()}`}
         </AdminButton>
         <input
           ref={inputRef}
@@ -83,11 +87,19 @@ export default function ImageUpload({
 
       {error && <p className="text-sm text-brand-coral">{error}</p>}
 
-      {!isFirebaseConfigured() && (
-        <p className="text-xs text-gray-500">
-          Mode local — l'image est stockée temporairement. Configurez Firebase Storage pour un
-          enregistrement permanent.
-        </p>
+      <label className="block">
+        <span className="mb-1 block text-xs font-medium text-gray-500">Ou coller une URL d’image</span>
+        <input
+          type="text"
+          value={urlValue}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder="https://… ou /images/blog/photo.jpg"
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/20"
+        />
+      </label>
+
+      {isMediaRef(value) && (
+        <p className="text-xs text-gray-500">Image enregistrée dans Firestore (gratuite, sans Storage).</p>
       )}
     </div>
   );

@@ -259,6 +259,10 @@ export default function AdminSettingsPage() {
                 <li>Publiez <code className="rounded bg-gray-100 px-1">firestore.rules</code> et{" "}
                   <code className="rounded bg-gray-100 px-1">storage.rules</code>
                 </li>
+                <li>
+                  Les photos de blog sont compressées puis enregistrées dans Firestore{" "}
+                  (<code className="rounded bg-gray-100 px-1">media/</code>) — sans Firebase Storage
+                </li>
               </ol>
               <pre className="max-w-full overflow-x-auto rounded-lg bg-gray-900 p-3 text-xs text-gray-100">
 {`VITE_ADMIN_EMAIL=dor.hadash55@gmail.com

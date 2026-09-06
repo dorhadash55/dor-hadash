@@ -3,7 +3,11 @@ import AdminHeader from "../../admin/components/AdminHeader";
 import { AdminButton, AdminCard, EmptyState, FormField, TextArea, TextInput } from "../../admin/components/AdminUi";
 import { useAuth } from "../../admin/auth/AuthContext";
 import { useVideos } from "../../admin/hooks/useAdminContent";
-import { saveVideosAsync } from "../../admin/storage/contentStore";
+import {
+  deleteVideoAsync,
+  reorderVideosAsync,
+  upsertVideoAsync,
+} from "../../admin/storage/contentStore";
 import type { VideoTestimonial } from "../../admin/storage/types";
 import {
   getVideoCategory,
@@ -45,7 +49,9 @@ export default function AdminVideosPage() {
     setSaved(false);
   };
 
-  const persistVideos = async (next: VideoTestimonial[]) => {
+  const persistOne = async (
+    action: () => Promise<{ ok: true } | { ok: false; error: string }>,
+  ) => {
     if (!canWriteToFirestore) {
       setError("Connectez-vous avec Google (bandeau jaune en haut) pour enregistrer dans Firestore.");
       return false;
@@ -55,7 +61,7 @@ export default function AdminVideosPage() {
     setError("");
     setSaved(false);
 
-    const result = await saveVideosAsync(next);
+    const result = await action();
     setSaving(false);
 
     if (!result.ok) {
@@ -78,19 +84,17 @@ export default function AdminVideosPage() {
       return;
     }
 
+    const current = editingId ? videos.find((v) => v.id === editingId) : undefined;
     const entry: VideoTestimonial = {
       id: editingId ?? crypto.randomUUID(),
       youtubeId: id,
       title: form.title.trim(),
       caption: form.caption.trim(),
       category: form.category,
+      ...(current?.sortKey !== undefined ? { sortKey: current.sortKey } : {}),
     };
 
-    const next = editingId
-      ? videos.map((v) => (v.id === editingId ? entry : v))
-      : [entry, ...videos];
-
-    const ok = await persistVideos(next);
+    const ok = await persistOne(() => upsertVideoAsync(entry));
     if (ok) resetForm();
   };
 
@@ -108,16 +112,12 @@ export default function AdminVideosPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Supprimer cette vidéo ?")) return;
-    await persistVideos(videos.filter((v) => v.id !== id));
+    await persistOne(() => deleteVideoAsync(id));
     if (editingId === id) resetForm();
   };
 
   const moveVideo = async (index: number, direction: -1 | 1) => {
-    const next = [...videos];
-    const target = index + direction;
-    if (target < 0 || target >= next.length) return;
-    [next[index], next[target]] = [next[target], next[index]];
-    await persistVideos(next);
+    await persistOne(() => reorderVideosAsync(index, direction));
   };
 
   return (

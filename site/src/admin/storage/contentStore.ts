@@ -1,22 +1,26 @@
 import { blogPosts as staticBlogPosts } from "../../content/blog";
 import { hero as defaultHero } from "../../content/homepage";
 import { siteInfo as defaultSiteInfo } from "../../content/site";
-import { videoTestimonials as staticVideos } from "../../content/videos";
+import { sortVideosForDisplay, videoTestimonials as staticVideos } from "../../content/videos";
 import { isFirebaseConfigured } from "../firebase/config";
 import {
   addContactSubmissionDoc,
+  deleteBlogPostDoc,
   deleteContactSubmissionDoc,
+  deleteVideoDoc,
   pushFullContentToFirestore,
-  saveSiteDocument,
   saveSiteSettingsDocument,
   startFirestoreSync,
   syncContactSubmissions,
   updateContactSubmissionDoc,
+  upsertBlogPostDoc,
+  upsertVideoDoc,
 } from "../firebase/sync";
 import type {
   AdminContent,
   BlogPost,
   ContactSubmission,
+  RemoteContentPatch,
   SiteSettings,
   VideoTestimonial,
 } from "./types";
@@ -62,20 +66,47 @@ function sortSubmissions(submissions: ContactSubmission[]) {
   );
 }
 
+const excludedVideoIds = new Set<string>();
+const excludedPostSlugs = new Set<string>();
 let cache = defaultContent();
 /** Cache trié — même référence tant que contactSubmissions n'a pas changé. */
 let sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
 /** Fusion static + Firebase — même référence tant que cache.videos n'a pas changé. */
 let mergedVideos = mergeVideos(cache.videos);
+/** Même référence tant que la liste visible n'a pas vraiment changé (useSyncExternalStore). */
+let visibleBlogPosts = cache.blogPosts;
 let syncInitialized = false;
 /** Évite qu'un snapshot Firestore stale écrase une sauvegarde locale en cours. */
 let firestoreWriteInFlight = 0;
 
+function syncVisibleBlogPosts() {
+  const next =
+    excludedPostSlugs.size === 0
+      ? cache.blogPosts
+      : cache.blogPosts.filter((post) => !excludedPostSlugs.has(post.slug));
+  if (
+    next.length === visibleBlogPosts.length &&
+    next.every((post, index) => post === visibleBlogPosts[index])
+  ) {
+    return;
+  }
+  visibleBlogPosts = next;
+}
+
+function isExcludedVideo(video: Pick<VideoTestimonial, "id" | "youtubeId">) {
+  return excludedVideoIds.has(video.id) || excludedVideoIds.has(video.youtubeId);
+}
+
 function mergeVideos(remote: VideoTestimonial[]): VideoTestimonial[] {
-  if (!remote.length) return staticVideos;
+  if (!remote.length) {
+    return staticVideos.filter((video) => !isExcludedVideo(video));
+  }
 
   const byId = new Map<string, VideoTestimonial>();
-  for (const v of staticVideos) byId.set(v.youtubeId, v);
+  for (const v of staticVideos) {
+    if (isExcludedVideo(v)) continue;
+    byId.set(v.youtubeId, v);
+  }
   for (const v of remote) {
     const base = byId.get(v.youtubeId);
     byId.set(
@@ -95,6 +126,7 @@ function mergeVideos(remote: VideoTestimonial[]): VideoTestimonial[] {
   const ordered: VideoTestimonial[] = [];
   const seen = new Set<string>();
   for (const v of staticVideos) {
+    if (isExcludedVideo(v)) continue;
     const item = byId.get(v.youtubeId);
     if (item) {
       ordered.push(item);
@@ -102,9 +134,10 @@ function mergeVideos(remote: VideoTestimonial[]): VideoTestimonial[] {
     }
   }
   for (const v of remote) {
-    if (!seen.has(v.youtubeId)) ordered.push(byId.get(v.youtubeId) ?? v);
+    if (isExcludedVideo(v) || seen.has(v.youtubeId)) continue;
+    ordered.push(byId.get(v.youtubeId) ?? v);
   }
-  return ordered;
+  return sortVideosForDisplay(ordered);
 }
 
 function setCacheVideos(videos: VideoTestimonial[]) {
@@ -134,9 +167,13 @@ function refreshCache() {
   cache = readRaw();
   sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
   mergedVideos = mergeVideos(cache.videos);
+  syncVisibleBlogPosts();
 }
 
-function applyRemoteContent(partial: Partial<AdminContent>) {
+function applyRemoteContent(partial: RemoteContentPatch) {
+  for (const id of partial.excludedVideoIds ?? []) excludedVideoIds.add(id);
+  for (const slug of partial.excludedPostSlugs ?? []) excludedPostSlugs.add(slug);
+
   if (partial.contactSubmissions !== undefined) {
     cache = { ...cache, contactSubmissions: partial.contactSubmissions };
     sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
@@ -156,12 +193,15 @@ function applyRemoteContent(partial: Partial<AdminContent>) {
   cache = {
     ...cache,
     ...(partial.videos !== undefined && { videos: partial.videos }),
-    ...(partial.blogPosts !== undefined && { blogPosts: partial.blogPosts }),
+    ...(partial.blogPosts !== undefined && {
+      blogPosts: partial.blogPosts.filter((post) => !excludedPostSlugs.has(post.slug)),
+    }),
     ...(partial.siteSettings !== undefined && { siteSettings: partial.siteSettings }),
   };
   if (partial.videos !== undefined) {
     mergedVideos = mergeVideos(nextVideos);
   }
+  syncVisibleBlogPosts();
   persistLocalStorage();
   emit();
 }
@@ -172,51 +212,16 @@ function persistLocalStorage() {
   }
 }
 
-type PersistFields = "videos" | "blogPosts" | "siteSettings";
-
-function persistSiteContent(fields: PersistFields[] = ["blogPosts", "siteSettings"]) {
-  if (isFirebaseConfigured()) {
-    const payload: {
-      videos?: VideoTestimonial[];
-      blogPosts?: BlogPost[];
-      siteSettings?: SiteSettings | null;
-    } = {};
-    if (fields.includes("videos")) payload.videos = cache.videos;
-    if (fields.includes("blogPosts")) payload.blogPosts = cache.blogPosts;
-    if (fields.includes("siteSettings")) payload.siteSettings = cache.siteSettings;
-
-    void saveSiteDocument(payload).catch((error) => {
-      console.error("Erreur enregistrement Firestore:", error);
-    });
-    persistLocalStorage();
-  } else {
-    persistLocalStorage();
-  }
-  emit();
-}
-
-async function persistSiteContentAsync(
-  fields: PersistFields[] = ["blogPosts", "siteSettings"],
-  options?: { allowEmptyVideos?: boolean },
-) {
+async function persistItems<T>(write: () => Promise<void>, applyLocal: () => T): Promise<T> {
+  const result = applyLocal();
   firestoreWriteInFlight++;
   try {
     if (isFirebaseConfigured()) {
-      const payload: {
-        videos?: VideoTestimonial[];
-        blogPosts?: BlogPost[];
-        siteSettings?: SiteSettings | null;
-      } = {};
-      if (fields.includes("videos")) payload.videos = cache.videos;
-      if (fields.includes("blogPosts")) payload.blogPosts = cache.blogPosts;
-      if (fields.includes("siteSettings")) payload.siteSettings = cache.siteSettings;
-
-      await saveSiteDocument(payload, options);
-      persistLocalStorage();
-    } else {
-      persistLocalStorage();
+      await write();
     }
+    persistLocalStorage();
     emit();
+    return result;
   } finally {
     firestoreWriteInFlight--;
   }
@@ -231,20 +236,30 @@ function write(content: AdminContent) {
   cache = content;
   sortedContactSubmissions = sortSubmissions(content.contactSubmissions);
   mergedVideos = mergeVideos(content.videos);
-  if (isFirebaseConfigured()) {
-    // Protection anti-effacement active si videos est []
-    void saveSiteDocument({
-      videos: content.videos,
-      blogPosts: content.blogPosts,
-      siteSettings: content.siteSettings,
-    }).catch((error) => {
-      console.error("Erreur enregistrement Firestore:", error);
-    });
-    persistLocalStorage();
-  } else {
-    persistLocalStorage();
-  }
+  syncVisibleBlogPosts();
+  persistLocalStorage();
   emit();
+
+  if (!isFirebaseConfigured()) return;
+
+  void (async () => {
+    firestoreWriteInFlight++;
+    try {
+      if (content.siteSettings) {
+        await saveSiteSettingsDocument(content.siteSettings);
+      }
+      for (const post of content.blogPosts) {
+        await upsertBlogPostDoc(post);
+      }
+      for (const video of content.videos) {
+        await upsertVideoDoc(video);
+      }
+    } catch (error) {
+      console.error("Erreur enregistrement Firestore:", error);
+    } finally {
+      firestoreWriteInFlight--;
+    }
+  })();
 }
 
 /** Démarre l'écoute Firestore (ou charge localStorage en mode local). */
@@ -278,10 +293,11 @@ export function getVideos(): VideoTestimonial[] {
 }
 
 export function getBlogPosts(): BlogPost[] {
-  return cache.blogPosts;
+  return visibleBlogPosts;
 }
 
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {
+  if (excludedPostSlugs.has(slug)) return undefined;
   return cache.blogPosts.find((p) => p.slug === slug);
 }
 
@@ -293,24 +309,106 @@ export function getSiteSettings(): SiteSettings {
   return cache.siteSettings ?? DEFAULT_SITE_SETTINGS;
 }
 
-export function saveVideos(videos: VideoTestimonial[]) {
-  setCacheVideos(videos);
-  void persistSiteContentAsync(["videos"], { allowEmptyVideos: true }).catch((error) => {
-    console.error("Erreur enregistrement vidéos:", error);
-  });
-  emit();
+function applyBlogPostLocal(post: BlogPost, previousSlug?: string) {
+  if (previousSlug && previousSlug !== post.slug) {
+    excludedPostSlugs.add(previousSlug);
+  }
+  const withoutOld =
+    previousSlug && previousSlug !== post.slug
+      ? cache.blogPosts.filter((p) => p.slug !== previousSlug)
+      : cache.blogPosts;
+  const exists = withoutOld.some((p) => p.slug === post.slug);
+  cache = {
+    ...cache,
+    blogPosts: exists
+      ? withoutOld.map((p) => (p.slug === post.slug ? post : p))
+      : [post, ...withoutOld],
+  };
+  syncVisibleBlogPosts();
 }
 
-/** Enregistre les vidéos et attend la confirmation Firestore. */
-export async function saveVideosAsync(
-  videos: VideoTestimonial[],
+function nextVideoSortKey(list: VideoTestimonial[]) {
+  const max = list.reduce((acc, video) => Math.max(acc, video.sortKey ?? 0), 0);
+  return Math.max(max, Date.now());
+}
+
+export async function upsertVideoAsync(
+  video: VideoTestimonial,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  setCacheVideos(videos);
-  emit();
+  const existsAlready = mergedVideos.some((item) => item.id === video.id);
+  const withKey: VideoTestimonial = {
+    ...video,
+    ...(video.sortKey !== undefined
+      ? { sortKey: video.sortKey }
+      : existsAlready
+        ? {}
+        : { sortKey: nextVideoSortKey(mergedVideos) + 1000 }),
+  };
 
   try {
-    // allowEmptyVideos: suppression volontaire de toutes les vidéos depuis l'admin
-    await persistSiteContentAsync(["videos"], { allowEmptyVideos: true });
+    await persistItems(
+      () => upsertVideoDoc(withKey),
+      () => {
+        const exists = cache.videos.some((item) => item.id === withKey.id);
+        setCacheVideos(
+          exists
+            ? cache.videos.map((item) => (item.id === withKey.id ? withKey : item))
+            : [withKey, ...cache.videos],
+        );
+      },
+    );
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: formatFirestoreError(error) };
+  }
+}
+
+export async function deleteVideoAsync(
+  id: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await persistItems(
+      () => deleteVideoDoc(id),
+      () => {
+        excludedVideoIds.add(id);
+        const current = mergedVideos.find((video) => video.id === id);
+        if (current) excludedVideoIds.add(current.youtubeId);
+        setCacheVideos(cache.videos.filter((video) => video.id !== id));
+      },
+    );
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: formatFirestoreError(error) };
+  }
+}
+
+export async function reorderVideosAsync(
+  index: number,
+  direction: -1 | 1,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const list = mergedVideos.map((video, i) => ({
+    ...video,
+    sortKey: video.sortKey ?? (mergedVideos.length - i) * 1000,
+  }));
+  const target = index + direction;
+  if (target < 0 || target >= list.length) return { ok: true };
+
+  const from = list[index];
+  const to = list[target];
+  list[index] = { ...to, sortKey: from.sortKey };
+  list[target] = { ...from, sortKey: to.sortKey };
+
+  try {
+    await persistItems(
+      async () => {
+        await upsertVideoDoc(list[index]);
+        await upsertVideoDoc(list[target]);
+      },
+      () => {
+        cache = { ...cache, videos: list };
+        mergedVideos = list;
+      },
+    );
     return { ok: true };
   } catch (error) {
     return { ok: false, error: formatFirestoreError(error) };
@@ -319,21 +417,41 @@ export async function saveVideosAsync(
 
 export function saveBlogPosts(blogPosts: BlogPost[]) {
   cache = { ...cache, blogPosts };
-  persistSiteContent(["blogPosts"]);
+  syncVisibleBlogPosts();
+  persistLocalStorage();
+  emit();
 }
 
-export function upsertBlogPost(post: BlogPost) {
-  const exists = cache.blogPosts.some((p) => p.slug === post.slug);
-  const blogPosts = exists
-    ? cache.blogPosts.map((p) => (p.slug === post.slug ? post : p))
-    : [post, ...cache.blogPosts];
-  cache = { ...cache, blogPosts };
-  persistSiteContent(["blogPosts"]);
+export function upsertBlogPost(post: BlogPost, previousSlug?: string) {
+  applyBlogPostLocal(post, previousSlug);
+  persistLocalStorage();
+  emit();
+  if (isFirebaseConfigured()) {
+    void persistItems(
+      async () => {
+        await upsertBlogPostDoc(post);
+        if (previousSlug && previousSlug !== post.slug) {
+          await deleteBlogPostDoc(previousSlug);
+        }
+      },
+      () => undefined,
+    ).catch((error) => {
+      console.error("Erreur enregistrement article:", error);
+    });
+  }
 }
 
 export function deleteBlogPost(slug: string) {
+  excludedPostSlugs.add(slug);
   cache = { ...cache, blogPosts: cache.blogPosts.filter((p) => p.slug !== slug) };
-  persistSiteContent(["blogPosts"]);
+  syncVisibleBlogPosts();
+  persistLocalStorage();
+  emit();
+  if (isFirebaseConfigured()) {
+    void persistItems(() => deleteBlogPostDoc(slug), () => undefined).catch((error) => {
+      console.error("Erreur suppression article:", error);
+    });
+  }
 }
 
 export async function addContactSubmission(
@@ -479,30 +597,31 @@ export async function pushAllContentToFirestore(): Promise<
 }
 
 /** Enregistre un article et attend la confirmation Firestore. */
-export async function upsertBlogPostAsync(post: BlogPost): Promise<
-  { ok: true } | { ok: false; error: string }
-> {
-  const exists = cache.blogPosts.some((p) => p.slug === post.slug);
-  const blogPosts = exists
-    ? cache.blogPosts.map((p) => (p.slug === post.slug ? post : p))
-    : [post, ...cache.blogPosts];
-
-  cache = { ...cache, blogPosts };
-
+export async function upsertBlogPostAsync(
+  post: BlogPost,
+  options?: { previousSlug?: string },
+): Promise<{ ok: true } | { ok: false; error: string }> {
   try {
-    await persistSiteContentAsync(["blogPosts"]);
+    await persistItems(
+      async () => {
+        await upsertBlogPostDoc(post);
+        if (options?.previousSlug && options.previousSlug !== post.slug) {
+          await deleteBlogPostDoc(options.previousSlug);
+        }
+      },
+      () => applyBlogPostLocal(post, options?.previousSlug),
+    );
     return { ok: true };
   } catch (error) {
-    const message = formatFirestoreError(error);
-    return { ok: false, error: message };
+    return { ok: false, error: formatFirestoreError(error) };
   }
 }
 
 export function getAdminStats() {
   const unread = cache.contactSubmissions.filter((s) => !s.read).length;
   return {
-    videos: cache.videos.length,
-    blogPosts: cache.blogPosts.length,
+    videos: mergedVideos.length,
+    blogPosts: getBlogPosts().length,
     contacts: cache.contactSubmissions.length,
     unreadContacts: unread,
   };

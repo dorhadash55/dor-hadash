@@ -3,6 +3,7 @@ import AdminHeader from "../../admin/components/AdminHeader";
 import { AdminButton, AdminCard, AdminLinkButton, EmptyState } from "../../admin/components/AdminUi";
 import { useBlogPosts } from "../../admin/hooks/useAdminContent";
 import { deleteBlogPost } from "../../admin/storage/contentStore";
+import SmartImage from "../../components/SmartImage";
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
@@ -39,7 +40,7 @@ export default function AdminBlogPage() {
                   key={post.slug}
                   className="flex flex-col gap-3 rounded-xl border border-gray-100 bg-gray-50/50 p-4 sm:flex-row sm:items-center"
                 >
-                  <img
+                  <SmartImage
                     src={post.coverImage}
                     alt=""
                     loading="lazy"

@@ -1,19 +1,19 @@
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { getFirebaseStorage, isFirebaseConfigured } from "./config";
+import { getFirebaseAuth, isFirebaseConfigured } from "./config";
+import { compressImageFile } from "./compressImage";
+import { MEDIA_PREFIX, saveMediaDocument } from "./mediaStore";
 
 export async function uploadImage(file: File, folder: string): Promise<string> {
   if (!isFirebaseConfigured()) {
     throw new Error("Firebase non configuré.");
   }
 
-  const storage = getFirebaseStorage();
-  if (!storage) throw new Error("Firebase Storage indisponible.");
+  const user = getFirebaseAuth()?.currentUser;
+  if (!user) {
+    throw new Error("Connectez-vous avec Google pour uploader une image.");
+  }
 
-  const extension = file.name.split(".").pop()?.toLowerCase() || "jpg";
-  const safeName = `${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${extension}`;
-  const path = `${folder}/${safeName}`;
-  const storageRef = ref(storage, path);
-
-  await uploadBytes(storageRef, file, { contentType: file.type || undefined });
-  return getDownloadURL(storageRef);
+  const dataUrl = await compressImageFile(file);
+  const id = `${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
+  await saveMediaDocument(id, dataUrl, folder);
+  return `${MEDIA_PREFIX}${id}`;
 }

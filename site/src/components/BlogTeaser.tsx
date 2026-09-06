@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useBlogPosts } from "../admin/hooks/useAdminContent";
 import type { BlogPost } from "../admin/storage/types";
 import Reveal from "./Reveal";
+import SmartImage from "./SmartImage";
 import SectionHeading from "./SectionHeading";
 
 const formatDate = (iso: string) =>
@@ -17,7 +18,7 @@ function FeaturedBlogCard({ post }: { post: BlogPost }) {
       className="group block overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg sm:hidden"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-brand-blue-deep/5">
-        <img
+        <SmartImage
           src={post.coverImage}
           alt=""
           loading="lazy"
@@ -52,7 +53,7 @@ function CompactBlogCard({ post }: { post: BlogPost }) {
       className="group flex gap-3.5 overflow-hidden rounded-xl bg-white p-3 shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-md sm:hidden"
     >
       <div className="relative h-[4.5rem] w-[4.5rem] shrink-0 overflow-hidden rounded-lg bg-gray-100">
-        <img
+        <SmartImage
           src={post.coverImage}
           alt=""
           loading="lazy"
@@ -79,7 +80,7 @@ function GridBlogCard({ post }: { post: BlogPost }) {
       className="group hidden flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow hover:shadow-lg sm:flex"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
-        <img
+        <SmartImage
           src={post.coverImage}
           alt=""
           loading="lazy"

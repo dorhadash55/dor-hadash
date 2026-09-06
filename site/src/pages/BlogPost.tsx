@@ -1,6 +1,8 @@
 import { useParams, Link, Navigate } from "react-router-dom";
 import SeoHead, { SITE_URL, absoluteUrl } from "../components/SeoHead";
 import RichParagraph from "../components/RichParagraph";
+import SmartImage from "../components/SmartImage";
+import { isShareableImageSrc } from "../admin/firebase/mediaStore";
 import { useBlogPost } from "../admin/hooks/useAdminContent";
 
 const formatDate = (iso: string) =>
@@ -19,7 +21,9 @@ export default function BlogPost() {
     "@type": "BlogPosting",
     headline: post.title,
     description: post.metaDescription,
-    image: absoluteUrl(post.coverImage),
+    image: isShareableImageSrc(post.coverImage)
+      ? absoluteUrl(post.coverImage)
+      : `${SITE_URL}/images/jerusalem.jpg`,
     datePublished: post.date,
     author: {
       "@type": "Person",
@@ -50,7 +54,7 @@ export default function BlogPost() {
       />
 
       <div className="aspect-[16/9] max-h-[380px] w-full overflow-hidden bg-gray-100">
-        <img
+        <SmartImage
           src={post.coverImage}
           alt={post.title}
           className="h-full w-full object-contain"
