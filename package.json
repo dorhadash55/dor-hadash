@@ -1,0 +1,11 @@
+{
+  "name": "dor-hadash",
+  "private": true,
+  "dependencies": {
+    "nodemailer": "^9.0.3"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^8.0.1",
+    "@vercel/node": "^5.8.27"
+  }
+}

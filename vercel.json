@@ -1,10 +1,21 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "cd site && npm install",
+  "installCommand": "npm install && cd site && npm install",
   "buildCommand": "cd site && npm run build",
   "outputDirectory": "site/dist",
   "cleanUrls": true,
+  "functions": {
+    "api/contact.ts": {
+      "memory": 256,
+      "maxDuration": 15,
+      "includeFiles": "site/api/**"
+    }
+  },
   "rewrites": [
+    {
+      "source": "/__/auth/:path*",
+      "destination": "https://dor-hadash-a1202.firebaseapp.com/__/auth/:path*"
+    },
     {
       "source": "/admin/blog/:slug/edit",
       "destination": "/admin"
