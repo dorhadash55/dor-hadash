@@ -30,7 +30,34 @@ export type City = {
   intro: string[];
   sections: CitySection[];
   testimonials: CityTestimonial[];
+  /** Ordre d’affichage (plus petit = plus haut). */
+  sortKey?: number;
 };
+
+/** Chemins du site qui ne peuvent pas servir de slug de ville. */
+export const RESERVED_CITY_SLUGS = new Set([
+  "admin",
+  "api",
+  "assets",
+  "blog",
+  "images",
+  "lequipe",
+  "login",
+  "mission",
+  "nos-villes",
+  "nous-contacter",
+  "partenaires",
+  "preparer-mon-alya",
+  "temoignages-videos",
+]);
+
+export function isReservedCitySlug(slug: string) {
+  return RESERVED_CITY_SLUGS.has(slug);
+}
+
+export function sortCitiesForDisplay(list: City[]): City[] {
+  return [...list].sort((a, b) => (a.sortKey ?? 0) - (b.sortKey ?? 0));
+}
 
 export const cities: City[] = [
   {

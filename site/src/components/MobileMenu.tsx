@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { NavLink } from "react-router-dom";
-import { mobileNav, siteInfo, type NavItem } from "../content/site";
+import { mobileNav, siteInfo, withCityNav, type NavItem } from "../content/site";
+import { useCities } from "../admin/hooks/useAdminContent";
 
 type MobileMenuProps = {
   open: boolean;
@@ -208,6 +209,8 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
   const [mounted, setMounted] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const cities = useCities();
+  const nav = useMemo(() => withCityNav(mobileNav, cities, "mobile"), [cities]);
 
   useEffect(() => {
     setMounted(true);
@@ -286,7 +289,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
               Menu
             </p>
             <div className="flex flex-col gap-2">
-              {mobileNav.map((item, index) => (
+              {nav.map((item, index) => (
                 <MobileNavLink key={item.label} item={item} onClose={handleClose} index={index} />
               ))}
             </div>

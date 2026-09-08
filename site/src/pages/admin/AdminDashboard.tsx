@@ -36,6 +36,7 @@ export default function AdminDashboard() {
     },
     { label: "Au moins 1 vidéo", done: stats.videos > 0, link: "/admin/videos" },
     { label: "Articles de blog publiés", done: stats.blogPosts > 0, link: "/admin/blog" },
+    { label: "Villes d’accueil", done: stats.cities > 0, link: "/admin/villes" },
     { label: "Paramètres site vérifiés", done: content.siteSettings !== null, link: "/admin/settings" },
   ];
 
@@ -50,9 +51,10 @@ export default function AdminDashboard() {
         description="Vue d'ensemble du contenu du site et des demandes de contact."
       />
       <main className="flex-1 space-y-6 p-4 sm:p-6">
-        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-5">
           <AdminStatCard label="Vidéos" value={stats.videos} to="/admin/videos" hint="YouTube (témoignages & programme)" />
           <AdminStatCard label="Articles blog" value={stats.blogPosts} to="/admin/blog" />
+          <AdminStatCard label="Villes" value={stats.cities} to="/admin/villes" />
           <AdminStatCard label="Messages" value={stats.contacts} to="/admin/contacts" />
           <AdminStatCard
             label="Non lus"
@@ -87,6 +89,9 @@ export default function AdminDashboard() {
               <AdminLinkButton to="/admin/blog/new" variant="secondary" className="w-full">
                 + Article blog
               </AdminLinkButton>
+              <AdminLinkButton to="/admin/villes/new" variant="secondary" className="w-full">
+                + Ville
+              </AdminLinkButton>
               <AdminLinkButton to="/admin/contacts" variant="secondary" className="w-full">
                 Voir les messages
               </AdminLinkButton>
@@ -118,6 +123,14 @@ export default function AdminDashboard() {
                 className="text-sm font-medium text-brand-blue hover:underline"
               >
                 Blog ↗
+              </a>
+              <a
+                href="/nos-villes"
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm font-medium text-brand-blue hover:underline"
+              >
+                Villes ↗
               </a>
             </div>
           </AdminCard>

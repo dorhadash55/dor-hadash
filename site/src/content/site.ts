@@ -21,6 +21,25 @@ export type NavItem = {
   children?: NavItem[];
 };
 
+export function withCityNav(
+  items: NavItem[],
+  cities: Array<{ slug: string; name: string; isDraft?: boolean }>,
+  mode: "desktop" | "mobile",
+): NavItem[] {
+  const published = cities.filter((city) => !city.isDraft);
+  return items.map((item) => {
+    if (item.path !== "/nos-villes") return item;
+    const cityLinks = published.map((city) => ({ label: city.name, path: `/${city.slug}` }));
+    return {
+      ...item,
+      children:
+        mode === "desktop"
+          ? [{ label: "Toutes les villes", path: "/nos-villes" }, ...cityLinks]
+          : cityLinks,
+    };
+  });
+}
+
 /**
  * Desktop — peu d'entrées, CTA entretien séparé dans le Header.
  */

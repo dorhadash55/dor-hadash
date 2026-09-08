@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import SeoHead from "../components/SeoHead";
 import CityImage from "../components/CityImage";
 import Reveal from "../components/Reveal";
-import { cities } from "../content/cities";
+import { useCities } from "../admin/hooks/useAdminContent";
 import { cityDecisions } from "../content/cityDecision";
 import { cityCoordinators } from "../content/coordinators";
 import { rentUpdatedLabel } from "../content/rents";
@@ -26,6 +26,7 @@ const criteria = [
 type CriterionId = (typeof criteria)[number]["id"];
 
 export default function NosVilles() {
+  const cities = useCities();
   const heroCity = cities.find((c) => c.slug === "karmiel") ?? cities[0];
   const heroSrc = heroCity?.image ?? heroCity?.gallery?.[0]?.src;
   const [selected, setSelected] = useState<CriterionId[]>([]);

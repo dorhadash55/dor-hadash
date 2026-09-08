@@ -1,6 +1,7 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { mainNav, type NavItem } from "../content/site";
+import { mainNav, withCityNav, type NavItem } from "../content/site";
+import { useCities } from "../admin/hooks/useAdminContent";
 import MobileMenu from "./MobileMenu";
 import { hashIdFromHref, scrollToId } from "../lib/scrollToId";
 
@@ -135,6 +136,8 @@ function DesktopDropdown({ item }: { item: NavItem }) {
 export default function Header() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
+  const cities = useCities();
+  const nav = useMemo(() => withCityNav(mainNav, cities, "desktop"), [cities]);
 
   useEffect(() => {
     const onResize = () => {
@@ -198,7 +201,7 @@ export default function Header() {
         {/* Desktop nav */}
         <nav className="hidden min-w-0 flex-1 items-center justify-end lg:flex" aria-label="Navigation principale">
           <div className="flex items-center">
-            {mainNav.map((item) =>
+            {nav.map((item) =>
               item.children ? (
                 <DesktopDropdown key={item.label} item={item} />
               ) : (

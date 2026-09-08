@@ -2,14 +2,17 @@ import { useCallback, useSyncExternalStore } from "react";
 import {
   getBlogPosts,
   getBlogPostBySlug,
+  getCities,
+  getCityBySlug,
   getContactSubmissions,
   getContentSnapshot,
   getSiteSettings,
   getVideos,
   subscribeContent,
 } from "../storage/contentStore";
-import type { AdminContent, BlogPost, ContactSubmission, SiteSettings, VideoTestimonial } from "../storage/types";
+import type { AdminContent, BlogPost, City, ContactSubmission, SiteSettings, VideoTestimonial } from "../storage/types";
 import { blogPosts as staticBlogPosts } from "../../content/blog";
+import { cities as staticCities } from "../../content/cities";
 import { hero as defaultHero } from "../../content/homepage";
 import { siteInfo as defaultSiteInfo } from "../../content/site";
 import { videoTestimonials as staticVideos } from "../../content/videos";
@@ -28,6 +31,7 @@ const SERVER_DEFAULT_SITE_SETTINGS: SiteSettings = {
 const SERVER_DEFAULT_CONTENT: AdminContent = {
   videos: staticVideos,
   blogPosts: staticBlogPosts,
+  cities: staticCities,
   contactSubmissions: [],
   siteSettings: null,
 };
@@ -47,6 +51,16 @@ export function useBlogPosts(): BlogPost[] {
 export function useBlogPost(slug: string): BlogPost | undefined {
   const getSnapshot = useCallback(() => getBlogPostBySlug(slug), [slug]);
   const getServerSnapshot = useCallback(() => staticBlogPosts.find((p) => p.slug === slug), [slug]);
+  return useSyncExternalStore(subscribeContent, getSnapshot, getServerSnapshot);
+}
+
+export function useCities(): City[] {
+  return useSyncExternalStore(subscribeContent, getCities, () => SERVER_DEFAULT_CONTENT.cities);
+}
+
+export function useCity(slug: string): City | undefined {
+  const getSnapshot = useCallback(() => getCityBySlug(slug), [slug]);
+  const getServerSnapshot = useCallback(() => staticCities.find((city) => city.slug === slug), [slug]);
   return useSyncExternalStore(subscribeContent, getSnapshot, getServerSnapshot);
 }
 

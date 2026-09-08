@@ -6,6 +6,7 @@ const navItems = [
   { to: "/admin", label: "Tableau de bord", end: true, icon: "◉" },
   { to: "/admin/videos", label: "Vidéos", icon: "▶" },
   { to: "/admin/blog", label: "Blog", icon: "✎" },
+  { to: "/admin/villes", label: "Villes", icon: "⌂" },
   { to: "/admin/contacts", label: "Messages", icon: "✉" },
   { to: "/admin/settings", label: "Paramètres", icon: "⚙" },
 ];

@@ -4,7 +4,8 @@ import SeoHead from "../components/SeoHead";
 import CityImage from "../components/CityImage";
 import CityGalleryCarousel from "../components/CityGalleryCarousel";
 import Reveal from "../components/Reveal";
-import { getCityBySlug, type CitySection } from "../content/cities";
+import { useCity } from "../admin/hooks/useAdminContent";
+import type { CitySection } from "../content/cities";
 import { getCityDecision } from "../content/cityDecision";
 import { getCityCoordinator } from "../content/coordinators";
 import { getCityRent, rentDisclaimer, rentUpdatedLabel } from "../content/rents";
@@ -129,7 +130,7 @@ function DesktopSection({ section, index }: { section: CitySection; index: numbe
 
 export default function VillePage() {
   const { slug } = useParams<{ slug: string }>();
-  const city = getCityBySlug(slug ?? "");
+  const city = useCity(slug ?? "");
 
   useEffect(() => {
     if (city) writeOptionalCookie("dh_last_city", city.slug);

@@ -19,6 +19,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminVideosPage from "./pages/admin/AdminVideosPage";
 import AdminBlogPage from "./pages/admin/AdminBlogPage";
 import AdminBlogEditorPage from "./pages/admin/AdminBlogEditorPage";
+import AdminCitiesPage from "./pages/admin/AdminCitiesPage";
+import AdminCityEditorPage from "./pages/admin/AdminCityEditorPage";
 import AdminContactsPage from "./pages/admin/AdminContactsPage";
 import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
 import { cities } from "./content/cities";
@@ -65,6 +67,9 @@ export const routes: RouteRecord[] = [
           { path: "blog", Component: AdminBlogPage },
           { path: "blog/new", Component: AdminBlogEditorPage },
           { path: "blog/:slug/edit", Component: AdminBlogEditorPage },
+          { path: "villes", Component: AdminCitiesPage },
+          { path: "villes/new", Component: AdminCityEditorPage },
+          { path: "villes/:slug/edit", Component: AdminCityEditorPage },
           { path: "contacts", Component: AdminContactsPage },
           { path: "settings", Component: AdminSettingsPage },
         ],

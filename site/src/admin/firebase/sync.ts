@@ -24,6 +24,8 @@ import type {
   VideoTestimonial,
 } from "../storage/types";
 import type { BlogPost } from "../storage/types";
+import type { City, CityGalleryImage, CitySection, CityTestimonial } from "../../content/cities";
+import { cities as staticCities, sortCitiesForDisplay } from "../../content/cities";
 import type { VideoCategory } from "../../content/videos";
 import { sortVideosForDisplay } from "../../content/videos";
 import { extractYoutubeId } from "../utils/youtube";
@@ -44,6 +46,7 @@ let legacyBlogPosts: BlogPost[] = [];
 let lastSiteSettings: SiteSettings | null | undefined;
 let collectionVideoDocs: Array<VideoTestimonial & { deleted?: boolean }> | null = null;
 let collectionPostDocs: Array<BlogPost & { deleted?: boolean }> | null = null;
+let collectionCityDocs: Array<City & { deleted?: boolean }> | null = null;
 
 function normalizeVideos(raw: unknown): VideoTestimonial[] {
   if (!Array.isArray(raw)) return [];
@@ -104,6 +107,7 @@ function applySeedLocally(
   applyContent({
     videos: seed.videos,
     blogPosts: seed.blogPosts,
+    cities: seed.cities,
     siteSettings: seed.siteSettings,
   });
 }
@@ -206,6 +210,32 @@ function mergeVideoLists(
   return sortVideosForDisplay(result);
 }
 
+function mergeCityLists(
+  legacy: City[],
+  overlay: Array<City & { deleted?: boolean }> | null,
+): City[] {
+  const overlayBySlug = new Map((overlay ?? []).map((city) => [city.slug, city]));
+  const result: City[] = [];
+  const seen = new Set<string>();
+
+  for (const city of legacy) {
+    const over = overlayBySlug.get(city.slug);
+    if (over?.deleted) continue;
+    result.push(over ? stripDeleted(over) : city);
+    seen.add(city.slug);
+  }
+
+  if (overlay) {
+    for (const city of overlay) {
+      if (city.deleted || seen.has(city.slug)) continue;
+      result.push(stripDeleted(city));
+      seen.add(city.slug);
+    }
+  }
+
+  return sortCitiesForDisplay(result);
+}
+
 function emitItemMerge() {
   if (!itemSyncApply || !itemSyncSeed) return;
   const seed = itemSyncSeed();
@@ -221,6 +251,14 @@ function emitItemMerge() {
     excludedPostSlugs: (collectionPostDocs ?? [])
       .filter((post) => post.deleted)
       .map((post) => post.slug),
+    ...(collectionCityDocs !== null
+      ? {
+          cities: mergeCityLists(staticCities, collectionCityDocs),
+          excludedCitySlugs: collectionCityDocs
+            .filter((city) => city.deleted)
+            .map((city) => city.slug),
+        }
+      : {}),
     ...(lastSiteSettings !== undefined ? { siteSettings: lastSiteSettings } : {}),
   });
 }
@@ -267,6 +305,96 @@ function normalizeVideoDoc(
   return videos[0] ?? null;
 }
 
+function asStringArray(raw: unknown): string[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((item) => String(item)).filter((item) => item.length > 0);
+}
+
+function normalizeGallery(raw: unknown): CityGalleryImage[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const images: CityGalleryImage[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== "object") continue;
+    const row = item as Record<string, unknown>;
+    const src = String(row.src ?? "").trim();
+    if (!src) continue;
+    const caption = String(row.caption ?? "");
+    const image: CityGalleryImage = { src, caption };
+    if (row.fit === "contain" || row.fit === "cover") image.fit = row.fit;
+    images.push(image);
+  }
+  return images.length ? images : undefined;
+}
+
+function normalizeSections(raw: unknown): CitySection[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object")
+    .map((row) => ({
+      heading: String(row.heading ?? ""),
+      paragraphs: asStringArray(row.paragraphs),
+    }))
+    .filter((section) => section.heading || section.paragraphs.length > 0);
+}
+
+function normalizeTestimonials(raw: unknown): CityTestimonial[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object")
+    .map((row) => ({
+      name: String(row.name ?? ""),
+      quote: String(row.quote ?? ""),
+    }))
+    .filter((item) => item.name || item.quote);
+}
+
+function normalizeCityDoc(
+  id: string,
+  raw: Record<string, unknown>,
+): (City & { deleted?: boolean }) | null {
+  const slug = String(raw.slug ?? id).trim();
+  if (!slug) return null;
+  if (raw.deleted === true) {
+    return {
+      slug,
+      name: "",
+      tagline: "",
+      image: "",
+      intro: [],
+      sections: [],
+      testimonials: [],
+      deleted: true,
+    };
+  }
+
+  const gallery = normalizeGallery(raw.gallery);
+  const galleryMore = normalizeGallery(raw.galleryMore);
+  const sortKey = typeof raw.sortKey === "number" ? raw.sortKey : undefined;
+  const creditRaw =
+    raw.photoCredit && typeof raw.photoCredit === "object"
+      ? (raw.photoCredit as Record<string, unknown>)
+      : null;
+  const photoCredit = creditRaw
+    ? { text: String(creditRaw.text ?? ""), url: String(creditRaw.url ?? "") }
+    : undefined;
+
+  return {
+    slug,
+    name: String(raw.name ?? ""),
+    tagline: String(raw.tagline ?? ""),
+    image: String(raw.image ?? ""),
+    ...(raw.isDraft === true ? { isDraft: true } : {}),
+    ...(raw.lowResImage === true ? { lowResImage: true } : {}),
+    ...(photoCredit?.text ? { photoCredit } : {}),
+    ...(gallery ? { gallery } : {}),
+    ...(galleryMore ? { galleryMore } : {}),
+    intro: asStringArray(raw.intro),
+    sections: normalizeSections(raw.sections),
+    testimonials: normalizeTestimonials(raw.testimonials),
+    ...(sortKey !== undefined ? { sortKey } : {}),
+  };
+}
+
 function startItemCollectionsSync(
   applyContent: (content: RemoteContentPatch) => void,
   getSeedContent: () => AdminContent,
@@ -302,6 +430,19 @@ function startItemCollectionsSync(
     },
     (error) => {
       console.warn("[Dor Hadash] Lecture vidéos Firestore:", error.message);
+    },
+  );
+
+  onSnapshot(
+    collection(db, "site", "content", "cities"),
+    (snapshot) => {
+      collectionCityDocs = snapshot.docs
+        .map((document) => normalizeCityDoc(document.id, document.data() as Record<string, unknown>))
+        .filter((city): city is City & { deleted?: boolean } => Boolean(city));
+      emitItemMerge();
+    },
+    (error) => {
+      console.warn("[Dor Hadash] Lecture villes Firestore:", error.message);
     },
   );
 }
@@ -363,6 +504,27 @@ export async function deleteVideoDoc(id: string) {
   await setDoc(
     doc(db, "site", "content", "videos", id),
     { id, deleted: true, updatedAt: serverTimestamp() },
+    { merge: true },
+  );
+}
+
+export async function upsertCityDoc(city: City) {
+  const db = await assertAdminWrite();
+  await setDoc(
+    doc(db, "site", "content", "cities", city.slug),
+    withoutUndefined({
+      ...city,
+      deleted: false,
+      updatedAt: serverTimestamp(),
+    }),
+  );
+}
+
+export async function deleteCityDoc(slug: string) {
+  const db = await assertAdminWrite();
+  await setDoc(
+    doc(db, "site", "content", "cities", slug),
+    { slug, deleted: true, updatedAt: serverTimestamp() },
     { merge: true },
   );
 }
@@ -547,6 +709,9 @@ export async function pushFullContentToFirestore(content: AdminContent) {
   }
   for (const video of content.videos) {
     await upsertVideoDoc(video);
+  }
+  for (const city of content.cities) {
+    await upsertCityDoc(city);
   }
   await syncContactSubmissions(content.contactSubmissions);
 }

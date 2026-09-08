@@ -118,6 +118,10 @@
     {
       "source": "/admin/blog/:slug/edit",
       "destination": "/admin"
+    },
+    {
+      "source": "/admin/villes/:slug/edit",
+      "destination": "/admin"
     }
   ]
 }

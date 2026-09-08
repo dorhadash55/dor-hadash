@@ -1,17 +1,21 @@
 import { Link } from "react-router-dom";
-import { cities } from "../content/cities";
+import { useCities } from "../admin/hooks/useAdminContent";
 import CityImage from "./CityImage";
 import Reveal from "./Reveal";
 import SectionHeading from "./SectionHeading";
 
 export default function CitiesTeaser() {
+  const cities = useCities();
+  const title =
+    cities.length === 1 ? "Une ville d'accueil" : `${cities.length} villes d'accueil`;
+
   return (
     <section className="section-shell bg-brand-cream">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal variant="blur">
           <SectionHeading
             label="Où s'installer"
-            title="Sept villes d'accueil"
+            title={title}
             description="Destinations adaptées aux olim francophones."
             action={
               <Link to="/nos-villes" className="btn-outline">

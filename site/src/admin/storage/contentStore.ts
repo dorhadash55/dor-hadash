@@ -1,4 +1,5 @@
 import { blogPosts as staticBlogPosts } from "../../content/blog";
+import { cities as staticCities, sortCitiesForDisplay } from "../../content/cities";
 import { hero as defaultHero } from "../../content/homepage";
 import { siteInfo as defaultSiteInfo } from "../../content/site";
 import { sortVideosForDisplay, videoTestimonials as staticVideos } from "../../content/videos";
@@ -6,6 +7,7 @@ import { isFirebaseConfigured } from "../firebase/config";
 import {
   addContactSubmissionDoc,
   deleteBlogPostDoc,
+  deleteCityDoc,
   deleteContactSubmissionDoc,
   deleteVideoDoc,
   pushFullContentToFirestore,
@@ -14,11 +16,13 @@ import {
   syncContactSubmissions,
   updateContactSubmissionDoc,
   upsertBlogPostDoc,
+  upsertCityDoc,
   upsertVideoDoc,
 } from "../firebase/sync";
 import type {
   AdminContent,
   BlogPost,
+  City,
   ContactSubmission,
   RemoteContentPatch,
   SiteSettings,
@@ -46,6 +50,7 @@ const DEFAULT_SITE_SETTINGS = defaultSiteSettings();
 const defaultContent = (): AdminContent => ({
   videos: [...staticVideos],
   blogPosts: [...staticBlogPosts],
+  cities: [...staticCities],
   contactSubmissions: [],
   siteSettings: null,
 });
@@ -68,6 +73,7 @@ function sortSubmissions(submissions: ContactSubmission[]) {
 
 const excludedVideoIds = new Set<string>();
 const excludedPostSlugs = new Set<string>();
+const excludedCitySlugs = new Set<string>();
 let cache = defaultContent();
 /** Cache trié — même référence tant que contactSubmissions n'a pas changé. */
 let sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
@@ -75,6 +81,7 @@ let sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
 let mergedVideos = mergeVideos(cache.videos);
 /** Même référence tant que la liste visible n'a pas vraiment changé (useSyncExternalStore). */
 let visibleBlogPosts = cache.blogPosts;
+let visibleCities = cache.cities;
 let syncInitialized = false;
 /** Évite qu'un snapshot Firestore stale écrase une sauvegarde locale en cours. */
 let firestoreWriteInFlight = 0;
@@ -91,6 +98,20 @@ function syncVisibleBlogPosts() {
     return;
   }
   visibleBlogPosts = next;
+}
+
+function syncVisibleCities() {
+  const next =
+    excludedCitySlugs.size === 0
+      ? cache.cities
+      : cache.cities.filter((city) => !excludedCitySlugs.has(city.slug));
+  if (
+    next.length === visibleCities.length &&
+    next.every((city, index) => city === visibleCities[index])
+  ) {
+    return;
+  }
+  visibleCities = next;
 }
 
 function isExcludedVideo(video: Pick<VideoTestimonial, "id" | "youtubeId">) {
@@ -155,6 +176,7 @@ function readRaw(): AdminContent {
     return {
       videos: parsed.videos ?? [],
       blogPosts: parsed.blogPosts?.length ? parsed.blogPosts : [...staticBlogPosts],
+      cities: parsed.cities?.length ? parsed.cities : [...staticCities],
       contactSubmissions: parsed.contactSubmissions ?? [],
       siteSettings: parsed.siteSettings ?? null,
     };
@@ -168,11 +190,13 @@ function refreshCache() {
   sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
   mergedVideos = mergeVideos(cache.videos);
   syncVisibleBlogPosts();
+  syncVisibleCities();
 }
 
 function applyRemoteContent(partial: RemoteContentPatch) {
   for (const id of partial.excludedVideoIds ?? []) excludedVideoIds.add(id);
   for (const slug of partial.excludedPostSlugs ?? []) excludedPostSlugs.add(slug);
+  for (const slug of partial.excludedCitySlugs ?? []) excludedCitySlugs.add(slug);
 
   if (partial.contactSubmissions !== undefined) {
     cache = { ...cache, contactSubmissions: partial.contactSubmissions };
@@ -183,6 +207,7 @@ function applyRemoteContent(partial: RemoteContentPatch) {
   const hasSiteFields =
     partial.videos !== undefined ||
     partial.blogPosts !== undefined ||
+    partial.cities !== undefined ||
     partial.siteSettings !== undefined;
 
   if (!hasSiteFields) return;
@@ -196,12 +221,16 @@ function applyRemoteContent(partial: RemoteContentPatch) {
     ...(partial.blogPosts !== undefined && {
       blogPosts: partial.blogPosts.filter((post) => !excludedPostSlugs.has(post.slug)),
     }),
+    ...(partial.cities !== undefined && {
+      cities: partial.cities.filter((city) => !excludedCitySlugs.has(city.slug)),
+    }),
     ...(partial.siteSettings !== undefined && { siteSettings: partial.siteSettings }),
   };
   if (partial.videos !== undefined) {
     mergedVideos = mergeVideos(nextVideos);
   }
   syncVisibleBlogPosts();
+  syncVisibleCities();
   persistLocalStorage();
   emit();
 }
@@ -237,6 +266,7 @@ function write(content: AdminContent) {
   sortedContactSubmissions = sortSubmissions(content.contactSubmissions);
   mergedVideos = mergeVideos(content.videos);
   syncVisibleBlogPosts();
+  syncVisibleCities();
   persistLocalStorage();
   emit();
 
@@ -253,6 +283,9 @@ function write(content: AdminContent) {
       }
       for (const video of content.videos) {
         await upsertVideoDoc(video);
+      }
+      for (const city of content.cities) {
+        await upsertCityDoc(city);
       }
     } catch (error) {
       console.error("Erreur enregistrement Firestore:", error);
@@ -301,6 +334,15 @@ export function getBlogPostBySlug(slug: string): BlogPost | undefined {
   return cache.blogPosts.find((p) => p.slug === slug);
 }
 
+export function getCities(): City[] {
+  return visibleCities;
+}
+
+export function getCityBySlug(slug: string): City | undefined {
+  if (excludedCitySlugs.has(slug)) return undefined;
+  return visibleCities.find((city) => city.slug === slug);
+}
+
 export function getContactSubmissions(): ContactSubmission[] {
   return sortedContactSubmissions;
 }
@@ -325,6 +367,26 @@ function applyBlogPostLocal(post: BlogPost, previousSlug?: string) {
       : [post, ...withoutOld],
   };
   syncVisibleBlogPosts();
+}
+
+function applyCityLocal(city: City, previousSlug?: string) {
+  if (previousSlug && previousSlug !== city.slug) {
+    excludedCitySlugs.add(previousSlug);
+  }
+  const withoutOld =
+    previousSlug && previousSlug !== city.slug
+      ? cache.cities.filter((item) => item.slug !== previousSlug)
+      : cache.cities;
+  const exists = withoutOld.some((item) => item.slug === city.slug);
+  cache = {
+    ...cache,
+    cities: sortCitiesForDisplay(
+      exists
+        ? withoutOld.map((item) => (item.slug === city.slug ? city : item))
+        : [...withoutOld, city],
+    ),
+  };
+  syncVisibleCities();
 }
 
 function nextVideoSortKey(list: VideoTestimonial[]) {
@@ -568,6 +630,7 @@ export function importContentJson(json: string) {
   write({
     videos: parsed.videos ?? [],
     blogPosts: parsed.blogPosts ?? [],
+    cities: parsed.cities?.length ? parsed.cities : [...staticCities],
     contactSubmissions: parsed.contactSubmissions ?? [],
     siteSettings: parsed.siteSettings ?? null,
   });
@@ -617,11 +680,61 @@ export async function upsertBlogPostAsync(
   }
 }
 
+export async function upsertCityAsync(
+  city: City,
+  options?: { previousSlug?: string },
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const existsAlready =
+    Boolean(options?.previousSlug) || visibleCities.some((item) => item.slug === city.slug);
+  const withKey: City = {
+    ...city,
+    ...(city.sortKey !== undefined
+      ? { sortKey: city.sortKey }
+      : existsAlready
+        ? {}
+        : { sortKey: Date.now() }),
+  };
+
+  try {
+    await persistItems(
+      async () => {
+        await upsertCityDoc(withKey);
+        if (options?.previousSlug && options.previousSlug !== withKey.slug) {
+          await deleteCityDoc(options.previousSlug);
+        }
+      },
+      () => applyCityLocal(withKey, options?.previousSlug),
+    );
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: formatFirestoreError(error) };
+  }
+}
+
+export async function deleteCityAsync(
+  slug: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await persistItems(
+      () => deleteCityDoc(slug),
+      () => {
+        excludedCitySlugs.add(slug);
+        cache = { ...cache, cities: cache.cities.filter((city) => city.slug !== slug) };
+        syncVisibleCities();
+      },
+    );
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: formatFirestoreError(error) };
+  }
+}
+
 export function getAdminStats() {
   const unread = cache.contactSubmissions.filter((s) => !s.read).length;
   return {
     videos: mergedVideos.length,
     blogPosts: getBlogPosts().length,
+    cities: getCities().length,
     contacts: cache.contactSubmissions.length,
     unreadContacts: unread,
   };

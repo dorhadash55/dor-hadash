@@ -1,4 +1,5 @@
 import type { BlogPost } from "../../content/blog";
+import type { City } from "../../content/cities";
 import type { VideoTestimonial } from "../../content/videos";
 
 export type ContactSubmission = {
@@ -30,6 +31,7 @@ export type SiteSettings = {
 export type AdminContent = {
   videos: VideoTestimonial[];
   blogPosts: BlogPost[];
+  cities: City[];
   contactSubmissions: ContactSubmission[];
   siteSettings: SiteSettings | null;
 };
@@ -37,6 +39,7 @@ export type AdminContent = {
 export type RemoteContentPatch = Partial<AdminContent> & {
   excludedVideoIds?: string[];
   excludedPostSlugs?: string[];
+  excludedCitySlugs?: string[];
 };
 
-export type { BlogPost, VideoTestimonial };
+export type { BlogPost, VideoTestimonial, City };

@@ -4,8 +4,8 @@ import SeoHead from "../components/SeoHead";
 import PageBanner from "../components/PageBanner";
 import Reveal from "../components/Reveal";
 import { addContactSubmission } from "../admin/storage/contentStore";
+import { useCities } from "../admin/hooks/useAdminContent";
 import { useSiteInfo } from "../content/useSiteContent";
-import { cities } from "../content/cities";
 import { sendContactEmails } from "../lib/sendContactEmails";
 
 const horizons = [
@@ -52,6 +52,7 @@ const objetCopy: Record<string, { title: string; subtitle: string; note: string;
 
 export default function Contact() {
   const siteInfo = useSiteInfo();
+  const cities = useCities();
   const [searchParams] = useSearchParams();
   const objet = searchParams.get("objet") ?? "";
   const copy = objetCopy[objet];
