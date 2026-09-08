@@ -18,8 +18,8 @@ export function subscribeMedia(listener: () => void) {
   return () => listeners.delete(listener);
 }
 
-export function isMediaRef(src: string | undefined | null): src is string {
-  return Boolean(src?.startsWith(MEDIA_PREFIX));
+export function isMediaRef(src: string | undefined | null): src is `media:${string}` {
+  return typeof src === "string" && src.startsWith(MEDIA_PREFIX);
 }
 
 export function rememberMedia(id: string, dataUrl: string) {
