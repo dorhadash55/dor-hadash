@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { sendContactMails } from "../site/api/sendContactMails.js";
+import { sendContactMails } from "./sendContactMails.js";
 
 type ContactPayload = {
   prenom?: string;
