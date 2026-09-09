@@ -62,7 +62,7 @@ export default function Footer() {
         <div>
           <h3 className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal mb-4">Newsletter</h3>
           <p className="mb-3 text-sm leading-relaxed text-white/70">
-            Chaque semaine, l&apos;essentiel pour les francophones en Israël.
+            Chaque semaine, l&apos;essentiel pour préparer son Alya et vivre en Israël.
           </p>
           <button
             type="button"

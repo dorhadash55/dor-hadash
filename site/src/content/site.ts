@@ -44,6 +44,7 @@ export function withCityNav(
  * Desktop — peu d'entrées, CTA entretien séparé dans le Header.
  */
 export const mainNav: NavItem[] = [
+  { label: "Accueil", path: "/" },
   { label: "Notre accompagnement", shortLabel: "Accompagnement", path: "/mission" },
   {
     label: "Nos villes",

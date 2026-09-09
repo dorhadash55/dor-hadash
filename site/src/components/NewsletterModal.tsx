@@ -99,7 +99,7 @@ export default function NewsletterModal() {
               Newsletter
             </p>
             <h2 id={titleId} className="mt-0.5 font-heading text-lg font-semibold text-brand-blue-deep sm:text-xl">
-              Pour les francophones en Israël
+              Pour tous les francophones
             </h2>
           </div>
           <button
@@ -120,8 +120,7 @@ export default function NewsletterModal() {
               Vous êtes inscrit ✓
             </p>
             <p className="text-sm leading-relaxed text-gray-600">
-              Merci. Chaque semaine, un point pour les francophones en Israël : actualités, intégration,
-              villes et vie sur place.
+              Merci. Chaque semaine : actualités, conseils sur l’Alya, intégration, villes et vie en Israël.
             </p>
             <button type="button" onClick={handleClose} className="btn-primary w-full justify-center">
               Fermer
@@ -130,8 +129,8 @@ export default function NewsletterModal() {
         ) : (
           <form onSubmit={(e) => void handleSubmit(e)} className="space-y-4 px-4 py-5 sm:px-5">
             <p className="text-sm leading-relaxed text-gray-600">
-              Un email par semaine, sans spam : actualités, intégration et infos utiles pour les
-              francophones en Israël.
+              Un email par semaine, sans spam, que vous soyez encore en France, en réflexion sur votre
+              Alya ou déjà installé en Israël.
             </p>
             <div>
               <label htmlFor="newsletter-email" className="mb-1.5 block text-sm font-medium text-gray-700">
