@@ -10,7 +10,6 @@ import {
   importContentJson,
   isFirebaseConfigured,
   pushAllContentToFirestore,
-  resetContentToDefaults,
   saveSiteSettings,
 } from "../../admin/storage/contentStore";
 import type { SiteSettings } from "../../admin/storage/types";
@@ -216,18 +215,6 @@ export default function AdminSettingsPage() {
                 onChange={(e) => e.target.files?.[0] && handleImport(e.target.files[0])}
               />
             </label>
-            <AdminButton
-              variant="danger"
-              onClick={() => {
-                if (confirm("Réinitialiser tout le contenu admin aux valeurs par défaut ?")) {
-                  resetContentToDefaults();
-                  setForm(getSiteSettings());
-                  setSaved(false);
-                }
-              }}
-            >
-              Réinitialiser
-            </AdminButton>
           </div>
           {importError && <p className="mt-2 text-sm text-brand-coral">{importError}</p>}
         </AdminCard>
