@@ -19,6 +19,7 @@ import { ensureFirebaseAuthReady } from "./authReady";
 import type {
   AdminContent,
   ContactSubmission,
+  EventPopupSettings,
   NewsletterSubscriber,
   RemoteContentPatch,
   SiteSettings,
@@ -42,6 +43,7 @@ type SiteDocument = {
   videos?: unknown;
   blogPosts?: BlogPost[];
   siteSettings?: SiteSettings | null;
+  eventPopup?: unknown;
 };
 
 let syncStarted = false;
@@ -53,6 +55,7 @@ let itemSyncSeed: (() => AdminContent) | null = null;
 let legacyVideos: VideoTestimonial[] = [];
 let legacyBlogPosts: BlogPost[] = [];
 let lastSiteSettings: SiteSettings | null | undefined;
+let lastEventPopup: EventPopupSettings | null | undefined;
 let collectionVideoDocs: Array<VideoTestimonial & { deleted?: boolean }> | null = null;
 let collectionPostDocs: Array<BlogPost & { deleted?: boolean }> | null = null;
 let collectionCityDocs: Array<City & { deleted?: boolean }> | null = null;
@@ -95,6 +98,7 @@ function buildSitePayload(data: {
   videos?: VideoTestimonial[];
   blogPosts?: BlogPost[];
   siteSettings?: SiteSettings | null;
+  eventPopup?: EventPopupSettings | null;
 }) {
   const payload: Record<string, unknown> = {
     updatedAt: serverTimestamp(),
@@ -102,6 +106,7 @@ function buildSitePayload(data: {
   if (data.videos !== undefined) payload.videos = data.videos;
   if (data.blogPosts !== undefined) payload.blogPosts = data.blogPosts;
   if (data.siteSettings !== undefined) payload.siteSettings = data.siteSettings;
+  if (data.eventPopup !== undefined) payload.eventPopup = data.eventPopup;
   return payload;
 }
 
@@ -120,6 +125,7 @@ function applySeedLocally(
     cities: seed.cities,
     partners: seed.partners,
     siteSettings: seed.siteSettings,
+    eventPopup: seed.eventPopup,
   });
 }
 
@@ -326,7 +332,29 @@ function emitItemMerge() {
         }
       : {}),
     ...(lastSiteSettings !== undefined ? { siteSettings: lastSiteSettings } : {}),
+    ...(lastEventPopup !== undefined ? { eventPopup: lastEventPopup } : {}),
   });
+}
+
+function normalizeEventPopup(raw: unknown): EventPopupSettings | null {
+  if (!raw || typeof raw !== "object") return null;
+  const row = raw as Record<string, unknown>;
+  const id = String(row.id ?? "").trim();
+  const title = String(row.title ?? "").trim();
+  const content = String(row.content ?? "").trim();
+  const startAt = String(row.startAt ?? "").trim();
+  const endAt = String(row.endAt ?? "").trim();
+  if (!id || !title || !content || !startAt || !endAt) return null;
+  const image = String(row.image ?? "").trim();
+  return {
+    id,
+    title,
+    content,
+    startAt,
+    endAt,
+    enabled: row.enabled === true,
+    ...(image ? { image } : {}),
+  };
 }
 
 function normalizePostDoc(
@@ -721,6 +749,7 @@ export function startFirestoreSync(
         legacyVideos = [];
         legacyBlogPosts = seed.blogPosts;
         lastSiteSettings = seed.siteSettings;
+        lastEventPopup = seed.eventPopup;
         emitItemMerge();
         if (isAdminUser()) {
           try {
@@ -740,6 +769,7 @@ export function startFirestoreSync(
       legacyVideos = normalizeVideos(data.videos);
       legacyBlogPosts = data.blogPosts?.length ? data.blogPosts : seed.blogPosts;
       lastSiteSettings = data.siteSettings ?? null;
+      lastEventPopup = normalizeEventPopup(data.eventPopup);
       emitItemMerge();
 
       if (import.meta.env.DEV) {
@@ -776,6 +806,7 @@ export async function saveSiteDocument(
     videos?: VideoTestimonial[];
     blogPosts?: BlogPost[];
     siteSettings?: SiteSettings | null;
+    eventPopup?: EventPopupSettings | null;
   },
   options: SaveSiteOptions = {},
 ) {
@@ -814,7 +845,8 @@ export async function saveSiteDocument(
   if (
     payload.videos === undefined &&
     payload.blogPosts === undefined &&
-    payload.siteSettings === undefined
+    payload.siteSettings === undefined &&
+    payload.eventPopup === undefined
   ) {
     return;
   }
@@ -854,10 +886,20 @@ export async function saveSiteSettingsDocument(settings: SiteSettings) {
   );
 }
 
+export async function saveEventPopupDocument(eventPopup: EventPopupSettings | null) {
+  const db = await assertAdminWrite();
+  await setDoc(
+    doc(db, "site", "content"),
+    { eventPopup, updatedAt: serverTimestamp() },
+    { merge: true },
+  );
+}
+
 export async function pushFullContentToFirestore(content: AdminContent) {
   if (content.siteSettings) {
     await saveSiteSettingsDocument(content.siteSettings);
   }
+  await saveEventPopupDocument(content.eventPopup);
   for (const post of content.blogPosts) {
     await upsertBlogPostDoc(post);
   }

@@ -26,6 +26,7 @@ import AdminPartnerEditorPage from "./pages/admin/AdminPartnerEditorPage";
 import AdminContactsPage from "./pages/admin/AdminContactsPage";
 import AdminNewsletterPage from "./pages/admin/AdminNewsletterPage";
 import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
+import AdminEventPopupPage from "./pages/admin/AdminEventPopupPage";
 import { cities } from "./content/cities";
 import { blogPosts } from "./content/blog";
 
@@ -78,6 +79,7 @@ export const routes: RouteRecord[] = [
           { path: "partenaires/:slug/edit", Component: AdminPartnerEditorPage },
           { path: "contacts", Component: AdminContactsPage },
           { path: "newsletter", Component: AdminNewsletterPage },
+          { path: "popup-evenement", Component: AdminEventPopupPage },
           { path: "settings", Component: AdminSettingsPage },
         ],
       },

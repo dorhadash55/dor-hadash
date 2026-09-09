@@ -10,6 +10,7 @@ const navItems = [
   { to: "/admin/partenaires", label: "Partenaires", icon: "◇" },
   { to: "/admin/contacts", label: "Messages", icon: "✉" },
   { to: "/admin/newsletter", label: "Newsletter", icon: "✉" },
+  { to: "/admin/popup-evenement", label: "Popup événement", icon: "★" },
   { to: "/admin/settings", label: "Paramètres", icon: "⚙" },
 ];
 

@@ -15,6 +15,7 @@ import {
   deletePartnerDoc,
   deleteVideoDoc,
   pushFullContentToFirestore,
+  saveEventPopupDocument,
   saveSiteSettingsDocument,
   startFirestoreSync,
   syncContactSubmissions,
@@ -29,6 +30,7 @@ import type {
   BlogPost,
   City,
   ContactSubmission,
+  EventPopupSettings,
   NewsletterSubscriber,
   Partner,
   RemoteContentPatch,
@@ -63,6 +65,7 @@ const defaultContent = (): AdminContent => ({
   contactSubmissions: [],
   newsletterSubscribers: [],
   siteSettings: null,
+  eventPopup: null,
 });
 
 const listeners = new Set<() => void>();
@@ -269,6 +272,7 @@ function readRaw(): AdminContent {
       contactSubmissions: parsed.contactSubmissions ?? [],
       newsletterSubscribers: parsed.newsletterSubscribers ?? [],
       siteSettings: parsed.siteSettings ?? null,
+      eventPopup: parsed.eventPopup ?? null,
     };
   } catch {
     return defaultContent();
@@ -311,7 +315,8 @@ function applyRemoteContent(partial: RemoteContentPatch) {
     partial.blogPosts !== undefined ||
     partial.cities !== undefined ||
     partial.partners !== undefined ||
-    partial.siteSettings !== undefined;
+    partial.siteSettings !== undefined ||
+    partial.eventPopup !== undefined;
 
   if (!hasSiteFields) return;
 
@@ -331,6 +336,7 @@ function applyRemoteContent(partial: RemoteContentPatch) {
       partners: partial.partners.filter((partner) => !excludedPartnerSlugs.has(partner.slug)),
     }),
     ...(partial.siteSettings !== undefined && { siteSettings: partial.siteSettings }),
+    ...(partial.eventPopup !== undefined && { eventPopup: partial.eventPopup }),
   };
   if (partial.videos !== undefined) {
     mergedVideos = mergeVideos(nextVideos);
@@ -475,6 +481,10 @@ export function getNewsletterSubscribers(): NewsletterSubscriber[] {
 
 export function getSiteSettings(): SiteSettings {
   return cache.siteSettings ?? DEFAULT_SITE_SETTINGS;
+}
+
+export function getEventPopup(): EventPopupSettings | null {
+  return cache.eventPopup;
 }
 
 function applyBlogPostLocal(post: BlogPost, previousSlug?: string) {
@@ -856,6 +866,25 @@ export function saveSiteSettings(settings: SiteSettings) {
   emit();
 }
 
+export async function saveEventPopup(
+  eventPopup: EventPopupSettings | null,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const previous = cache.eventPopup;
+  cache = { ...cache, eventPopup };
+  persistLocalStorage();
+  emit();
+  if (!isFirebaseConfigured()) return { ok: true };
+  try {
+    await saveEventPopupDocument(eventPopup);
+    return { ok: true };
+  } catch (error) {
+    cache = { ...cache, eventPopup: previous };
+    persistLocalStorage();
+    emit();
+    return { ok: false, error: formatFirestoreError(error) };
+  }
+}
+
 export function resetContentToDefaults() {
   write(defaultContent());
 }
@@ -874,6 +903,7 @@ export function importContentJson(json: string) {
     contactSubmissions: parsed.contactSubmissions ?? [],
     newsletterSubscribers: parsed.newsletterSubscribers ?? [],
     siteSettings: parsed.siteSettings ?? null,
+    eventPopup: parsed.eventPopup ?? null,
   });
 
   if (isFirebaseConfigured() && parsed.contactSubmissions?.length) {

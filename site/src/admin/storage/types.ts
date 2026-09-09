@@ -46,6 +46,16 @@ export type SiteSettings = {
   hero: HeroSettings;
 };
 
+export type EventPopupSettings = {
+  id: string;
+  title: string;
+  content: string;
+  image?: string;
+  startAt: string;
+  endAt: string;
+  enabled: boolean;
+};
+
 export type AdminContent = {
   videos: VideoTestimonial[];
   blogPosts: BlogPost[];
@@ -54,6 +64,7 @@ export type AdminContent = {
   contactSubmissions: ContactSubmission[];
   newsletterSubscribers: NewsletterSubscriber[];
   siteSettings: SiteSettings | null;
+  eventPopup: EventPopupSettings | null;
 };
 
 export type RemoteContentPatch = Partial<AdminContent> & {

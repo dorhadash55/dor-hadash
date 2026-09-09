@@ -6,6 +6,7 @@ import {
   getCityBySlug,
   getContactSubmissions,
   getContentSnapshot,
+  getEventPopup,
   getNewsletterSubscribers,
   getPartnerBySlug,
   getPartners,
@@ -13,7 +14,7 @@ import {
   getVideos,
   subscribeContent,
 } from "../storage/contentStore";
-import type { AdminContent, BlogPost, City, ContactSubmission, NewsletterSubscriber, Partner, SiteSettings, VideoTestimonial } from "../storage/types";
+import type { AdminContent, BlogPost, City, ContactSubmission, EventPopupSettings, NewsletterSubscriber, Partner, SiteSettings, VideoTestimonial } from "../storage/types";
 import { blogPosts as staticBlogPosts } from "../../content/blog";
 import { cities as staticCities } from "../../content/cities";
 import { hero as defaultHero } from "../../content/homepage";
@@ -40,6 +41,7 @@ const SERVER_DEFAULT_CONTENT: AdminContent = {
   contactSubmissions: [],
   newsletterSubscribers: [],
   siteSettings: null,
+  eventPopup: null,
 };
 
 export function useAdminContent(): AdminContent {
@@ -101,4 +103,8 @@ export function useNewsletterSubscribers(): NewsletterSubscriber[] {
 
 export function useSiteSettings(): SiteSettings {
   return useSyncExternalStore(subscribeContent, getSiteSettings, () => SERVER_DEFAULT_SITE_SETTINGS);
+}
+
+export function useEventPopup(): EventPopupSettings | null {
+  return useSyncExternalStore(subscribeContent, getEventPopup, () => null);
 }
