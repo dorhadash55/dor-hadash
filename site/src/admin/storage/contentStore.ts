@@ -1,14 +1,18 @@
 import { blogPosts as staticBlogPosts } from "../../content/blog";
 import { cities as staticCities, sortCitiesForDisplay } from "../../content/cities";
 import { hero as defaultHero } from "../../content/homepage";
+import { partners as staticPartners, sortPartnersForDisplay } from "../../content/partners";
 import { siteInfo as defaultSiteInfo } from "../../content/site";
 import { sortVideosForDisplay, videoTestimonials as staticVideos } from "../../content/videos";
 import { isFirebaseConfigured } from "../firebase/config";
 import {
   addContactSubmissionDoc,
+  addNewsletterSubscriberDoc,
   deleteBlogPostDoc,
   deleteCityDoc,
   deleteContactSubmissionDoc,
+  deleteNewsletterSubscriberDoc,
+  deletePartnerDoc,
   deleteVideoDoc,
   pushFullContentToFirestore,
   saveSiteSettingsDocument,
@@ -17,6 +21,7 @@ import {
   updateContactSubmissionDoc,
   upsertBlogPostDoc,
   upsertCityDoc,
+  upsertPartnerDoc,
   upsertVideoDoc,
 } from "../firebase/sync";
 import type {
@@ -24,10 +29,13 @@ import type {
   BlogPost,
   City,
   ContactSubmission,
+  NewsletterSubscriber,
+  Partner,
   RemoteContentPatch,
   SiteSettings,
   VideoTestimonial,
 } from "./types";
+import { NEWSLETTER_CONTACT_MARKER, isNewsletterContact } from "./types";
 
 export { isFirebaseConfigured } from "../firebase/config";
 
@@ -51,7 +59,9 @@ const defaultContent = (): AdminContent => ({
   videos: [...staticVideos],
   blogPosts: [...staticBlogPosts],
   cities: [...staticCities],
+  partners: [...staticPartners],
   contactSubmissions: [],
+  newsletterSubscribers: [],
   siteSettings: null,
 });
 
@@ -65,23 +75,87 @@ function isBrowser() {
   return typeof window !== "undefined";
 }
 
-function sortSubmissions(submissions: ContactSubmission[]) {
+function sortSubmissions<T extends { createdAt: string }>(submissions: T[]) {
   return [...submissions].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 }
 
+function mergeNewsletterSubscribers(
+  subscribers: NewsletterSubscriber[],
+  contacts: ContactSubmission[],
+): NewsletterSubscriber[] {
+  const byEmail = new Map<string, NewsletterSubscriber>();
+  for (const item of subscribers) {
+    byEmail.set(item.email.toLowerCase(), item);
+  }
+  for (const contact of contacts) {
+    if (!isNewsletterContact(contact)) continue;
+    const email = contact.email.trim().toLowerCase();
+    if (!email) continue;
+    const current = byEmail.get(email);
+    if (!current) {
+      byEmail.set(email, {
+        id: email,
+        email,
+        telephone: contact.telephone.trim(),
+        createdAt: contact.createdAt,
+      });
+      continue;
+    }
+    if (contact.telephone && !current.telephone) {
+      byEmail.set(email, { ...current, telephone: contact.telephone.trim() });
+    }
+  }
+  return sortSubmissions([...byEmail.values()]);
+}
+
+function sameList<T>(a: T[], b: T[]) {
+  return a.length === b.length && a.every((item, index) => item === b[index]);
+}
+
+function syncVisibleLists() {
+  const nextContacts = sortedContactSubmissions.filter((item) => !isNewsletterContact(item));
+  if (!sameList(nextContacts, visibleContactSubmissions)) {
+    visibleContactSubmissions = nextContacts;
+  }
+  const nextNewsletter = mergeNewsletterSubscribers(
+    sortedNewsletterSubscribers,
+    sortedContactSubmissions,
+  );
+  if (
+    nextNewsletter.length === visibleNewsletterSubscribers.length &&
+    nextNewsletter.every(
+      (item, index) =>
+        item.email === visibleNewsletterSubscribers[index]?.email &&
+        item.telephone === visibleNewsletterSubscribers[index]?.telephone &&
+        item.createdAt === visibleNewsletterSubscribers[index]?.createdAt,
+    )
+  ) {
+    return;
+  }
+  visibleNewsletterSubscribers = nextNewsletter;
+}
+
 const excludedVideoIds = new Set<string>();
 const excludedPostSlugs = new Set<string>();
 const excludedCitySlugs = new Set<string>();
+const excludedPartnerSlugs = new Set<string>();
 let cache = defaultContent();
 /** Cache trié — même référence tant que contactSubmissions n'a pas changé. */
 let sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+let sortedNewsletterSubscribers = sortSubmissions(cache.newsletterSubscribers);
+let visibleContactSubmissions = sortedContactSubmissions.filter((item) => !isNewsletterContact(item));
+let visibleNewsletterSubscribers = mergeNewsletterSubscribers(
+  sortedNewsletterSubscribers,
+  sortedContactSubmissions,
+);
 /** Fusion static + Firebase — même référence tant que cache.videos n'a pas changé. */
 let mergedVideos = mergeVideos(cache.videos);
 /** Même référence tant que la liste visible n'a pas vraiment changé (useSyncExternalStore). */
 let visibleBlogPosts = cache.blogPosts;
 let visibleCities = cache.cities;
+let visiblePartners = cache.partners;
 let syncInitialized = false;
 /** Évite qu'un snapshot Firestore stale écrase une sauvegarde locale en cours. */
 let firestoreWriteInFlight = 0;
@@ -112,6 +186,20 @@ function syncVisibleCities() {
     return;
   }
   visibleCities = next;
+}
+
+function syncVisiblePartners() {
+  const next =
+    excludedPartnerSlugs.size === 0
+      ? cache.partners
+      : cache.partners.filter((partner) => !excludedPartnerSlugs.has(partner.slug));
+  if (
+    next.length === visiblePartners.length &&
+    next.every((partner, index) => partner === visiblePartners[index])
+  ) {
+    return;
+  }
+  visiblePartners = next;
 }
 
 function isExcludedVideo(video: Pick<VideoTestimonial, "id" | "youtubeId">) {
@@ -177,7 +265,9 @@ function readRaw(): AdminContent {
       videos: parsed.videos ?? [],
       blogPosts: parsed.blogPosts?.length ? parsed.blogPosts : [...staticBlogPosts],
       cities: parsed.cities?.length ? parsed.cities : [...staticCities],
+      partners: parsed.partners?.length ? parsed.partners : [...staticPartners],
       contactSubmissions: parsed.contactSubmissions ?? [],
+      newsletterSubscribers: parsed.newsletterSubscribers ?? [],
       siteSettings: parsed.siteSettings ?? null,
     };
   } catch {
@@ -188,19 +278,31 @@ function readRaw(): AdminContent {
 function refreshCache() {
   cache = readRaw();
   sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+  sortedNewsletterSubscribers = sortSubmissions(cache.newsletterSubscribers);
   mergedVideos = mergeVideos(cache.videos);
   syncVisibleBlogPosts();
   syncVisibleCities();
+  syncVisiblePartners();
+  syncVisibleLists();
 }
 
 function applyRemoteContent(partial: RemoteContentPatch) {
   for (const id of partial.excludedVideoIds ?? []) excludedVideoIds.add(id);
   for (const slug of partial.excludedPostSlugs ?? []) excludedPostSlugs.add(slug);
   for (const slug of partial.excludedCitySlugs ?? []) excludedCitySlugs.add(slug);
+  for (const slug of partial.excludedPartnerSlugs ?? []) excludedPartnerSlugs.add(slug);
 
   if (partial.contactSubmissions !== undefined) {
     cache = { ...cache, contactSubmissions: partial.contactSubmissions };
     sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+    syncVisibleLists();
+    emit();
+  }
+
+  if (partial.newsletterSubscribers !== undefined) {
+    cache = { ...cache, newsletterSubscribers: partial.newsletterSubscribers };
+    sortedNewsletterSubscribers = sortSubmissions(cache.newsletterSubscribers);
+    syncVisibleLists();
     emit();
   }
 
@@ -208,6 +310,7 @@ function applyRemoteContent(partial: RemoteContentPatch) {
     partial.videos !== undefined ||
     partial.blogPosts !== undefined ||
     partial.cities !== undefined ||
+    partial.partners !== undefined ||
     partial.siteSettings !== undefined;
 
   if (!hasSiteFields) return;
@@ -224,6 +327,9 @@ function applyRemoteContent(partial: RemoteContentPatch) {
     ...(partial.cities !== undefined && {
       cities: partial.cities.filter((city) => !excludedCitySlugs.has(city.slug)),
     }),
+    ...(partial.partners !== undefined && {
+      partners: partial.partners.filter((partner) => !excludedPartnerSlugs.has(partner.slug)),
+    }),
     ...(partial.siteSettings !== undefined && { siteSettings: partial.siteSettings }),
   };
   if (partial.videos !== undefined) {
@@ -231,6 +337,7 @@ function applyRemoteContent(partial: RemoteContentPatch) {
   }
   syncVisibleBlogPosts();
   syncVisibleCities();
+  syncVisiblePartners();
   persistLocalStorage();
   emit();
 }
@@ -264,9 +371,12 @@ function formatFirestoreError(error: unknown): string {
 function write(content: AdminContent) {
   cache = content;
   sortedContactSubmissions = sortSubmissions(content.contactSubmissions);
+  sortedNewsletterSubscribers = sortSubmissions(content.newsletterSubscribers);
+  syncVisibleLists();
   mergedVideos = mergeVideos(content.videos);
   syncVisibleBlogPosts();
   syncVisibleCities();
+  syncVisiblePartners();
   persistLocalStorage();
   emit();
 
@@ -286,6 +396,9 @@ function write(content: AdminContent) {
       }
       for (const city of content.cities) {
         await upsertCityDoc(city);
+      }
+      for (const partner of content.partners) {
+        await upsertPartnerDoc(partner);
       }
     } catch (error) {
       console.error("Erreur enregistrement Firestore:", error);
@@ -343,8 +456,21 @@ export function getCityBySlug(slug: string): City | undefined {
   return visibleCities.find((city) => city.slug === slug);
 }
 
+export function getPartners(): Partner[] {
+  return visiblePartners;
+}
+
+export function getPartnerBySlug(slug: string): Partner | undefined {
+  if (excludedPartnerSlugs.has(slug)) return undefined;
+  return visiblePartners.find((partner) => partner.slug === slug);
+}
+
 export function getContactSubmissions(): ContactSubmission[] {
-  return sortedContactSubmissions;
+  return visibleContactSubmissions;
+}
+
+export function getNewsletterSubscribers(): NewsletterSubscriber[] {
+  return visibleNewsletterSubscribers;
 }
 
 export function getSiteSettings(): SiteSettings {
@@ -387,6 +513,26 @@ function applyCityLocal(city: City, previousSlug?: string) {
     ),
   };
   syncVisibleCities();
+}
+
+function applyPartnerLocal(partner: Partner, previousSlug?: string) {
+  if (previousSlug && previousSlug !== partner.slug) {
+    excludedPartnerSlugs.add(previousSlug);
+  }
+  const withoutOld =
+    previousSlug && previousSlug !== partner.slug
+      ? cache.partners.filter((item) => item.slug !== previousSlug)
+      : cache.partners;
+  const exists = withoutOld.some((item) => item.slug === partner.slug);
+  cache = {
+    ...cache,
+    partners: sortPartnersForDisplay(
+      exists
+        ? withoutOld.map((item) => (item.slug === partner.slug ? partner : item))
+        : [...withoutOld, partner],
+    ),
+  };
+  syncVisiblePartners();
 }
 
 function nextVideoSortKey(list: VideoTestimonial[]) {
@@ -530,6 +676,7 @@ export async function addContactSubmission(
     contactSubmissions: [submission, ...cache.contactSubmissions],
   };
   sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+  syncVisibleLists();
 
   if (isFirebaseConfigured()) {
     try {
@@ -558,6 +705,7 @@ export function markContactRead(id: string, read = true) {
     ),
   };
   sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+  syncVisibleLists();
   persistLocalStorage();
   emit();
 
@@ -577,6 +725,7 @@ export function markAllContactsRead() {
     contactSubmissions: cache.contactSubmissions.map((s) => ({ ...s, read: true })),
   };
   sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+  syncVisibleLists();
   persistLocalStorage();
   emit();
 
@@ -595,9 +744,99 @@ export function deleteContactSubmission(id: string) {
     contactSubmissions: cache.contactSubmissions.filter((s) => s.id !== id),
   };
   sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+  syncVisibleLists();
 
   if (isFirebaseConfigured()) {
     void deleteContactSubmissionDoc(id);
+  } else {
+    persistLocalStorage();
+  }
+  emit();
+}
+
+function newsletterIdFromEmail(email: string) {
+  return email.trim().toLowerCase();
+}
+
+export async function addNewsletterSubscriber(
+  data: Omit<NewsletterSubscriber, "id" | "createdAt">,
+): Promise<NewsletterSubscriber> {
+  const email = newsletterIdFromEmail(data.email);
+  if (!email) throw new Error("Email obligatoire.");
+
+  const current = cache.newsletterSubscribers ?? [];
+  const existing = current.find((item) => item.id === email);
+  const subscriber: NewsletterSubscriber = {
+    id: email,
+    email,
+    telephone: data.telephone.trim(),
+    createdAt: existing?.createdAt ?? new Date().toISOString(),
+  };
+  const contact: ContactSubmission = {
+    id: crypto.randomUUID(),
+    prenom: "Newsletter",
+    nom: "Inscription",
+    email: subscriber.email,
+    telephone: subscriber.telephone,
+    ville: NEWSLETTER_CONTACT_MARKER,
+    horizon: NEWSLETTER_CONTACT_MARKER,
+    message: [
+      "Inscription à la newsletter Dor Hadash",
+      `Email : ${subscriber.email}`,
+      `Téléphone : ${subscriber.telephone || "non renseigné"}`,
+    ].join("\n"),
+    createdAt: subscriber.createdAt,
+    read: false,
+  };
+
+  cache = {
+    ...cache,
+    newsletterSubscribers: [subscriber, ...current.filter((item) => item.id !== email)],
+    contactSubmissions: [contact, ...cache.contactSubmissions],
+  };
+  sortedNewsletterSubscribers = sortSubmissions(cache.newsletterSubscribers);
+  sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+  syncVisibleLists();
+
+  if (isFirebaseConfigured()) {
+    try {
+      await addContactSubmissionDoc(contact);
+    } catch (error) {
+      console.error("Erreur newsletter (messages) Firestore:", error);
+    }
+    try {
+      await addNewsletterSubscriberDoc(subscriber);
+    } catch (error) {
+      console.warn("Erreur newsletter_subscribers Firestore:", error);
+    }
+  } else {
+    persistLocalStorage();
+  }
+  emit();
+  return subscriber;
+}
+
+export function deleteNewsletterSubscriber(id: string) {
+  const email = id.toLowerCase();
+  const relatedContacts = cache.contactSubmissions.filter(
+    (item) => isNewsletterContact(item) && item.email.toLowerCase() === email,
+  );
+  cache = {
+    ...cache,
+    newsletterSubscribers: (cache.newsletterSubscribers ?? []).filter((item) => item.id !== id),
+    contactSubmissions: cache.contactSubmissions.filter(
+      (item) => !(isNewsletterContact(item) && item.email.toLowerCase() === email),
+    ),
+  };
+  sortedNewsletterSubscribers = sortSubmissions(cache.newsletterSubscribers);
+  sortedContactSubmissions = sortSubmissions(cache.contactSubmissions);
+  syncVisibleLists();
+
+  if (isFirebaseConfigured()) {
+    void deleteNewsletterSubscriberDoc(id);
+    for (const contact of relatedContacts) {
+      void deleteContactSubmissionDoc(contact.id);
+    }
   } else {
     persistLocalStorage();
   }
@@ -631,7 +870,9 @@ export function importContentJson(json: string) {
     videos: parsed.videos ?? [],
     blogPosts: parsed.blogPosts ?? [],
     cities: parsed.cities?.length ? parsed.cities : [...staticCities],
+    partners: parsed.partners?.length ? parsed.partners : [...staticPartners],
     contactSubmissions: parsed.contactSubmissions ?? [],
+    newsletterSubscribers: parsed.newsletterSubscribers ?? [],
     siteSettings: parsed.siteSettings ?? null,
   });
 
@@ -729,13 +970,63 @@ export async function deleteCityAsync(
   }
 }
 
+export async function upsertPartnerAsync(
+  partner: Partner,
+  options?: { previousSlug?: string },
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const existsAlready =
+    Boolean(options?.previousSlug) || visiblePartners.some((item) => item.slug === partner.slug);
+  const withKey: Partner = {
+    ...partner,
+    ...(partner.sortKey !== undefined
+      ? { sortKey: partner.sortKey }
+      : existsAlready
+        ? {}
+        : { sortKey: Date.now() }),
+  };
+  try {
+    await persistItems(
+      async () => {
+        await upsertPartnerDoc(withKey);
+        if (options?.previousSlug && options.previousSlug !== withKey.slug) {
+          await deletePartnerDoc(options.previousSlug);
+        }
+      },
+      () => applyPartnerLocal(withKey, options?.previousSlug),
+    );
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: formatFirestoreError(error) };
+  }
+}
+
+export async function deletePartnerAsync(
+  slug: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await persistItems(
+      () => deletePartnerDoc(slug),
+      () => {
+        excludedPartnerSlugs.add(slug);
+        cache = { ...cache, partners: cache.partners.filter((partner) => partner.slug !== slug) };
+        syncVisiblePartners();
+      },
+    );
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: formatFirestoreError(error) };
+  }
+}
+
 export function getAdminStats() {
-  const unread = cache.contactSubmissions.filter((s) => !s.read).length;
+  const unread = visibleContactSubmissions.filter((s) => !s.read).length;
   return {
     videos: mergedVideos.length,
     blogPosts: getBlogPosts().length,
     cities: getCities().length,
-    contacts: cache.contactSubmissions.length,
+    partners: getPartners().length,
+    contacts: visibleContactSubmissions.length,
     unreadContacts: unread,
+    newsletter: visibleNewsletterSubscribers.length,
   };
 }

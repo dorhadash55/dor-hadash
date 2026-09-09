@@ -8,6 +8,7 @@ import WhatsAppButton from "./WhatsAppButton";
 import { siteInfo } from "../content/site";
 import ContentSyncInit from "./ContentSyncInit";
 import CookieBanner from "./CookieBanner";
+import NewsletterModal from "./NewsletterModal";
 import SiteAnalytics from "./SiteAnalytics";
 import { scrollToId } from "../lib/scrollToId";
 
@@ -56,6 +57,7 @@ export default function Layout() {
       <WhatsAppButton />
       <MobileCtaBar />
       <CookieBanner />
+      <NewsletterModal />
       <SiteAnalytics />
     </div>
   );

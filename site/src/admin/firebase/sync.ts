@@ -19,6 +19,7 @@ import { ensureFirebaseAuthReady } from "./authReady";
 import type {
   AdminContent,
   ContactSubmission,
+  NewsletterSubscriber,
   RemoteContentPatch,
   SiteSettings,
   VideoTestimonial,
@@ -26,6 +27,13 @@ import type {
 import type { BlogPost } from "../storage/types";
 import type { City, CityGalleryImage, CitySection, CityTestimonial } from "../../content/cities";
 import { cities as staticCities, sortCitiesForDisplay } from "../../content/cities";
+import type { Partner } from "../../content/partners";
+import {
+  isPartnerCategory,
+  isPartnerHighlightIcon,
+  partners as staticPartners,
+  sortPartnersForDisplay,
+} from "../../content/partners";
 import type { VideoCategory } from "../../content/videos";
 import { sortVideosForDisplay } from "../../content/videos";
 import { extractYoutubeId } from "../utils/youtube";
@@ -39,6 +47,7 @@ type SiteDocument = {
 let syncStarted = false;
 let itemsSyncStarted = false;
 let contactsUnsubscribe: Unsubscribe | null = null;
+let newsletterUnsubscribe: Unsubscribe | null = null;
 let itemSyncApply: ((content: RemoteContentPatch) => void) | null = null;
 let itemSyncSeed: (() => AdminContent) | null = null;
 let legacyVideos: VideoTestimonial[] = [];
@@ -47,6 +56,7 @@ let lastSiteSettings: SiteSettings | null | undefined;
 let collectionVideoDocs: Array<VideoTestimonial & { deleted?: boolean }> | null = null;
 let collectionPostDocs: Array<BlogPost & { deleted?: boolean }> | null = null;
 let collectionCityDocs: Array<City & { deleted?: boolean }> | null = null;
+let collectionPartnerDocs: Array<Partner & { deleted?: boolean }> | null = null;
 
 function normalizeVideos(raw: unknown): VideoTestimonial[] {
   if (!Array.isArray(raw)) return [];
@@ -108,6 +118,7 @@ function applySeedLocally(
     videos: seed.videos,
     blogPosts: seed.blogPosts,
     cities: seed.cities,
+    partners: seed.partners,
     siteSettings: seed.siteSettings,
   });
 }
@@ -144,11 +155,35 @@ function startContactsListener(
       console.warn("Firestore contact_submissions (admin):", error.message);
     },
   );
+
+  if (!newsletterUnsubscribe) {
+    const newsletterQuery = query(collection(db, "newsletter_subscribers"), orderBy("createdAt", "desc"));
+    newsletterUnsubscribe = onSnapshot(
+      newsletterQuery,
+      (snapshot) => {
+        const newsletterSubscribers = snapshot.docs.map((d) => {
+          const data = d.data() as Record<string, unknown>;
+          return {
+            id: d.id,
+            email: String(data.email ?? d.id),
+            telephone: String(data.telephone ?? ""),
+            createdAt: String(data.createdAt ?? ""),
+          } as NewsletterSubscriber;
+        });
+        applyContent({ newsletterSubscribers });
+      },
+      (error) => {
+        console.warn("Firestore newsletter_subscribers (admin):", error.message);
+      },
+    );
+  }
 }
 
 function stopContactsListener() {
   contactsUnsubscribe?.();
   contactsUnsubscribe = null;
+  newsletterUnsubscribe?.();
+  newsletterUnsubscribe = null;
 }
 
 function stripDeleted<T extends { deleted?: boolean }>(item: T): Omit<T, "deleted"> {
@@ -236,6 +271,29 @@ function mergeCityLists(
   return sortCitiesForDisplay(result);
 }
 
+function mergePartnerLists(
+  legacy: Partner[],
+  overlay: Array<Partner & { deleted?: boolean }> | null,
+): Partner[] {
+  const overlayBySlug = new Map((overlay ?? []).map((partner) => [partner.slug, partner]));
+  const result: Partner[] = [];
+  const seen = new Set<string>();
+
+  for (const partner of legacy) {
+    const over = overlayBySlug.get(partner.slug);
+    if (over?.deleted) continue;
+    result.push(over ? stripDeleted(over) : partner);
+    seen.add(partner.slug);
+  }
+  if (overlay) {
+    for (const partner of overlay) {
+      if (partner.deleted || seen.has(partner.slug)) continue;
+      result.push(stripDeleted(partner));
+    }
+  }
+  return sortPartnersForDisplay(result);
+}
+
 function emitItemMerge() {
   if (!itemSyncApply || !itemSyncSeed) return;
   const seed = itemSyncSeed();
@@ -257,6 +315,14 @@ function emitItemMerge() {
           excludedCitySlugs: collectionCityDocs
             .filter((city) => city.deleted)
             .map((city) => city.slug),
+        }
+      : {}),
+    ...(collectionPartnerDocs !== null
+      ? {
+          partners: mergePartnerLists(staticPartners, collectionPartnerDocs),
+          excludedPartnerSlugs: collectionPartnerDocs
+            .filter((partner) => partner.deleted)
+            .map((partner) => partner.slug),
         }
       : {}),
     ...(lastSiteSettings !== undefined ? { siteSettings: lastSiteSettings } : {}),
@@ -395,6 +461,64 @@ function normalizeCityDoc(
   };
 }
 
+function normalizePartnerDoc(
+  id: string,
+  raw: Record<string, unknown>,
+): (Partner & { deleted?: boolean }) | null {
+  const slug = String(raw.slug ?? id).trim();
+  if (!slug) return null;
+  if (raw.deleted === true) {
+    return {
+      slug,
+      name: "",
+      category: "operationnel",
+      tagline: "",
+      summary: "",
+      deleted: true,
+    };
+  }
+  const categoryRaw = String(raw.category ?? "");
+  const category = isPartnerCategory(categoryRaw) ? categoryRaw : "operationnel";
+  const highlights = Array.isArray(raw.highlights)
+    ? raw.highlights
+        .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object")
+        .map((item) => ({
+          text: String(item.text ?? "").trim(),
+          icon: String(item.icon ?? ""),
+        }))
+        .filter(
+          (item): item is NonNullable<Partner["highlights"]>[number] =>
+            Boolean(item.text) && isPartnerHighlightIcon(item.icon),
+        )
+    : undefined;
+  const optionalString = (key: string) => {
+    const value = String(raw[key] ?? "").trim();
+    return value || undefined;
+  };
+  const sortKey = typeof raw.sortKey === "number" ? raw.sortKey : undefined;
+
+  return {
+    slug,
+    name: String(raw.name ?? "").trim(),
+    category,
+    tagline: String(raw.tagline ?? "").trim(),
+    summary: String(raw.summary ?? "").trim(),
+    ...(optionalString("nameHe") ? { nameHe: optionalString("nameHe") } : {}),
+    ...(optionalString("logo") ? { logo: optionalString("logo") } : {}),
+    ...(optionalString("website") ? { website: optionalString("website") } : {}),
+    ...(optionalString("websiteLabel") ? { websiteLabel: optionalString("websiteLabel") } : {}),
+    ...(optionalString("phone") ? { phone: optionalString("phone") } : {}),
+    ...(optionalString("phoneDisplay") ? { phoneDisplay: optionalString("phoneDisplay") } : {}),
+    ...(optionalString("contactName") ? { contactName: optionalString("contactName") } : {}),
+    ...(optionalString("offer") ? { offer: optionalString("offer") } : {}),
+    ...(optionalString("audience") ? { audience: optionalString("audience") } : {}),
+    ...(optionalString("quote") ? { quote: optionalString("quote") } : {}),
+    ...(highlights?.length ? { highlights } : {}),
+    ...(raw.showOnHome === true ? { showOnHome: true } : {}),
+    ...(sortKey !== undefined ? { sortKey } : {}),
+  };
+}
+
 function startItemCollectionsSync(
   applyContent: (content: RemoteContentPatch) => void,
   getSeedContent: () => AdminContent,
@@ -443,6 +567,19 @@ function startItemCollectionsSync(
     },
     (error) => {
       console.warn("[Dor Hadash] Lecture villes Firestore:", error.message);
+    },
+  );
+
+  onSnapshot(
+    collection(db, "site", "content", "partners"),
+    (snapshot) => {
+      collectionPartnerDocs = snapshot.docs
+        .map((document) => normalizePartnerDoc(document.id, document.data() as Record<string, unknown>))
+        .filter((partner): partner is Partner & { deleted?: boolean } => Boolean(partner));
+      emitItemMerge();
+    },
+    (error) => {
+      console.warn("[Dor Hadash] Lecture partenaires Firestore:", error.message);
     },
   );
 }
@@ -524,6 +661,23 @@ export async function deleteCityDoc(slug: string) {
   const db = await assertAdminWrite();
   await setDoc(
     doc(db, "site", "content", "cities", slug),
+    { slug, deleted: true, updatedAt: serverTimestamp() },
+    { merge: true },
+  );
+}
+
+export async function upsertPartnerDoc(partner: Partner) {
+  const db = await assertAdminWrite();
+  await setDoc(
+    doc(db, "site", "content", "partners", partner.slug),
+    withoutUndefined({ ...partner, deleted: false, updatedAt: serverTimestamp() }),
+  );
+}
+
+export async function deletePartnerDoc(slug: string) {
+  const db = await assertAdminWrite();
+  await setDoc(
+    doc(db, "site", "content", "partners", slug),
     { slug, deleted: true, updatedAt: serverTimestamp() },
     { merge: true },
   );
@@ -713,6 +867,9 @@ export async function pushFullContentToFirestore(content: AdminContent) {
   for (const city of content.cities) {
     await upsertCityDoc(city);
   }
+  for (const partner of content.partners) {
+    await upsertPartnerDoc(partner);
+  }
   await syncContactSubmissions(content.contactSubmissions);
 }
 
@@ -747,4 +904,18 @@ export async function deleteContactSubmissionDoc(id: string) {
   if (!db) throw new Error("Firestore indisponible.");
 
   await deleteDoc(doc(db, "contact_submissions", id));
+}
+
+export async function addNewsletterSubscriberDoc(subscriber: NewsletterSubscriber) {
+  const db = getDb();
+  if (!db) throw new Error("Firestore indisponible.");
+
+  await setDoc(doc(db, "newsletter_subscribers", subscriber.id), subscriber);
+}
+
+export async function deleteNewsletterSubscriberDoc(id: string) {
+  const db = getDb();
+  if (!db) throw new Error("Firestore indisponible.");
+
+  await deleteDoc(doc(db, "newsletter_subscribers", id));
 }

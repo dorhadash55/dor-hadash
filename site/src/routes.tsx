@@ -21,7 +21,10 @@ import AdminBlogPage from "./pages/admin/AdminBlogPage";
 import AdminBlogEditorPage from "./pages/admin/AdminBlogEditorPage";
 import AdminCitiesPage from "./pages/admin/AdminCitiesPage";
 import AdminCityEditorPage from "./pages/admin/AdminCityEditorPage";
+import AdminPartnersPage from "./pages/admin/AdminPartnersPage";
+import AdminPartnerEditorPage from "./pages/admin/AdminPartnerEditorPage";
 import AdminContactsPage from "./pages/admin/AdminContactsPage";
+import AdminNewsletterPage from "./pages/admin/AdminNewsletterPage";
 import AdminSettingsPage from "./pages/admin/AdminSettingsPage";
 import { cities } from "./content/cities";
 import { blogPosts } from "./content/blog";
@@ -70,7 +73,11 @@ export const routes: RouteRecord[] = [
           { path: "villes", Component: AdminCitiesPage },
           { path: "villes/new", Component: AdminCityEditorPage },
           { path: "villes/:slug/edit", Component: AdminCityEditorPage },
+          { path: "partenaires", Component: AdminPartnersPage },
+          { path: "partenaires/new", Component: AdminPartnerEditorPage },
+          { path: "partenaires/:slug/edit", Component: AdminPartnerEditorPage },
           { path: "contacts", Component: AdminContactsPage },
+          { path: "newsletter", Component: AdminNewsletterPage },
           { path: "settings", Component: AdminSettingsPage },
         ],
       },

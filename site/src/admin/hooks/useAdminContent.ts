@@ -6,14 +6,18 @@ import {
   getCityBySlug,
   getContactSubmissions,
   getContentSnapshot,
+  getNewsletterSubscribers,
+  getPartnerBySlug,
+  getPartners,
   getSiteSettings,
   getVideos,
   subscribeContent,
 } from "../storage/contentStore";
-import type { AdminContent, BlogPost, City, ContactSubmission, SiteSettings, VideoTestimonial } from "../storage/types";
+import type { AdminContent, BlogPost, City, ContactSubmission, NewsletterSubscriber, Partner, SiteSettings, VideoTestimonial } from "../storage/types";
 import { blogPosts as staticBlogPosts } from "../../content/blog";
 import { cities as staticCities } from "../../content/cities";
 import { hero as defaultHero } from "../../content/homepage";
+import { partners as staticPartners } from "../../content/partners";
 import { siteInfo as defaultSiteInfo } from "../../content/site";
 import { videoTestimonials as staticVideos } from "../../content/videos";
 
@@ -32,7 +36,9 @@ const SERVER_DEFAULT_CONTENT: AdminContent = {
   videos: staticVideos,
   blogPosts: staticBlogPosts,
   cities: staticCities,
+  partners: staticPartners,
   contactSubmissions: [],
+  newsletterSubscribers: [],
   siteSettings: null,
 };
 
@@ -64,11 +70,32 @@ export function useCity(slug: string): City | undefined {
   return useSyncExternalStore(subscribeContent, getSnapshot, getServerSnapshot);
 }
 
+export function usePartners(): Partner[] {
+  return useSyncExternalStore(subscribeContent, getPartners, () => SERVER_DEFAULT_CONTENT.partners);
+}
+
+export function usePartner(slug: string): Partner | undefined {
+  const getSnapshot = useCallback(() => getPartnerBySlug(slug), [slug]);
+  const getServerSnapshot = useCallback(
+    () => staticPartners.find((partner) => partner.slug === slug),
+    [slug],
+  );
+  return useSyncExternalStore(subscribeContent, getSnapshot, getServerSnapshot);
+}
+
 export function useContactSubmissions(): ContactSubmission[] {
   return useSyncExternalStore(
     subscribeContent,
     getContactSubmissions,
     () => SERVER_DEFAULT_CONTENT.contactSubmissions,
+  );
+}
+
+export function useNewsletterSubscribers(): NewsletterSubscriber[] {
+  return useSyncExternalStore(
+    subscribeContent,
+    getNewsletterSubscribers,
+    () => SERVER_DEFAULT_CONTENT.newsletterSubscribers,
   );
 }
 

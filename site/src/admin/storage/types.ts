@@ -1,5 +1,6 @@
 import type { BlogPost } from "../../content/blog";
 import type { City } from "../../content/cities";
+import type { Partner } from "../../content/partners";
 import type { VideoTestimonial } from "../../content/videos";
 
 export type ContactSubmission = {
@@ -14,6 +15,23 @@ export type ContactSubmission = {
   createdAt: string;
   read: boolean;
 };
+
+export type NewsletterSubscriber = {
+  id: string;
+  email: string;
+  telephone: string;
+  createdAt: string;
+};
+
+/** Marqueur des inscriptions newsletter stockées comme message de contact. */
+export const NEWSLETTER_CONTACT_MARKER = "newsletter";
+
+export function isNewsletterContact(submission: Pick<ContactSubmission, "ville" | "horizon">) {
+  return (
+    submission.ville === NEWSLETTER_CONTACT_MARKER ||
+    submission.horizon === NEWSLETTER_CONTACT_MARKER
+  );
+}
 
 export type HeroSettings = {
   eyebrow: string;
@@ -32,7 +50,9 @@ export type AdminContent = {
   videos: VideoTestimonial[];
   blogPosts: BlogPost[];
   cities: City[];
+  partners: Partner[];
   contactSubmissions: ContactSubmission[];
+  newsletterSubscribers: NewsletterSubscriber[];
   siteSettings: SiteSettings | null;
 };
 
@@ -40,6 +60,7 @@ export type RemoteContentPatch = Partial<AdminContent> & {
   excludedVideoIds?: string[];
   excludedPostSlugs?: string[];
   excludedCitySlugs?: string[];
+  excludedPartnerSlugs?: string[];
 };
 
-export type { BlogPost, VideoTestimonial, City };
+export type { BlogPost, VideoTestimonial, City, Partner };

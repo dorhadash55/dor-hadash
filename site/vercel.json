@@ -122,6 +122,10 @@
     {
       "source": "/admin/villes/:slug/edit",
       "destination": "/admin"
+    },
+    {
+      "source": "/admin/partenaires/:slug/edit",
+      "destination": "/admin"
     }
   ]
 }

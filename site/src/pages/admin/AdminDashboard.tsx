@@ -10,6 +10,7 @@ import {
 import { useAuth } from "../../admin/auth/AuthContext";
 import { useAdminContent } from "../../admin/hooks/useAdminContent";
 import { getAdminStats, isFirebaseConfigured } from "../../admin/storage/contentStore";
+import { isNewsletterContact } from "../../admin/storage/types";
 import { fetchSiteTrafficStats, type SiteTrafficStats } from "../../lib/siteAnalytics";
 
 const formatDate = (iso: string) =>
@@ -37,10 +38,12 @@ export default function AdminDashboard() {
     { label: "Au moins 1 vidéo", done: stats.videos > 0, link: "/admin/videos" },
     { label: "Articles de blog publiés", done: stats.blogPosts > 0, link: "/admin/blog" },
     { label: "Villes d’accueil", done: stats.cities > 0, link: "/admin/villes" },
+    { label: "Partenaires publiés", done: stats.partners > 0, link: "/admin/partenaires" },
     { label: "Paramètres site vérifiés", done: content.siteSettings !== null, link: "/admin/settings" },
   ];
 
   const recentContacts = [...content.contactSubmissions]
+    .filter((item) => !isNewsletterContact(item))
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 5);
 
@@ -51,11 +54,13 @@ export default function AdminDashboard() {
         description="Vue d'ensemble du contenu du site et des demandes de contact."
       />
       <main className="flex-1 space-y-6 p-4 sm:p-6">
-        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-5">
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-3">
           <AdminStatCard label="Vidéos" value={stats.videos} to="/admin/videos" hint="YouTube (témoignages & programme)" />
           <AdminStatCard label="Articles blog" value={stats.blogPosts} to="/admin/blog" />
           <AdminStatCard label="Villes" value={stats.cities} to="/admin/villes" />
+          <AdminStatCard label="Partenaires" value={stats.partners} to="/admin/partenaires" />
           <AdminStatCard label="Messages" value={stats.contacts} to="/admin/contacts" />
+          <AdminStatCard label="Newsletter" value={stats.newsletter} to="/admin/newsletter" />
           <AdminStatCard
             label="Non lus"
             value={stats.unreadContacts}
@@ -91,6 +96,9 @@ export default function AdminDashboard() {
               </AdminLinkButton>
               <AdminLinkButton to="/admin/villes/new" variant="secondary" className="w-full">
                 + Ville
+              </AdminLinkButton>
+              <AdminLinkButton to="/admin/partenaires/new" variant="secondary" className="w-full">
+                + Partenaire
               </AdminLinkButton>
               <AdminLinkButton to="/admin/contacts" variant="secondary" className="w-full">
                 Voir les messages
@@ -131,6 +139,14 @@ export default function AdminDashboard() {
                 className="text-sm font-medium text-brand-blue hover:underline"
               >
                 Villes ↗
+              </a>
+              <a
+                href="/partenaires"
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm font-medium text-brand-blue hover:underline"
+              >
+                Partenaires ↗
               </a>
             </div>
           </AdminCard>

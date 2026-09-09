@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { Partner, PartnerHighlightIcon } from "../content/partners";
+import SmartImage from "./SmartImage";
 
 function HighlightIcon({ name }: { name: PartnerHighlightIcon }) {
   const common = {
@@ -102,7 +103,7 @@ function PartnerLogo({
     );
   }
   return (
-    <img
+    <SmartImage
       src={partner.logo}
       alt=""
       className={`shrink-0 bg-white object-contain p-1 shadow-sm ring-1 ring-brand-sand ${className}`}

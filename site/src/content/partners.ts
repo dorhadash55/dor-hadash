@@ -33,7 +33,66 @@ export type Partner = {
   audience?: string;
   quote?: string;
   highlights?: { text: string; icon: PartnerHighlightIcon }[];
+  /** Afficher aussi dans le bandeau d’accueil. */
+  showOnHome?: boolean;
+  /** Ordre d’affichage (plus petit = plus haut). */
+  sortKey?: number;
 };
+
+export const PARTNER_HIGHLIGHT_ICONS: PartnerHighlightIcon[] = [
+  "scan",
+  "letter",
+  "cv",
+  "rights",
+  "guides",
+  "school",
+  "kids",
+  "dialog",
+  "help",
+];
+
+export const partnerHighlightIconLabels: Record<PartnerHighlightIcon, string> = {
+  scan: "Scanner",
+  letter: "Lettre",
+  cv: "CV",
+  rights: "Droits",
+  guides: "Guides",
+  school: "École",
+  kids: "Enfants",
+  dialog: "Dialogue",
+  help: "Aide",
+};
+
+export const HOME_PARTNER_SLUGS = [
+  "agence-juive",
+  "misrad-haklita",
+  "ofek-israel",
+  "qualita",
+  "olimaid",
+] as const;
+
+export function isPartnerHighlightIcon(value: string): value is PartnerHighlightIcon {
+  return PARTNER_HIGHLIGHT_ICONS.includes(value as PartnerHighlightIcon);
+}
+
+export function sortPartnersForDisplay(list: Partner[]): Partner[] {
+  return [...list].sort((a, b) => (a.sortKey ?? 0) - (b.sortKey ?? 0));
+}
+
+export function partnersForHome(list: Partner[]): Partner[] {
+  const flagged = list.filter((partner) => partner.showOnHome);
+  const defaults = HOME_PARTNER_SLUGS.map((slug) => list.find((partner) => partner.slug === slug)).filter(
+    (partner): partner is Partner => Boolean(partner),
+  );
+  const seen = new Set<string>();
+  const result: Partner[] = [];
+  for (const partner of [...defaults, ...flagged]) {
+    if (seen.has(partner.slug)) continue;
+    seen.add(partner.slug);
+    result.push(partner);
+  }
+  return result.slice(0, 8);
+}
 
 export const partnersIntro = {
   label: "Réseau",
@@ -51,6 +110,10 @@ export const partnerCategoryLabels: Record<PartnerCategory, string> = {
   municipal: "Municipalités partenaires",
   sante: "Santé & intégration",
 };
+
+export function isPartnerCategory(value: string): value is PartnerCategory {
+  return value in partnerCategoryLabels;
+}
 
 export const partners: Partner[] = [
   {

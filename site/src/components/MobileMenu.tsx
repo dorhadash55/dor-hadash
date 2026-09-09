@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { NavLink } from "react-router-dom";
 import { mobileNav, siteInfo, withCityNav, type NavItem } from "../content/site";
 import { useCities } from "../admin/hooks/useAdminContent";
+import { openNewsletterModal } from "../lib/newsletter";
 
 type MobileMenuProps = {
   open: boolean;
@@ -295,7 +296,7 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
             </div>
           </nav>
 
-          <div className="mobile-menu-footer relative shrink-0 px-5 py-4 pb-[calc(1.1rem+env(safe-area-inset-bottom,0px))]">
+          <div className="mobile-menu-footer relative shrink-0 space-y-2 px-5 py-4 pb-[calc(1.1rem+env(safe-area-inset-bottom,0px))]">
             <NavLink
               to="/nous-contacter?objet=entretien"
               onClick={handleClose}
@@ -304,6 +305,16 @@ export default function MobileMenu({ open, onClose }: MobileMenuProps) {
               Demander un entretien
               <span aria-hidden>→</span>
             </NavLink>
+            <button
+              type="button"
+              onClick={() => {
+                handleClose();
+                openNewsletterModal();
+              }}
+              className="flex w-full items-center justify-center rounded-2xl border border-white/20 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10"
+            >
+              Newsletter hebdomadaire
+            </button>
           </div>
         </div>
       </div>

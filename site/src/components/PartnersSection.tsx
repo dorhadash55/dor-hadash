@@ -1,17 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { partners, type Partner } from "../content/partners";
+import { usePartners } from "../admin/hooks/useAdminContent";
+import { partnersForHome, type Partner } from "../content/partners";
 import PartnerModal from "./PartnerModal";
 import Reveal from "./Reveal";
-
-/** Sélection courte pour l'accueil — le reste est sur /partenaires */
-const HOME_PARTNER_SLUGS = [
-  "agence-juive",
-  "misrad-haklita",
-  "ofek-israel",
-  "qualita",
-  "olimaid",
-] as const;
+import SmartImage from "./SmartImage";
 
 function PartnerLogoMark({ partner }: { partner: Partner }) {
   if (!partner.logo) {
@@ -30,7 +23,7 @@ function PartnerLogoMark({ partner }: { partner: Partner }) {
     );
   }
   return (
-    <img
+    <SmartImage
       src={partner.logo}
       alt=""
       className="h-12 w-12 object-contain sm:h-14 sm:w-14"
@@ -41,9 +34,8 @@ function PartnerLogoMark({ partner }: { partner: Partner }) {
 /** Bandeau logos compact — pas une section marketing pleine hauteur. */
 export default function PartnersSection() {
   const [active, setActive] = useState<Partner | null>(null);
-  const preview = HOME_PARTNER_SLUGS.map((slug) => partners.find((p) => p.slug === slug)).filter(
-    (p): p is Partner => Boolean(p),
-  );
+  const partners = usePartners();
+  const preview = partnersForHome(partners);
 
   return (
     <section className="border-y border-brand-blue/8 bg-white py-10 sm:py-14">

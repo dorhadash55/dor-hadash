@@ -4,11 +4,11 @@ import SeoHead from "../components/SeoHead";
 import PageBanner from "../components/PageBanner";
 import Reveal from "../components/Reveal";
 import PartnerModal from "../components/PartnerModal";
+import SmartImage from "../components/SmartImage";
+import { usePartners } from "../admin/hooks/useAdminContent";
 import {
-  partners,
   partnersIntro,
   partnerCategoryLabels,
-  getPartnerBySlug,
   type Partner,
   type PartnerCategory,
 } from "../content/partners";
@@ -44,7 +44,7 @@ function PartnerLogo({
     );
   }
   return (
-    <img
+    <SmartImage
       src={partner.logo}
       alt=""
       className={`shrink-0 rounded-2xl bg-white object-contain p-1 shadow-sm ring-1 ring-brand-sand ${className}`}
@@ -97,12 +97,13 @@ function PartnerTeaserCard({
 
 export default function Partenaires() {
   const { hash } = useLocation();
+  const partners = usePartners();
   const [active, setActive] = useState<Partner | null>(null);
 
   useEffect(() => {
     if (!hash) return;
     const id = hash.replace("#", "");
-    const partner = getPartnerBySlug(id);
+    const partner = partners.find((item) => item.slug === id);
     if (partner) {
       setActive(partner);
       return;
@@ -111,7 +112,7 @@ export default function Partenaires() {
     if (el) {
       requestAnimationFrame(() => el.scrollIntoView({ behavior: "smooth", block: "start" }));
     }
-  }, [hash]);
+  }, [hash, partners]);
 
   return (
     <>

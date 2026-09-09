@@ -7,7 +7,9 @@ const navItems = [
   { to: "/admin/videos", label: "Vidéos", icon: "▶" },
   { to: "/admin/blog", label: "Blog", icon: "✎" },
   { to: "/admin/villes", label: "Villes", icon: "⌂" },
+  { to: "/admin/partenaires", label: "Partenaires", icon: "◇" },
   { to: "/admin/contacts", label: "Messages", icon: "✉" },
+  { to: "/admin/newsletter", label: "Newsletter", icon: "✉" },
   { to: "/admin/settings", label: "Paramètres", icon: "⚙" },
 ];
 

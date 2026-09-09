@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useSiteInfo } from "../content/useSiteContent";
 import { footerNav } from "../content/site";
+import { openNewsletterModal } from "../lib/newsletter";
 
 export default function Footer() {
   const siteInfo = useSiteInfo();
@@ -59,6 +60,17 @@ export default function Footer() {
         </div>
 
         <div>
+          <h3 className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal mb-4">Newsletter</h3>
+          <p className="mb-3 text-sm leading-relaxed text-white/70">
+            Chaque semaine, l&apos;essentiel pour les francophones en Israël.
+          </p>
+          <button
+            type="button"
+            onClick={openNewsletterModal}
+            className="mb-8 inline-flex items-center rounded-full bg-brand-teal px-4 py-2 text-sm font-semibold text-brand-blue-deep transition hover:bg-white"
+          >
+            S&apos;inscrire
+          </button>
           <h3 className="font-accent text-xs uppercase tracking-[0.2em] text-brand-teal mb-4">Suivez-nous</h3>
           <div className="flex flex-wrap gap-2">
             <a

@@ -187,3 +187,78 @@ export async function sendContactMails(data: ContactMailData, env: ContactMailEn
     html: userConfirmationHtml(data.prenom, primaryAdmin),
   });
 }
+
+export type NewsletterMailData = {
+  email: string;
+  telephone: string;
+};
+
+export async function sendNewsletterMails(data: NewsletterMailData, env: ContactMailEnv) {
+  if (!env.smtpUser || !env.smtpPass) {
+    throw new Error(
+      "SMTP_USER / SMTP_PASS manquants. Ajoutez-les dans site/.env (local) ou Vercel (prod).",
+    );
+  }
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: env.smtpUser, pass: env.smtpPass },
+  });
+
+  const from = `"Dor Hadash" <${env.smtpUser}>`;
+  const adminRecipients = parseRecipients(env.contactTo);
+  if (adminRecipients.length === 0) {
+    throw new Error("CONTACT_TO_EMAIL manquant.");
+  }
+  const primaryAdmin = adminRecipients[0];
+
+  await transporter.sendMail({
+    from,
+    to: adminRecipients,
+    replyTo: data.email,
+    subject: `NEWSLETTER — nouvelle inscription (${data.email})`,
+    text: [
+      "NEWSLETTER Dor Hadash — nouvelle inscription",
+      "",
+      `Email : ${data.email}`,
+      `Téléphone : ${data.telephone || "non renseigné"}`,
+    ].join("\n"),
+    html: brandShell(
+      `
+        <p style="margin:0 0 8px;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:#29c4a9;">Newsletter</p>
+        <p style="margin:0 0 16px;font-size:18px;font-weight:700;color:#0b3d6e;">Nouvelle inscription</p>
+        <p style="margin:0 0 8px;font-size:14px;line-height:1.6;"><strong>Email</strong> : <a href="mailto:${escapeHtml(data.email)}" style="color:#2b87da;text-decoration:none;">${escapeHtml(data.email)}</a></p>
+        <p style="margin:0;font-size:14px;line-height:1.6;"><strong>Téléphone</strong> : ${escapeHtml(data.telephone || "non renseigné")}</p>
+      `,
+      primaryAdmin,
+    ),
+  });
+
+  try {
+    await transporter.sendMail({
+      from,
+      to: data.email,
+      replyTo: primaryAdmin,
+      subject: "Bienvenue à la newsletter Dor Hadash",
+      text: [
+        "Bonjour,",
+        "",
+        "Vous êtes bien inscrit à la newsletter de Dor Hadash.",
+        "Chaque semaine, vous recevrez l'essentiel pour les francophones en Israël : actualités, intégration, villes et vie sur place.",
+        "",
+        "À bientôt,",
+        "L'équipe Dor Hadash",
+      ].join("\n"),
+      html: brandShell(
+        `
+        <p style="margin:0 0 12px;font-size:16px;font-weight:700;color:#0b3d6e;">Bienvenue</p>
+        <p style="margin:0 0 12px;font-size:14px;line-height:1.7;">Vous êtes bien inscrit à la newsletter de Dor Hadash.</p>
+        <p style="margin:0;font-size:14px;line-height:1.7;">Chaque semaine, vous recevrez l'essentiel pour les francophones en Israël : actualités, intégration, villes et vie sur place.</p>
+      `,
+        primaryAdmin,
+      ),
+    });
+  } catch (error) {
+    console.warn("Confirmation newsletter visiteur:", error);
+  }
+}

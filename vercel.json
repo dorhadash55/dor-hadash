@@ -8,6 +8,10 @@
     "api/contact.ts": {
       "memory": 256,
       "maxDuration": 15
+    },
+    "api/newsletter.ts": {
+      "memory": 256,
+      "maxDuration": 15
     }
   },
   "rewrites": [
@@ -21,6 +25,10 @@
     },
     {
       "source": "/admin/villes/:slug/edit",
+      "destination": "/admin"
+    },
+    {
+      "source": "/admin/partenaires/:slug/edit",
       "destination": "/admin"
     }
   ]

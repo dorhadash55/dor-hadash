@@ -4,6 +4,7 @@ import { mainNav, withCityNav, type NavItem } from "../content/site";
 import { useCities } from "../admin/hooks/useAdminContent";
 import MobileMenu from "./MobileMenu";
 import { hashIdFromHref, scrollToId } from "../lib/scrollToId";
+import { openNewsletterModal } from "../lib/newsletter";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   [
@@ -195,8 +196,17 @@ export default function Header() {
           />
         </NavLink>
 
-        {/* Spacer mobile pour équilibrer le hamburger */}
-        <div className="h-10 w-10 shrink-0 lg:hidden" aria-hidden="true" />
+        <button
+          type="button"
+          onClick={openNewsletterModal}
+          aria-label="S'inscrire à la newsletter Dor Hadash"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-brand-blue hover:bg-brand-blue/5 lg:hidden"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 7l8 6 8-6" />
+          </svg>
+        </button>
 
         {/* Desktop nav */}
         <nav className="hidden min-w-0 flex-1 items-center justify-end lg:flex" aria-label="Navigation principale">
@@ -209,9 +219,16 @@ export default function Header() {
               ),
             )}
           </div>
+          <button
+            type="button"
+            onClick={openNewsletterModal}
+            className="ml-2 inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-full border border-brand-blue/20 px-3 text-[13px] font-semibold leading-none text-brand-blue transition-colors hover:bg-brand-blue/5 xl:ml-3 xl:px-3.5"
+          >
+            Newsletter
+          </button>
           <Link
             to="/nous-contacter?objet=entretien"
-            className="ml-3 inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-full bg-brand-blue px-3.5 text-[13px] font-semibold leading-none text-white shadow-sm shadow-brand-blue/20 transition-all hover:bg-brand-blue-dark hover:shadow-md xl:ml-4 xl:px-4 xl:text-sm"
+            className="ml-2 inline-flex h-9 shrink-0 items-center whitespace-nowrap rounded-full bg-brand-blue px-3.5 text-[13px] font-semibold leading-none text-white shadow-sm shadow-brand-blue/20 transition-all hover:bg-brand-blue-dark hover:shadow-md xl:ml-3 xl:px-4 xl:text-sm"
           >
             <span className="xl:hidden">Entretien</span>
             <span className="hidden xl:inline">Demander un entretien</span>
