@@ -60,7 +60,7 @@ function brandShell(inner: string, contactEmail: string) {
           <tr>
             <td style="padding:16px 28px 24px;background:#f8fafc;border-top:1px solid #e5e7eb;">
               <p style="margin:0;font-size:12px;line-height:1.5;color:#6b7280;">
-                Association Dor Hadash · <a href="https://dor-hadash.vercel.app" style="color:#2b87da;text-decoration:none;">dor-hadash.vercel.app</a><br />
+                Association Dor Hadash · <a href="https://www.dor-hadash.com" style="color:#2b87da;text-decoration:none;">www.dor-hadash.com</a><br />
                 ${escapeHtml(contactEmail)}
               </p>
             </td>
@@ -124,7 +124,7 @@ function userConfirmationHtml(prenom: string, contactEmail: string) {
       <strong style="color:#0b3d6e;">L'équipe Dor Hadash</strong><br />
       <span style="color:#6b7280;">Incubateur d'Alya francophone</span>
     </p>
-    <a href="https://dor-hadash.vercel.app/nous-contacter"
+    <a href="https://www.dor-hadash.com/nous-contacter"
        style="display:inline-block;background:#2b87da;color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;padding:12px 20px;border-radius:999px;">
       Retour au site
     </a>
