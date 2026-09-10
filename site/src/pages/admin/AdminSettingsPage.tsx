@@ -70,6 +70,19 @@ export default function AdminSettingsPage() {
   };
 
   const handleSyncFirestore = async () => {
+    const confirmation = window.prompt(
+      "ATTENTION — opération exceptionnelle\n\n" +
+        "Cette action renvoie vers Firestore toute la copie actuellement chargée dans l’administration. " +
+        "Elle peut écraser ou remplacer des vidéos, articles, villes, partenaires, paramètres, popup et messages existants. " +
+        "Si la copie locale est vide ou incomplète, du contenu peut être perdu ou désactivé.\n\n" +
+        "Les modifications habituelles sont déjà enregistrées automatiquement : utilisez cette action uniquement après une migration ou une restauration vérifiée.\n\n" +
+        "Pour continuer, écrivez exactement AUTORISER :",
+    );
+    if (confirmation !== "AUTORISER") {
+      setSyncMessage("Synchronisation annulée : le mot AUTORISER n’a pas été confirmé.");
+      return;
+    }
+
     setSyncing(true);
     setSyncMessage("");
     const result = await pushAllContentToFirestore();
@@ -191,7 +204,13 @@ export default function AdminSettingsPage() {
           )}
           {syncMessage && (
             <p
-              className={`mt-3 text-sm ${syncMessage.startsWith("Erreur") ? "text-brand-coral" : "text-brand-teal"}`}
+              className={`mt-3 text-sm ${
+                syncMessage.startsWith("Erreur")
+                  ? "text-brand-coral"
+                  : syncMessage.startsWith("Synchronisation annulée")
+                    ? "text-amber-700"
+                    : "text-brand-teal"
+              }`}
             >
               {syncMessage}
             </p>
