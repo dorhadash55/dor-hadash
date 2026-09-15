@@ -4,8 +4,7 @@
 @import "@fontsource/roboto/700.css";
 @import "@fontsource/open-sans/400.css";
 @import "@fontsource/open-sans/600.css";
-@import "@fontsource/oswald/500.css";
-@import "@fontsource/oswald/700.css";
+@import "@fontsource/jost/700.css";
 @import "@fontsource/didact-gothic/400.css";
 
 @theme {
@@ -21,13 +20,17 @@
   --color-brand-sand: #efeae3;
 
   --font-sans: "Open Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: "Oswald", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Jost", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Roboto", ui-sans-serif, system-ui, sans-serif;
   --font-accent: "Didact Gothic", ui-sans-serif, system-ui, sans-serif;
 
   /* Corps de texte un peu plus lisible (ex-14px → 15px) */
   --text-sm: 0.9375rem;
   --text-sm--line-height: 1.55;
+}
+
+body .font-heading {
+  font-weight: 700;
 }
 
 html {
