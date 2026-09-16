@@ -4,12 +4,12 @@ import { useSiteInfo } from "../content/useSiteContent";
 export default function MobileCtaBar() {
   const siteInfo = useSiteInfo();
   return (
-    <div className="mobile-cta-bar fixed inset-x-0 bottom-0 z-40 flex h-14 items-stretch border-t border-gray-100 bg-white pb-[env(safe-area-inset-bottom,0px)] shadow-[0_-4px_12px_rgba(0,0,0,0.06)] lg:hidden">
+    <div className="mobile-cta-bar fixed inset-x-0 bottom-0 z-40 flex h-[calc(4rem+env(safe-area-inset-bottom,0px))] items-stretch border-t border-gray-100 bg-white pb-[env(safe-area-inset-bottom,0px)] shadow-[0_-4px_12px_rgba(0,0,0,0.06)] lg:hidden">
       <a
         href={siteInfo.callPhone}
-        className="flex flex-1 items-center justify-center gap-2 text-sm font-semibold leading-none text-brand-blue border-r border-gray-100"
+        className="flex flex-1 items-center justify-center gap-2 border-r border-gray-100 text-base font-semibold leading-none text-brand-blue"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -20,7 +20,7 @@ export default function MobileCtaBar() {
       </a>
       <Link
         to="/nous-contacter?objet=entretien"
-        className="flex flex-1 items-center justify-center gap-2 bg-brand-blue text-sm font-semibold leading-none text-white"
+        className="flex flex-1 items-center justify-center gap-2 bg-brand-blue text-base font-semibold leading-none text-white"
       >
         Entretien
       </Link>

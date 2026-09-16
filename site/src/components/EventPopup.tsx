@@ -58,7 +58,7 @@ export default function EventPopup() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="group fixed bottom-[calc(9.25rem+env(safe-area-inset-bottom,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))] z-[190] flex h-14 w-14 items-center justify-center rounded-full bg-brand-teal text-white shadow-lg shadow-brand-blue/20 ring-4 ring-white/90 transition duration-300 hover:-translate-y-1 hover:scale-105 hover:bg-brand-blue focus:outline-none focus:ring-4 focus:ring-brand-teal/25 lg:bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] lg:right-[calc(1.5rem+env(safe-area-inset-right,0px))]"
+          className="group fixed bottom-[calc(9.75rem+env(safe-area-inset-bottom,0px))] right-[calc(1rem+env(safe-area-inset-right,0px))] z-[190] flex h-14 w-14 items-center justify-center rounded-full bg-brand-teal text-white shadow-lg shadow-brand-blue/20 ring-4 ring-white/90 transition duration-300 hover:-translate-y-1 hover:scale-105 hover:bg-brand-blue focus:outline-none focus:ring-4 focus:ring-brand-teal/25 lg:bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] lg:right-[calc(1.5rem+env(safe-area-inset-right,0px))]"
           aria-label={`Ouvrir l’événement : ${event.title}`}
         >
           <span className="absolute -right-1 -top-1 h-3.5 w-3.5 rounded-full bg-brand-sand ring-2 ring-white" aria-hidden />
@@ -73,7 +73,7 @@ export default function EventPopup() {
 
       {open && (
         <div
-          className="fixed inset-0 z-[310] flex items-center justify-center bg-black/50 p-3 pb-[calc(4.25rem+env(safe-area-inset-bottom,0px))] backdrop-blur-[2px] sm:p-5"
+          className="fixed inset-0 z-[310] flex items-center justify-center bg-black/50 p-3 pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] backdrop-blur-[2px] sm:p-5"
           role="dialog"
           aria-modal="true"
           aria-labelledby={titleId}

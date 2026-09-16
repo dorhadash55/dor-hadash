@@ -28,7 +28,7 @@ export default function CookieBanner() {
       role="dialog"
       aria-labelledby="cookie-banner-title"
       aria-describedby="cookie-banner-text"
-      className="fixed inset-x-0 bottom-0 z-[45] px-3 pb-[calc(4.25rem+env(safe-area-inset-bottom,0px))] sm:px-4 lg:bottom-4 lg:px-6 lg:pb-0"
+      className="fixed inset-x-0 bottom-0 z-[45] px-3 pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] sm:px-4 lg:bottom-4 lg:px-6 lg:pb-0"
     >
       <div className="mx-auto max-w-3xl rounded-2xl border border-brand-blue/15 bg-white p-4 shadow-xl shadow-brand-blue/15 sm:p-5">
         <p id="cookie-banner-title" className="font-heading text-base font-semibold text-brand-blue-deep">

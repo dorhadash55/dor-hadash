@@ -8,7 +8,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-brand-blue-deep text-white pb-[calc(6rem+env(safe-area-inset-bottom,0px))] lg:pb-0">
+    <footer className="relative bg-brand-blue-deep text-white pb-[calc(6.5rem+env(safe-area-inset-bottom,0px))] lg:pb-0">
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-teal via-brand-blue-light to-brand-coral" aria-hidden="true" />
 
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
