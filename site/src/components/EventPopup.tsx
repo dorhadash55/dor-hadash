@@ -80,17 +80,17 @@ export default function EventPopup() {
           onClick={() => setOpen(false)}
         >
           <article
-            className="max-h-[calc(100dvh-6rem)] w-full max-w-xl overflow-y-auto rounded-3xl bg-white shadow-2xl sm:max-h-[92dvh]"
+            className="max-h-[calc(100dvh-6rem)] w-full max-w-lg overflow-y-auto rounded-2xl bg-white shadow-2xl sm:max-h-[88dvh]"
             onClick={(clickEvent) => clickEvent.stopPropagation()}
           >
             {event.image && (
               <SmartImage
                 src={event.image}
                 alt=""
-                className="max-h-72 w-full bg-brand-cream object-cover"
+                className="h-48 w-full bg-brand-cream object-contain sm:h-56"
               />
             )}
-            <div className="relative px-5 pb-6 pt-5 sm:px-7 sm:pb-7 sm:pt-6">
+            <div className="relative px-4 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5">
               <button
                 type="button"
                 onClick={() => setOpen(false)}
@@ -104,13 +104,13 @@ export default function EventPopup() {
               <p className="font-accent text-xs font-semibold uppercase tracking-[0.2em] text-brand-coral">
                 Événement
               </p>
-              <h2 id={titleId} className="mt-2 pr-10 font-heading text-2xl font-semibold leading-tight text-brand-blue-deep sm:text-3xl">
+              <h2 id={titleId} className="mt-1.5 pr-10 font-heading text-xl font-semibold leading-tight text-brand-blue-deep sm:text-2xl">
                 {event.title}
               </h2>
-              <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-gray-700 sm:text-base">
+              <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-gray-700">
                 {event.content}
               </p>
-              <button type="button" onClick={() => setOpen(false)} className="btn-primary mt-6 w-full justify-center sm:w-auto">
+              <button type="button" onClick={() => setOpen(false)} className="btn-primary mt-5 w-full justify-center sm:w-auto">
                 Fermer
               </button>
             </div>
